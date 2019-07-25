@@ -15,6 +15,7 @@ func Provider() *schema.Provider {
 		ConfigureFunc: providerConfigure,
 		DataSourcesMap: map[string]*schema.Resource{
 			"clouddk_locations": dataSourceLocations(),
+			"clouddk_templates": dataSourceTemplates(),
 		},
 		ResourcesMap: map[string]*schema.Resource{},
 		Schema: map[string]*schema.Schema{

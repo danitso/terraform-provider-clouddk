@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"runtime"
+
+	"github.com/hashicorp/terraform/version"
 )
 
 // getClientRequestObject() returns a new HTTP request object.
@@ -14,6 +17,13 @@ func getClientRequestObject(settings *ClientSettings, method string, path string
 		return nil, reqErr
 	}
 
+	req.Header.Set("User-Agent", fmt.Sprintf(
+		"%s/%s Go/%s Terraform-Library/%s",
+		TerraformProviderName,
+		TerraformProviderVersion,
+		runtime.Version(),
+		version.Version,
+	))
 	req.Header.Set("X-Api-Key", settings.Key)
 
 	return req, nil
