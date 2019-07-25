@@ -1,5 +1,5 @@
 # Terraform Provider for Cloud.dk
-A Terraform Provider to manage resources from [Cloud.dk](https://cloud.dk/).
+A Terraform Provider which manages resources from [Cloud.dk](https://cloud.dk/).
 
 # Requirements
 
