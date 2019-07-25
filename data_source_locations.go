@@ -70,6 +70,7 @@ func dataSourceLocationsRead(d *schema.ResourceData, m interface{}) error {
 		result[i] = locationMap
 	}
 
+	d.SetId("locations")
 	d.Set(DataSourceLocationsResult, result)
 
 	return nil
