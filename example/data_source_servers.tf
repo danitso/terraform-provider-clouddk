@@ -15,19 +15,19 @@ output "data_clouddk_servers_example_labels" {
   value       = "${data.clouddk_servers.example.labels}"
 }
 
-output "data_clouddk_servers_example_locations" {
+output "data_clouddk_servers_example_location_ids" {
   description = "The server location identifiers"
-  value       = "${data.clouddk_servers.example.locations}"
+  value       = "${data.clouddk_servers.example.location_ids}"
 }
 
-output "data_clouddk_servers_example_packages" {
+output "data_clouddk_servers_example_package_ids" {
   description = "The server package identifiers"
-  value       = "${data.clouddk_servers.example.packages}"
+  value       = "${data.clouddk_servers.example.package_ids}"
 }
 
-output "data_clouddk_servers_example_templates" {
+output "data_clouddk_servers_example_template_ids" {
   description = "The server template identifiers"
-  value       = "${data.clouddk_servers.example.templates}"
+  value       = "${data.clouddk_servers.example.template_ids}"
 }
 #==============================================================================
 data "clouddk_servers" "example_filter" {
@@ -51,17 +51,17 @@ output "data_clouddk_servers_example_filter_labels" {
   value       = "${data.clouddk_servers.example_filter.labels}"
 }
 
-output "data_clouddk_servers_example_filter_locations" {
+output "data_clouddk_servers_example_filter_location_ids" {
   description = "The server location identifiers"
-  value       = "${data.clouddk_servers.example_filter.locations}"
+  value       = "${data.clouddk_servers.example_filter.location_ids}"
 }
 
-output "data_clouddk_servers_example_filter_packages" {
+output "data_clouddk_servers_example_filter_package_ids" {
   description = "The server package identifiers"
-  value       = "${data.clouddk_servers.example_filter.packages}"
+  value       = "${data.clouddk_servers.example_filter.package_ids}"
 }
 
-output "data_clouddk_servers_example_filter_templates" {
+output "data_clouddk_servers_example_filter_template_ids" {
   description = "The server template identifiers"
-  value       = "${data.clouddk_servers.example_filter.templates}"
+  value       = "${data.clouddk_servers.example_filter.template_ids}"
 }

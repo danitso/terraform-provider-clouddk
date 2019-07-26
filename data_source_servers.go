@@ -15,9 +15,9 @@ const DataSourceServersFilterHostnameKey = "hostname"
 const DataSourceServersHostnamesKey = "hostnames"
 const DataSourceServersIdsKey = "ids"
 const DataSourceServersLabelsKey = "labels"
-const DataSourceServersLocationsKey = "locations"
-const DataSourceServersPackagesKey = "packages"
-const DataSourceServersTemplatesKey = "templates"
+const DataSourceServersLocationIdsKey = "location_ids"
+const DataSourceServersPackageIdsKey = "package_ids"
+const DataSourceServersTemplateIdsKey = "template_ids"
 
 // dataSourceServers() retrieves a list of servers.
 func dataSourceServers() *schema.Resource {
@@ -54,17 +54,17 @@ func dataSourceServers() *schema.Resource {
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersLocationsKey: &schema.Schema{
+			DataSourceServersLocationIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersPackagesKey: &schema.Schema{
+			DataSourceServersPackageIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersTemplatesKey: &schema.Schema{
+			DataSourceServersTemplateIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -113,17 +113,17 @@ func dataSourceServersRead(d *schema.ResourceData, m interface{}) error {
 	hostnames := make([]interface{}, len(list))
 	ids := make([]interface{}, len(list))
 	labels := make([]interface{}, len(list))
-	locations := make([]interface{}, len(list))
-	packages := make([]interface{}, len(list))
-	templates := make([]interface{}, len(list))
+	locationIds := make([]interface{}, len(list))
+	packageIds := make([]interface{}, len(list))
+	templateIds := make([]interface{}, len(list))
 
 	for i, v := range list {
 		hostnames[i] = v.Hostname
 		ids[i] = v.Identifier
 		labels[i] = v.Label
-		locations[i] = v.Location.Identifier
-		packages[i] = v.Package.Identifier
-		templates[i] = v.Template.Identifier
+		locationIds[i] = v.Location.Identifier
+		packageIds[i] = v.Package.Identifier
+		templateIds[i] = v.Template.Identifier
 	}
 
 	d.SetId("servers")
@@ -131,9 +131,9 @@ func dataSourceServersRead(d *schema.ResourceData, m interface{}) error {
 	d.Set(DataSourceServersHostnamesKey, hostnames)
 	d.Set(DataSourceServersIdsKey, ids)
 	d.Set(DataSourceServersLabelsKey, labels)
-	d.Set(DataSourceServersLocationsKey, locations)
-	d.Set(DataSourceServersPackagesKey, packages)
-	d.Set(DataSourceServersTemplatesKey, templates)
+	d.Set(DataSourceServersLocationIdsKey, locationIds)
+	d.Set(DataSourceServersPackageIdsKey, packageIds)
+	d.Set(DataSourceServersTemplateIdsKey, templateIds)
 
 	return nil
 }

@@ -42,7 +42,7 @@ This data source has no arguments.
 
 #### Attributes
 
-* `ids` - This is the list of location ids.
+* `ids` - This is the list of location identifiers.
 * `names` - This is the list of location names.
 
 ### Packages (clouddk_packages)
@@ -53,8 +53,26 @@ This data source has no arguments.
 
 #### Attributes
 
-* `ids` - This is the list of package ids.
+* `ids` - This is the list of package identifiers.
 * `names` - This is the list of package names.
+
+### Server (clouddk_server)
+
+#### Arguments
+
+* `id` - (Required) This is the server's identifier.
+
+#### Attributes
+
+* `booted` - Whether the server has been booted.
+* `cpus` - This is the server's CPU count.
+* `disk_ids` - This is the server's disk identifiers.
+* `disk_labels` - This is the server's disk labels.
+* `disk_primary` - Whether the disk is the primary disk.
+* `disk_sizes` - This is the server's disk sizes in gigabytes.
+* `hostname` - This is the server's hostname.
+* `label` - This is the server's label.
+* `memory` - This is the server's memory allocation in megabytes.
 
 ### Servers (clouddk_servers)
 
@@ -66,11 +84,11 @@ This data source has no arguments.
 #### Attributes
 
 * `hostnames` - This is the list of server hostnames.
-* `ids` - This is the list of server ids.
+* `ids` - This is the list of server identifiers.
 * `labels` - This is the list of server labels.
-* `locations` - This is the list of server location identifiers.
-* `packages` - This is the list of server package identifiers.
-* `templates` - This is the list of server template identifiers.
+* `location_ids` - This is the list of server location identifiers.
+* `package_ids` - This is the list of server package identifiers.
+* `template_ids` - This is the list of server template identifiers.
 
 ### Templates (clouddk_templates)
 
@@ -81,7 +99,7 @@ This data source has no arguments.
 
 #### Attributes
 
-* `ids` - This is the list of template ids.
+* `ids` - This is the list of template identifiers.
 * `names` - This is the list of template names.
 
 ## Resources

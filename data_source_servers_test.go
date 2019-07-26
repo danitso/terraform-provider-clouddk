@@ -43,28 +43,28 @@ func TestDataSourceServersSchema(t *testing.T) {
 		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersLabelsKey)
 	}
 
-	if s.Schema[DataSourceServersLocationsKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersLocationsKey)
+	if s.Schema[DataSourceServersLocationIdsKey] == nil {
+		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersLocationIdsKey)
 	}
 
-	if s.Schema[DataSourceServersLocationsKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersLocationsKey)
+	if s.Schema[DataSourceServersLocationIdsKey].Computed != true {
+		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersLocationIdsKey)
 	}
 
-	if s.Schema[DataSourceServersPackagesKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersPackagesKey)
+	if s.Schema[DataSourceServersPackageIdsKey] == nil {
+		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersPackageIdsKey)
 	}
 
-	if s.Schema[DataSourceServersPackagesKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersPackagesKey)
+	if s.Schema[DataSourceServersPackageIdsKey].Computed != true {
+		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersPackageIdsKey)
 	}
 
-	if s.Schema[DataSourceServersTemplatesKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersTemplatesKey)
+	if s.Schema[DataSourceServersTemplateIdsKey] == nil {
+		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersTemplateIdsKey)
 	}
 
-	if s.Schema[DataSourceServersTemplatesKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersTemplatesKey)
+	if s.Schema[DataSourceServersTemplateIdsKey].Computed != true {
+		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersTemplateIdsKey)
 	}
 }
 

@@ -10,7 +10,7 @@ type ClientSettings struct {
 type DiskBody struct {
 	Identifier string `json:"identifier"`
 	Label      string `json:"label"`
-	Size       string `json:"size"`
+	Size       uint32 `json:"size"`
 	Primary    uint8  `json:"primary"`
 }
 
@@ -20,12 +20,12 @@ type DiskListBody []DiskBody
 // FirewallRuleBody describes a firewall rule object.
 type FirewallRuleBody struct {
 	Identifier string `json:"identifier"`
-	Position   string `json:"position"`
+	Position   uint16 `json:"position"`
 	Command    string `json:"command"`
 	Protocol   string `json:"protocol"`
 	Address    string `json:"address"`
-	Bits       string `json:"bits"`
-	Port       string `json:"port"`
+	Bits       uint16 `json:"bits"`
+	Port       uint16 `json:"port"`
 }
 
 // FirewallRuleListBody describes a firewall rule list.
@@ -58,7 +58,7 @@ type NetworkInterfaceBody struct {
 	Label               string               `json:"label"`
 	RateLimit           uint32               `json:"rate_limit"`
 	DefaultFirewallRuke string               `json:"default_firewall_rule"`
-	Primary             string               `json:"primary"`
+	Primary             uint8                `json:"primary"`
 	IPAddresses         IPAddressListBody    `json:"ipAddresses"`
 	FirewallRules       FirewallRuleListBody `json:"firewallRules"`
 }
@@ -80,8 +80,8 @@ type ServerBody struct {
 	Identifier        string                   `json:"identifier"`
 	Hostname          string                   `json:"hostname"`
 	Label             string                   `json:"label"`
-	CPUs              string                   `json:"cpus"`
-	Memory            string                   `json:"memory"`
+	CPUs              uint8                    `json:"cpus"`
+	Memory            uint32                   `json:"memory"`
 	Booted            uint8                    `json:"booted"`
 	Disks             DiskListBody             `json:"disks"`
 	NetworkInterfaces NetworkInterfaceListBody `json:"networkInterfaces"`
