@@ -45,6 +45,17 @@ This data source has no arguments.
 * `ids` - This is the list of location ids.
 * `names` - This is the list of location names.
 
+### Server Packages (clouddk_server_packages)
+
+#### Arguments
+
+This data source has no arguments.
+
+#### Attributes
+
+* `ids` - This is the list of package ids.
+* `names` - This is the list of package names.
+
 ### Templates (clouddk_templates)
 
 #### Arguments
