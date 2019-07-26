@@ -46,6 +46,18 @@ This data source has no arguments.
     * `identifier` - This is the location identifier.
     * `name` - This is the location name.
 
+### Templates (clouddk_templates)
+
+#### Arguments
+
+This data source has no arguments.
+
+#### Attributes
+
+* `result` - This is the list of templates.
+    * `identifier` - This is the template identifier.
+    * `name` - This is the template name.
+
 ## Resources
 
 ### ... (clouddk_...)
