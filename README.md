@@ -42,21 +42,20 @@ This data source has no arguments.
 
 #### Attributes
 
-* `result` - This is the list of locations.
-    * `identifier` - This is the location identifier.
-    * `name` - This is the location name.
+* `ids` - This is the list of project ids.
+* `names` - This is the list of project names.
 
 ### Templates (clouddk_templates)
 
 #### Arguments
 
-This data source has no arguments.
+* `filter` - (Optional) This is the filter block.
+    * `name` - (Optional) This is the name filter which removes matches which does not contain this string.
 
 #### Attributes
 
-* `result` - This is the list of templates.
-    * `identifier` - This is the template identifier.
-    * `name` - This is the template name.
+* `ids` - This is the list of project ids.
+* `names` - This is the list of project names.
 
 ## Resources
 

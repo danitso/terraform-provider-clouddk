@@ -17,11 +17,19 @@ func TestDataSourceLocationsInstantiation(t *testing.T) {
 func TestDataSourceLocationsSchema(t *testing.T) {
 	s := dataSourceLocations()
 
-	if s.Schema[DataSourceLocationsResult] == nil {
-		t.Fatalf("Error in dataSourceLocations.Schema: Missing attribute \"%s\"", DataSourceLocationsResult)
+	if s.Schema[DataSourceLocationsIdsKey] == nil {
+		t.Fatalf("Error in dataSourceLocations.Schema: Missing attribute \"%s\"", DataSourceLocationsIdsKey)
 	}
 
-	if s.Schema[DataSourceLocationsResult].Computed != true {
-		t.Fatalf("Error in dataSourceLocations.Schema: Attribute \"%s\" is not computed", DataSourceLocationsResult)
+	if s.Schema[DataSourceLocationsIdsKey].Computed != true {
+		t.Fatalf("Error in dataSourceLocations.Schema: Attribute \"%s\" is not computed", DataSourceLocationsIdsKey)
+	}
+
+	if s.Schema[DataSourceLocationsNamesKey] == nil {
+		t.Fatalf("Error in dataSourceLocations.Schema: Missing attribute \"%s\"", DataSourceLocationsNamesKey)
+	}
+
+	if s.Schema[DataSourceLocationsNamesKey].Computed != true {
+		t.Fatalf("Error in dataSourceLocations.Schema: Attribute \"%s\" is not computed", DataSourceLocationsNamesKey)
 	}
 }
