@@ -42,20 +42,20 @@ This data source has no arguments.
 
 #### Attributes
 
-* `ids` - This is the list of project ids.
-* `names` - This is the list of project names.
+* `ids` - This is the list of location ids.
+* `names` - This is the list of location names.
 
 ### Templates (clouddk_templates)
 
 #### Arguments
 
 * `filter` - (Optional) This is the filter block.
-    * `name` - (Optional) This is the name filter which removes matches which does not contain this string.
+    * `name` - (Optional) This is the name filter which performs a substring match on the name property.
 
 #### Attributes
 
-* `ids` - This is the list of project ids.
-* `names` - This is the list of project names.
+* `ids` - This is the list of template ids.
+* `names` - This is the list of template names.
 
 ## Resources
 
