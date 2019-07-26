@@ -84,7 +84,7 @@ This data source has no arguments.
 * `network_interface_firewall_rule_ports` - This is the ports for the firewall rules assigned to the server's network interfaces.
 * `network_interface_firewall_rule_positions` - This is the position of the firewall rules assigned to the server's network interfaces.
 * `network_interface_firewall_rule_protocols` - This is the protocols for the firewall rules assigned to the server's network interfaces.
-* `network_interface_gateways` - This is thegateways assigned to the server's network interfaces.
+* `network_interface_gateways` - This is the gateways assigned to the server's network interfaces.
 * `network_interface_ids` - This is the server's network interface identifiers.
 * `network_interface_labels` - This is the server's network interface labels.
 * `network_interface_netmasks` - This is the netmasks assigned to the server's network interfaces.
