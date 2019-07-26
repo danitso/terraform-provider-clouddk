@@ -16,8 +16,11 @@ const DataSourceServersHostnamesKey = "hostnames"
 const DataSourceServersIdsKey = "ids"
 const DataSourceServersLabelsKey = "labels"
 const DataSourceServersLocationIdsKey = "location_ids"
+const DataSourceServersLocationNamesKey = "location_names"
 const DataSourceServersPackageIdsKey = "package_ids"
+const DataSourceServersPackageNamesKey = "package_names"
 const DataSourceServersTemplateIdsKey = "template_ids"
+const DataSourceServersTemplateNamesKey = "template_names"
 
 // dataSourceServers() retrieves a list of servers.
 func dataSourceServers() *schema.Resource {
@@ -59,12 +62,27 @@ func dataSourceServers() *schema.Resource {
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
+			DataSourceServersLocationNamesKey: &schema.Schema{
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 			DataSourceServersPackageIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
+			DataSourceServersPackageNamesKey: &schema.Schema{
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 			DataSourceServersTemplateIdsKey: &schema.Schema{
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+			DataSourceServersTemplateNamesKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -114,16 +132,22 @@ func dataSourceServersRead(d *schema.ResourceData, m interface{}) error {
 	ids := make([]interface{}, len(list))
 	labels := make([]interface{}, len(list))
 	locationIds := make([]interface{}, len(list))
+	locationNames := make([]interface{}, len(list))
 	packageIds := make([]interface{}, len(list))
+	packageNames := make([]interface{}, len(list))
 	templateIds := make([]interface{}, len(list))
+	templateNames := make([]interface{}, len(list))
 
 	for i, v := range list {
 		hostnames[i] = v.Hostname
 		ids[i] = v.Identifier
 		labels[i] = v.Label
 		locationIds[i] = v.Location.Identifier
+		locationNames[i] = v.Location.Name
 		packageIds[i] = v.Package.Identifier
+		packageNames[i] = v.Package.Name
 		templateIds[i] = v.Template.Identifier
+		templateNames[i] = v.Template.Name
 	}
 
 	d.SetId("servers")
@@ -132,8 +156,11 @@ func dataSourceServersRead(d *schema.ResourceData, m interface{}) error {
 	d.Set(DataSourceServersIdsKey, ids)
 	d.Set(DataSourceServersLabelsKey, labels)
 	d.Set(DataSourceServersLocationIdsKey, locationIds)
+	d.Set(DataSourceServersLocationNamesKey, locationNames)
 	d.Set(DataSourceServersPackageIdsKey, packageIds)
+	d.Set(DataSourceServersPackageNamesKey, packageNames)
 	d.Set(DataSourceServersTemplateIdsKey, templateIds)
+	d.Set(DataSourceServersTemplateNamesKey, templateNames)
 
 	return nil
 }

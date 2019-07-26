@@ -109,8 +109,11 @@ This data source has no arguments.
 * `ids` - This is the list of server identifiers.
 * `labels` - This is the list of server labels.
 * `location_ids` - This is the list of server location identifiers.
+* `location_names` - This is the list of server location names.
 * `package_ids` - This is the list of server package identifiers.
+* `package_names` - This is the list of server package names.
 * `template_ids` - This is the list of server template identifiers.
+* `template_names` - This is the list of server template names.
 
 ### Templates (clouddk_templates)
 

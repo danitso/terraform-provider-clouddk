@@ -20,14 +20,29 @@ output "data_clouddk_servers_example_location_ids" {
   value       = "${data.clouddk_servers.example.location_ids}"
 }
 
+output "data_clouddk_servers_example_location_names" {
+  description = "The server location names"
+  value       = "${data.clouddk_servers.example.location_names}"
+}
+
 output "data_clouddk_servers_example_package_ids" {
   description = "The server package identifiers"
   value       = "${data.clouddk_servers.example.package_ids}"
 }
 
+output "data_clouddk_servers_example_package_names" {
+  description = "The server package names"
+  value       = "${data.clouddk_servers.example.package_names}"
+}
+
 output "data_clouddk_servers_example_template_ids" {
   description = "The server template identifiers"
   value       = "${data.clouddk_servers.example.template_ids}"
+}
+
+output "data_clouddk_servers_example_template_names" {
+  description = "The server template names"
+  value       = "${data.clouddk_servers.example.template_names}"
 }
 #==============================================================================
 data "clouddk_servers" "example_filter" {

@@ -51,6 +51,14 @@ func TestDataSourceServersSchema(t *testing.T) {
 		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersLocationIdsKey)
 	}
 
+	if s.Schema[DataSourceServersLocationNamesKey] == nil {
+		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersLocationNamesKey)
+	}
+
+	if s.Schema[DataSourceServersLocationNamesKey].Computed != true {
+		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersLocationNamesKey)
+	}
+
 	if s.Schema[DataSourceServersPackageIdsKey] == nil {
 		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersPackageIdsKey)
 	}
@@ -59,12 +67,28 @@ func TestDataSourceServersSchema(t *testing.T) {
 		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersPackageIdsKey)
 	}
 
+	if s.Schema[DataSourceServersPackageNamesKey] == nil {
+		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersPackageNamesKey)
+	}
+
+	if s.Schema[DataSourceServersPackageNamesKey].Computed != true {
+		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersPackageNamesKey)
+	}
+
 	if s.Schema[DataSourceServersTemplateIdsKey] == nil {
 		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersTemplateIdsKey)
 	}
 
 	if s.Schema[DataSourceServersTemplateIdsKey].Computed != true {
 		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersTemplateIdsKey)
+	}
+
+	if s.Schema[DataSourceServersTemplateNamesKey] == nil {
+		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersTemplateNamesKey)
+	}
+
+	if s.Schema[DataSourceServersTemplateNamesKey].Computed != true {
+		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersTemplateNamesKey)
 	}
 }
 
