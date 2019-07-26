@@ -45,7 +45,7 @@ This data source has no arguments.
 * `ids` - This is the list of location ids.
 * `names` - This is the list of location names.
 
-### Server Packages (clouddk_server_packages)
+### Packages (clouddk_packages)
 
 #### Arguments
 

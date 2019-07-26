@@ -3,5 +3,5 @@
 FEATURES:
 
 * **New Data Source:** `clouddk_locations`
-* **New Data Source:** `clouddk_server_packages`
+* **New Data Source:** `clouddk_packages`
 * **New Data Source:** `clouddk_templates`
