@@ -56,6 +56,22 @@ This data source has no arguments.
 * `ids` - This is the list of package ids.
 * `names` - This is the list of package names.
 
+### Servers (clouddk_servers)
+
+#### Arguments
+
+* `filter` - (Optional) This is the filter block.
+    * `hostname` - (Optional) This is the hostname filter which performs a substring match on the hostname property.
+
+#### Attributes
+
+* `hostnames` - This is the list of server hostnames.
+* `ids` - This is the list of server ids.
+* `labels` - This is the list of server labels.
+* `locations` - This is the list of server location identifiers.
+* `packages` - This is the list of server package identifiers.
+* `templates` - This is the list of server template identifiers.
+
 ### Templates (clouddk_templates)
 
 #### Arguments

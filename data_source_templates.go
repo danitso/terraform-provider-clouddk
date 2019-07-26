@@ -83,7 +83,7 @@ func dataSourceTemplatesRead(d *schema.ResourceData, m interface{}) error {
 		return resErr
 	}
 
-	list := make(LocationListBody, 0)
+	list := make(TemplateListBody, 0)
 	json.NewDecoder(res.Body).Decode(&list)
 
 	ids := make([]interface{}, len(list))
@@ -96,8 +96,8 @@ func dataSourceTemplatesRead(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId("templates")
 
-	d.Set(DataSourceLocationsIdsKey, ids)
-	d.Set(DataSourceLocationsNamesKey, names)
+	d.Set(DataSourceTemplatesIdsKey, ids)
+	d.Set(DataSourceTemplatesNamesKey, names)
 
 	return nil
 }

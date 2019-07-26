@@ -9,7 +9,7 @@ output "data_clouddk_templates_example_names" {
   description = "The template names"
   value       = "${data.clouddk_templates.example.names}"
 }
-
+#==============================================================================
 data "clouddk_templates" "example_filter" {
   filter {
     name = "ubuntu"

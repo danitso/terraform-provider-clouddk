@@ -47,7 +47,7 @@ func dataSourcePackagesRead(d *schema.ResourceData, m interface{}) error {
 		return resErr
 	}
 
-	list := make(LocationListBody, 0)
+	list := make(PackageeListBody, 0)
 	json.NewDecoder(res.Body).Decode(&list)
 
 	ids := make([]interface{}, len(list))

@@ -20,19 +20,19 @@ func TestDataSourceTemplatesSchema(t *testing.T) {
 	s := dataSourceTemplates()
 
 	if s.Schema[DataSourceTemplatesIdsKey] == nil {
-		t.Fatalf("Error in dataSourceLocations.Schema: Missing attribute \"%s\"", DataSourceTemplatesIdsKey)
+		t.Fatalf("Error in dataSourceTemplates.Schema: Missing attribute \"%s\"", DataSourceTemplatesIdsKey)
 	}
 
 	if s.Schema[DataSourceTemplatesIdsKey].Computed != true {
-		t.Fatalf("Error in dataSourceLocations.Schema: Attribute \"%s\" is not computed", DataSourceTemplatesIdsKey)
+		t.Fatalf("Error in dataSourceTemplates.Schema: Attribute \"%s\" is not computed", DataSourceTemplatesIdsKey)
 	}
 
 	if s.Schema[DataSourceTemplatesNamesKey] == nil {
-		t.Fatalf("Error in dataSourceLocations.Schema: Missing attribute \"%s\"", DataSourceTemplatesNamesKey)
+		t.Fatalf("Error in dataSourceTemplates.Schema: Missing attribute \"%s\"", DataSourceTemplatesNamesKey)
 	}
 
 	if s.Schema[DataSourceTemplatesNamesKey].Computed != true {
-		t.Fatalf("Error in dataSourceLocations.Schema: Attribute \"%s\" is not computed", DataSourceTemplatesNamesKey)
+		t.Fatalf("Error in dataSourceTemplates.Schema: Attribute \"%s\" is not computed", DataSourceTemplatesNamesKey)
 	}
 }
 
