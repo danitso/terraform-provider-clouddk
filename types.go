@@ -57,7 +57,7 @@ type NetworkInterfaceBody struct {
 	Identifier          string               `json:"identifier"`
 	Label               string               `json:"label"`
 	RateLimit           uint32               `json:"rate_limit"`
-	DefaultFirewallRuke string               `json:"default_firewall_rule"`
+	DefaultFirewallRule string               `json:"default_firewall_rule"`
 	Primary             uint8                `json:"primary"`
 	IPAddresses         IPAddressListBody    `json:"ipAddresses"`
 	FirewallRules       FirewallRuleListBody `json:"firewallRules"`

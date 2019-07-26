@@ -72,7 +72,29 @@ This data source has no arguments.
 * `disk_sizes` - This is the server's disk sizes in gigabytes.
 * `hostname` - This is the server's hostname.
 * `label` - This is the server's label.
+* `location_id` - This is the location identifier.
+* `location_name` - This is the location name.
 * `memory` - This is the server's memory allocation in megabytes.
+* `network_interface_addresses` - This is the IP addresses assigned to the server's network interfaces.
+* `network_interface_default_firewall_rules` - This is the default firewall rules for the server's network interfaces.
+* `network_interface_firewall_rule_addresses` - This is the addresses for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rule_bits` - This is the bitmasks for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rule_commands` - This is the commands for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rule_ids` - This is the identifiers for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rule_ports` - This is the ports for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rule_positions` - This is the position of the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rule_protocols` - This is the protocols for the firewall rules assigned to the server's network interfaces.
+* `network_interface_gateways` - This is thegateways assigned to the server's network interfaces.
+* `network_interface_ids` - This is the server's network interface identifiers.
+* `network_interface_labels` - This is the server's network interface labels.
+* `network_interface_netmasks` - This is the netmasks assigned to the server's network interfaces.
+* `network_interface_networks` - This is the networks assigned to the server's network interfaces.
+* `network_interface_primary` - Whether a network interface is the primary interface.
+* `network_interface_rate_limits` - This is the rate limits for the server's network interfaces.
+* `package_id` - This is the package identifier.
+* `package_name` - This is the package name.
+* `template_id` - This is the template identifier.
+* `template_name` - This is the template name.
 
 ### Servers (clouddk_servers)
 
