@@ -16,6 +16,7 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"clouddk_disk":               dataSourceDisk(),
 			"clouddk_disks":              dataSourceDisks(),
+			"clouddk_firewall_rule":      dataSourceFirewallRule(),
 			"clouddk_firewall_rules":     dataSourceFirewallRules(),
 			"clouddk_ip_addresses":       dataSourceIPAddresses(),
 			"clouddk_locations":          dataSourceLocations(),
