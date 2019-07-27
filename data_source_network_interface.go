@@ -20,10 +20,10 @@ const DataSourceNetworkInterfaceGatewaysKey = "gateways"
 const DataSourceNetworkInterfaceIdKey = "id"
 const DataSourceNetworkInterfaceLabelKey = "label"
 const DataSourceNetworkInterfaceNetmasksKey = "netmasks"
-const DataSourceNetworkInterfaceNetworkInterfaceIdKey = "network_interface_id"
 const DataSourceNetworkInterfaceNetworksKey = "networks"
 const DataSourceNetworkInterfacePrimaryKey = "primary"
 const DataSourceNetworkInterfaceRateLimitKey = "rate_limit"
+const DataSourceNetworkInterfaceServerIdKey = "server_id"
 
 // dataSourceNetworkInterface() retrieves information about a server.
 func dataSourceNetworkInterface() *schema.Resource {
@@ -79,7 +79,7 @@ func dataSourceNetworkInterface() *schema.Resource {
 			DataSourceNetworkInterfaceIdKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The server identifier",
+				Description: "The network interface identifier",
 				ForceNew:    true,
 			},
 			DataSourceNetworkInterfaceLabelKey: &schema.Schema{
@@ -92,12 +92,6 @@ func dataSourceNetworkInterface() *schema.Resource {
 				Computed:    true,
 				Description: "The netmasks assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			DataSourceNetworkInterfaceNetworkInterfaceIdKey: &schema.Schema{
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The network interface identifier",
-				ForceNew:    true,
 			},
 			DataSourceNetworkInterfaceNetworksKey: &schema.Schema{
 				Type:        schema.TypeList,
@@ -115,6 +109,12 @@ func dataSourceNetworkInterface() *schema.Resource {
 				Computed:    true,
 				Description: "The rate limit for the network interface",
 			},
+			DataSourceNetworkInterfaceServerIdKey: &schema.Schema{
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The server identifier",
+				ForceNew:    true,
+			},
 		},
 
 		Read: dataSourceNetworkInterfaceRead,
@@ -125,10 +125,10 @@ func dataSourceNetworkInterface() *schema.Resource {
 func dataSourceNetworkInterfaceRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
 
-	id := d.Get(DataSourceNetworkInterfaceIdKey).(string)
-	networkInterfaceId := d.Get(DataSourceNetworkInterfaceNetworkInterfaceIdKey).(string)
+	networkInterfaceId := d.Get(DataSourceNetworkInterfaceIdKey).(string)
+	serverId := d.Get(DataSourceNetworkInterfaceServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", id, networkInterfaceId), new(bytes.Buffer))
+	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", serverId, networkInterfaceId), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr

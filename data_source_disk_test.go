@@ -18,8 +18,8 @@ func TestDataSourceDiskSchema(t *testing.T) {
 	s := dataSourceDisk()
 
 	idKeys := []string{
-		DataSourceDiskDiskIdKey,
 		DataSourceDiskIdKey,
+		DataSourceDiskServerIdKey,
 	}
 
 	for _, v := range idKeys {

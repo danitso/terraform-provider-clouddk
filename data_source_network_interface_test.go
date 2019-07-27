@@ -19,7 +19,7 @@ func TestDataSourceNetworkInterfaceSchema(t *testing.T) {
 
 	idKeys := []string{
 		DataSourceNetworkInterfaceIdKey,
-		DataSourceNetworkInterfaceNetworkInterfaceIdKey,
+		DataSourceNetworkInterfaceServerIdKey,
 	}
 
 	for _, v := range idKeys {

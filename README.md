@@ -38,8 +38,8 @@ If you're building the provider, follow the instructions to [install it as a plu
 
 #### Arguments
 
-* `id` - (Required) This is the server's identifier.
-* `disk_id` - (Required) This is the disk's identifier.
+* `id` - (Required) This is the disk's identifier.
+* `server_id` - (Required) This is the server's identifier.
 
 #### Attributes
 
@@ -89,8 +89,8 @@ This data source has no arguments.
 
 #### Arguments
 
-* `id` - (Required) This is the server's identifier.
-* `network_interface_id` - (Required) This is the network interface's identifier.
+* `id` - (Required) This is the network interface's identifier.
+* `server_id` - (Required) This is the server's identifier.
 
 #### Attributes
 

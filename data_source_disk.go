@@ -9,10 +9,10 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceDiskDiskIdKey = "disk_id"
 const DataSourceDiskIdKey = "id"
 const DataSourceDiskLabelKey = "label"
 const DataSourceDiskPrimaryKey = "primary"
+const DataSourceDiskServerIdKey = "server_id"
 const DataSourceDiskSizeKey = "size"
 
 // dataSourceDisk() retrieves information about a server's disk.
@@ -20,12 +20,6 @@ func dataSourceDisk() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			DataSourceDiskIdKey: &schema.Schema{
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The server identifier",
-				ForceNew:    true,
-			},
-			DataSourceDiskDiskIdKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The disk identifier",
@@ -40,6 +34,12 @@ func dataSourceDisk() *schema.Resource {
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "Whether the disk is the primary disk",
+			},
+			DataSourceDiskServerIdKey: &schema.Schema{
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The server identifier",
+				ForceNew:    true,
 			},
 			DataSourceDiskSizeKey: &schema.Schema{
 				Type:        schema.TypeInt,
@@ -57,9 +57,9 @@ func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
 
 	id := d.Get(DataSourceDiskIdKey).(string)
-	diskId := d.Get(DataSourceDiskDiskIdKey).(string)
+	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", id, diskId), new(bytes.Buffer))
+	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, id), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -75,7 +75,7 @@ func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	disk := DiskBody{}
 	json.NewDecoder(res.Body).Decode(&disk)
 
-	d.SetId(diskId)
+	d.SetId(id)
 
 	d.Set(DataSourceDiskLabelKey, disk.Label)
 	d.Set(DataSourceDiskPrimaryKey, (disk.Primary == 1))
