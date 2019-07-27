@@ -56,10 +56,10 @@ func dataSourceDisk() *schema.Resource {
 func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
 
-	id := d.Get(DataSourceDiskIdKey).(string)
+	diskId := d.Get(DataSourceDiskIdKey).(string)
 	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, id), new(bytes.Buffer))
+	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -75,7 +75,7 @@ func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	disk := DiskBody{}
 	json.NewDecoder(res.Body).Decode(&disk)
 
-	d.SetId(id)
+	d.SetId(diskId)
 
 	d.Set(DataSourceDiskLabelKey, disk.Label)
 	d.Set(DataSourceDiskPrimaryKey, (disk.Primary == 1))
