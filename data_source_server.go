@@ -249,8 +249,12 @@ func dataSourceServer() *schema.Resource {
 // dataSourceServerRead() reads information about a server.
 func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
+	id := d.Id()
 
-	id := d.Get(DataSourceServerIdKey).(string)
+	if d.Get(DataSourceServerIdKey) != nil {
+		id = d.Get(DataSourceServerIdKey).(string)
+	}
+
 	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", id), new(bytes.Buffer))
 
 	if reqErr != nil {
@@ -262,6 +266,8 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 
 	if resErr != nil {
 		return resErr
+	} else if res.StatusCode != 200 {
+		return fmt.Errorf("Failed to read the information about the server - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	server := ServerBody{}

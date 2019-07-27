@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -251,19 +253,67 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		return reqErr
 	}
 
+	req.Header.Set("Content-Type", "application/json")
+
 	client := &http.Client{}
 	res, resErr := client.Do(req)
 
 	if resErr != nil {
 		return resErr
 	} else if res.StatusCode != 200 {
-		return fmt.Errorf("Failed to create server - Reason: The API responded with HTTP %s", res.Status)
+		return fmt.Errorf("Failed to create the server - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	server := ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
-	return dataSourceServerReadResponseBody(d, m, &server)
+	parseErr := dataSourceServerReadResponseBody(d, m, &server)
+
+	if parseErr != nil {
+		return parseErr
+	}
+
+	if d.Get(DataSourceServerBootedKey).(bool) {
+		return nil
+	}
+
+	// Wait for the server to boot to ensure that we can proceed with any post-creation flows.
+	log.Printf("[DEBUG] Waiting for server %s to boot", d.Id())
+
+	timeDelay := int64(10)
+	timeMax := float64(600)
+	timeStart := time.Now()
+	timeElapsed := timeStart.Sub(timeStart)
+
+	serverHostname := d.Get(ResourceServerHostname).(string)
+
+	for timeElapsed.Seconds() < timeMax {
+		timeElapsed = time.Now().Sub(timeStart)
+
+		if int64(timeElapsed.Seconds())%timeDelay == 0 {
+			log.Printf("[DEBUG] Querying the API for information about the server '%s' (id: %s)", serverHostname, d.Id())
+
+			readErr := dataSourceServerRead(d, m)
+
+			if readErr != nil {
+				return readErr
+			}
+
+			log.Printf("[DEBUG] Determining if the server '%s' (id: %s) has been booted", serverHostname, d.Id())
+
+			if d.Get(DataSourceServerBootedKey).(bool) {
+				return nil
+			}
+
+			log.Printf("[DEBUG] The server '%s' (id: %s) has not been booted - Checking again in %d seconds", serverHostname, d.Id(), timeDelay)
+
+			time.Sleep(1 * time.Second)
+		}
+
+		time.Sleep(100 * time.Millisecond)
+	}
+
+	return fmt.Errorf("The server '%s' (id: %s) seems to be unable to boot", serverHostname, d.Id())
 }
 
 // resourceServerRead reads information about an existing server.
@@ -314,6 +364,8 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	if reqErr != nil {
 		return reqErr
 	}
+
+	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	res, resErr := client.Do(req)

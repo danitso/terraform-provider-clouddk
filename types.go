@@ -1,5 +1,15 @@
 package main
 
+// Bool allows a JSON boolean value to also be an integer
+type Bool bool
+
+func (bit *Bool) UnmarshalJSON(b []byte) error {
+	txt := string(b)
+	*bit = Bool(txt == "1" || txt == "true")
+
+	return nil
+}
+
 // ClientSettings describes the client settings.
 type ClientSettings struct {
 	Endpoint string
@@ -82,7 +92,7 @@ type ServerBody struct {
 	Label             string                   `json:"label"`
 	CPUs              int                      `json:"cpus"`
 	Memory            int                      `json:"memory"`
-	Booted            bool                     `json:"booted"`
+	Booted            Bool                     `json:"booted"`
 	Disks             DiskListBody             `json:"disks"`
 	NetworkInterfaces NetworkInterfaceListBody `json:"networkInterfaces"`
 	Template          TemplateBody             `json:"template"`
