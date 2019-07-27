@@ -87,6 +87,8 @@ func dataSourceFirewallRulesRead(d *schema.ResourceData, m interface{}) error {
 
 	if resErr != nil {
 		return resErr
+	} else if res.StatusCode != 200 {
+		return fmt.Errorf("Failed to read the information about the firewall rules - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	firewallRules := FirewallRuleListBody{}

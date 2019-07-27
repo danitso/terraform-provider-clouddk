@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -45,6 +46,8 @@ func dataSourceLocationsRead(d *schema.ResourceData, m interface{}) error {
 
 	if resErr != nil {
 		return resErr
+	} else if res.StatusCode != 200 {
+		return fmt.Errorf("Failed to read the information about the locations - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	list := make(LocationListBody, 0)

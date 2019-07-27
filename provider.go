@@ -27,7 +27,9 @@ func Provider() *schema.Provider {
 			"clouddk_servers":            dataSourceServers(),
 			"clouddk_templates":          dataSourceTemplates(),
 		},
-		ResourcesMap: map[string]*schema.Resource{},
+		ResourcesMap: map[string]*schema.Resource{
+			"clouddk_server": resourceServer(),
+		},
 		Schema: map[string]*schema.Schema{
 			ProviderConfigurationEndpoint: &schema.Schema{
 				Type:        schema.TypeString,

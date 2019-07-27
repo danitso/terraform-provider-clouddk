@@ -168,6 +168,8 @@ func dataSourceNetworkInterfacesRead(d *schema.ResourceData, m interface{}) erro
 
 	if resErr != nil {
 		return resErr
+	} else if res.StatusCode != 200 {
+		return fmt.Errorf("Failed to read the information about the network interfaces - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	networkInterfaces := NetworkInterfaceListBody{}

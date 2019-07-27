@@ -90,8 +90,24 @@ type ServerBody struct {
 	Package           PackageBody              `json:"package"`
 }
 
+// ServerCreateBody describes a server creation object.
+type ServerCreateBody struct {
+	Hostname            string `json:"hostname"`
+	Label               string `json:"label"`
+	InitialRootPassword string `json:"initialRootPassword"`
+	Package             string `json:"package"`
+	Template            string `json:"template"`
+	Location            string `json:"location"`
+}
+
 // ServerListBody describes a server list.
 type ServerListBody []ServerBody
+
+// ServerUpdateBody describes a server update object.
+type ServerUpdateBody struct {
+	Hostname string `json:"hostname"`
+	Label    string `json:"label"`
+}
 
 // TemplateBody describes a datacenter location object.
 type TemplateBody struct {

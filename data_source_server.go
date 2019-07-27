@@ -267,6 +267,11 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 	server := ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
+	return dataSourceServerReadResponseBody(d, m, &server)
+}
+
+// dataSourceServerReadResponseBody() reads the response body for a server request.
+func dataSourceServerReadResponseBody(d *schema.ResourceData, m interface{}, server *ServerBody) error {
 	diskIds := make([]interface{}, len(server.Disks))
 	diskLabels := make([]interface{}, len(server.Disks))
 	diskPrimary := make([]interface{}, len(server.Disks))
@@ -339,7 +344,7 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 		networkInterfaceRateLimits[i] = v.RateLimit
 	}
 
-	d.SetId(id)
+	d.SetId(server.Identifier)
 
 	d.Set(DataSourceServerBootedKey, server.Booted)
 	d.Set(DataSourceServerCPUsKey, server.CPUs)
