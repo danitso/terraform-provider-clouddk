@@ -22,11 +22,9 @@ const DataSourceServerMemoryKey = "memory"
 const DataSourceServerNetworkInterfaceAddressesKey = "network_interface_addresses"
 const DataSourceServerNetworkInterfaceDefaultFirewallRulesKey = "network_interface_default_firewall_rules"
 const DataSourceServerNetworkInterfaceFirewallRulesAddressesKey = "network_interface_firewall_rules_addresses"
-const DataSourceServerNetworkInterfaceFirewallRulesBitsKey = "network_interface_firewall_rules_bits"
 const DataSourceServerNetworkInterfaceFirewallRulesCommandsKey = "network_interface_firewall_rules_commands"
 const DataSourceServerNetworkInterfaceFirewallRulesIdsKey = "network_interface_firewall_rules_ids"
 const DataSourceServerNetworkInterfaceFirewallRulesPortsKey = "network_interface_firewall_rules_ports"
-const DataSourceServerNetworkInterfaceFirewallRulesPositionsKey = "network_interface_firewall_rules_positions"
 const DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey = "network_interface_firewall_rules_protocols"
 const DataSourceServerNetworkInterfaceGatewaysKey = "network_interface_gateways"
 const DataSourceServerNetworkInterfaceIdsKey = "network_interface_ids"
@@ -129,19 +127,10 @@ func dataSourceServer() *schema.Resource {
 			DataSourceServerNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
-				Description: "The addresses for the firewall rules assigned to the server's network interfaces",
+				Description: "The CIDR blocks for the firewall rules assigned to the server's network interfaces",
 				Elem: &schema.Schema{
 					Type: schema.TypeList,
 					Elem: &schema.Schema{Type: schema.TypeString},
-				},
-			},
-			DataSourceServerNetworkInterfaceFirewallRulesBitsKey: &schema.Schema{
-				Type:        schema.TypeList,
-				Computed:    true,
-				Description: "The subnet masks of the firewall rules assigned to the server's network interfaces",
-				Elem: &schema.Schema{
-					Type: schema.TypeList,
-					Elem: &schema.Schema{Type: schema.TypeInt},
 				},
 			},
 			DataSourceServerNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
@@ -168,16 +157,7 @@ func dataSourceServer() *schema.Resource {
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
 				Elem: &schema.Schema{
 					Type: schema.TypeList,
-					Elem: &schema.Schema{Type: schema.TypeInt},
-				},
-			},
-			DataSourceServerNetworkInterfaceFirewallRulesPositionsKey: &schema.Schema{
-				Type:        schema.TypeList,
-				Computed:    true,
-				Description: "The position of the firewall rules assigned to the server's network interfaces",
-				Elem: &schema.Schema{
-					Type: schema.TypeList,
-					Elem: &schema.Schema{Type: schema.TypeInt},
+					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
 			DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
@@ -302,11 +282,9 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 	networkInterfaceAddresses := make([]interface{}, len(server.NetworkInterfaces))
 	networkInterfaceDefaultFirewallRules := make([]interface{}, len(server.NetworkInterfaces))
 	networkInterfaceFirewallRuleAddresses := make([]interface{}, len(server.NetworkInterfaces))
-	networkInterfaceFirewallRuleBits := make([]interface{}, len(server.NetworkInterfaces))
 	networkInterfaceFirewallRuleCommands := make([]interface{}, len(server.NetworkInterfaces))
 	networkInterfaceFirewallRuleIds := make([]interface{}, len(server.NetworkInterfaces))
 	networkInterfaceFirewallRulePorts := make([]interface{}, len(server.NetworkInterfaces))
-	networkInterfaceFirewallRulePositions := make([]interface{}, len(server.NetworkInterfaces))
 	networkInterfaceFirewallRuleProtocols := make([]interface{}, len(server.NetworkInterfaces))
 	networkInterfaceGateways := make([]interface{}, len(server.NetworkInterfaces))
 	networkInterfaceIds := make([]interface{}, len(server.NetworkInterfaces))
@@ -329,34 +307,28 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 			networks[ia] = va.Network
 		}
 
-		firewallRuleAddresses := make([]interface{}, len(v.FirewallRules))
-		firewallRuleBits := make([]interface{}, len(v.FirewallRules))
-		firewallRuleCommands := make([]interface{}, len(v.FirewallRules))
-		firewallRuleIds := make([]interface{}, len(v.FirewallRules))
-		firewallRulePorts := make([]interface{}, len(v.FirewallRules))
-		firewallRulePositions := make([]interface{}, len(v.FirewallRules))
-		firewallRuleProtocols := make([]interface{}, len(v.FirewallRules))
+		firewallRulesAddresses := make([]interface{}, len(v.FirewallRules))
+		firewallRulesCommands := make([]interface{}, len(v.FirewallRules))
+		firewallRulesIds := make([]interface{}, len(v.FirewallRules))
+		firewallRulesPorts := make([]interface{}, len(v.FirewallRules))
+		firewallRulesProtocols := make([]interface{}, len(v.FirewallRules))
 
-		for ia, va := range v.FirewallRules {
-			firewallRuleAddresses[ia] = va.Address
-			firewallRuleBits[ia] = va.Bits
-			firewallRuleCommands[ia] = va.Command
-			firewallRuleIds[ia] = va.Identifier
-			firewallRulePorts[ia] = va.Port
-			firewallRulePositions[ia] = va.Position
-			firewallRuleProtocols[ia] = va.Protocol
+		for _, va := range v.FirewallRules {
+			firewallRulesAddresses[va.Position-1] = fmt.Sprintf("%s/%d", va.Address, va.Bits)
+			firewallRulesCommands[va.Position-1] = va.Command
+			firewallRulesIds[va.Position-1] = va.Identifier
+			firewallRulesPorts[va.Position-1] = va.Port
+			firewallRulesProtocols[va.Position-1] = va.Protocol
 		}
 
 		networkInterfaceAddresses[i] = addresses
 		networkInterfaceDefaultFirewallRules[i] = v.DefaultFirewallRule
 
-		networkInterfaceFirewallRuleAddresses[i] = firewallRuleAddresses
-		networkInterfaceFirewallRuleBits[i] = firewallRuleBits
-		networkInterfaceFirewallRuleCommands[i] = firewallRuleCommands
-		networkInterfaceFirewallRuleIds[i] = firewallRuleIds
-		networkInterfaceFirewallRulePorts[i] = firewallRulePorts
-		networkInterfaceFirewallRulePositions[i] = firewallRulePositions
-		networkInterfaceFirewallRuleProtocols[i] = firewallRuleProtocols
+		networkInterfaceFirewallRuleAddresses[i] = firewallRulesAddresses
+		networkInterfaceFirewallRuleCommands[i] = firewallRulesCommands
+		networkInterfaceFirewallRuleIds[i] = firewallRulesIds
+		networkInterfaceFirewallRulePorts[i] = firewallRulesPorts
+		networkInterfaceFirewallRuleProtocols[i] = firewallRulesProtocols
 
 		networkInterfaceGateways[i] = gateways
 		networkInterfaceIds[i] = v.Identifier
@@ -369,7 +341,7 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(id)
 
-	d.Set(DataSourceServerBootedKey, (server.Booted == 1))
+	d.Set(DataSourceServerBootedKey, server.Booted)
 	d.Set(DataSourceServerCPUsKey, server.CPUs)
 	d.Set(DataSourceServerDiskIdsKey, diskIds)
 	d.Set(DataSourceServerDiskLabelsKey, diskLabels)
@@ -383,11 +355,9 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 	d.Set(DataSourceServerNetworkInterfaceAddressesKey, networkInterfaceAddresses)
 
 	d.Set(DataSourceServerNetworkInterfaceFirewallRulesAddressesKey, networkInterfaceFirewallRuleAddresses)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulesBitsKey, networkInterfaceFirewallRuleBits)
 	d.Set(DataSourceServerNetworkInterfaceFirewallRulesCommandsKey, networkInterfaceFirewallRuleCommands)
 	d.Set(DataSourceServerNetworkInterfaceFirewallRulesIdsKey, networkInterfaceFirewallRuleIds)
 	d.Set(DataSourceServerNetworkInterfaceFirewallRulesPortsKey, networkInterfaceFirewallRulePorts)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulesPositionsKey, networkInterfaceFirewallRulePositions)
 	d.Set(DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey, networkInterfaceFirewallRuleProtocols)
 
 	d.Set(DataSourceServerNetworkInterfaceGatewaysKey, networkInterfaceGateways)

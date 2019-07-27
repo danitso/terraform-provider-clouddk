@@ -10,8 +10,8 @@ type ClientSettings struct {
 type DiskBody struct {
 	Identifier string `json:"identifier"`
 	Label      string `json:"label"`
-	Size       uint32 `json:"size"`
-	Primary    uint8  `json:"primary"`
+	Size       int    `json:"size"`
+	Primary    int    `json:"primary"`
 }
 
 // DiskListBody describes a disk list.
@@ -20,12 +20,12 @@ type DiskListBody []DiskBody
 // FirewallRuleBody describes a firewall rule object.
 type FirewallRuleBody struct {
 	Identifier string `json:"identifier"`
-	Position   uint16 `json:"position"`
+	Position   int    `json:"position"`
 	Command    string `json:"command"`
 	Protocol   string `json:"protocol"`
 	Address    string `json:"address"`
-	Bits       uint16 `json:"bits"`
-	Port       uint16 `json:"port"`
+	Bits       int    `json:"bits"`
+	Port       string `json:"port"`
 }
 
 // FirewallRuleListBody describes a firewall rule list.
@@ -56,9 +56,9 @@ type LocationListBody []LocationBody
 type NetworkInterfaceBody struct {
 	Identifier          string               `json:"identifier"`
 	Label               string               `json:"label"`
-	RateLimit           uint32               `json:"rate_limit"`
+	RateLimit           int                  `json:"rate_limit"`
 	DefaultFirewallRule string               `json:"default_firewall_rule"`
-	Primary             uint8                `json:"primary"`
+	Primary             int                  `json:"primary"`
 	IPAddresses         IPAddressListBody    `json:"ipAddresses"`
 	FirewallRules       FirewallRuleListBody `json:"firewallRules"`
 }
@@ -80,9 +80,9 @@ type ServerBody struct {
 	Identifier        string                   `json:"identifier"`
 	Hostname          string                   `json:"hostname"`
 	Label             string                   `json:"label"`
-	CPUs              uint8                    `json:"cpus"`
-	Memory            uint32                   `json:"memory"`
-	Booted            uint8                    `json:"booted"`
+	CPUs              int                      `json:"cpus"`
+	Memory            int                      `json:"memory"`
+	Booted            bool                     `json:"booted"`
 	Disks             DiskListBody             `json:"disks"`
 	NetworkInterfaces NetworkInterfaceListBody `json:"networkInterfaces"`
 	Template          TemplateBody             `json:"template"`
