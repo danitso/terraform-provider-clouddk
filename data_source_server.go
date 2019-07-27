@@ -21,13 +21,13 @@ const DataSourceServerLabelKey = "label"
 const DataSourceServerMemoryKey = "memory"
 const DataSourceServerNetworkInterfaceAddressesKey = "network_interface_addresses"
 const DataSourceServerNetworkInterfaceDefaultFirewallRulesKey = "network_interface_default_firewall_rules"
-const DataSourceServerNetworkInterfaceFirewallRuleAddressesKey = "network_interface_firewall_rule_addresses"
-const DataSourceServerNetworkInterfaceFirewallRuleBitsKey = "network_interface_firewall_rule_bits"
-const DataSourceServerNetworkInterfaceFirewallRuleCommandsKey = "network_interface_firewall_rule_commands"
-const DataSourceServerNetworkInterfaceFirewallRuleIdsKey = "network_interface_firewall_rule_ids"
-const DataSourceServerNetworkInterfaceFirewallRulePortsKey = "network_interface_firewall_rule_ports"
-const DataSourceServerNetworkInterfaceFirewallRulePositionsKey = "network_interface_firewall_rule_positions"
-const DataSourceServerNetworkInterfaceFirewallRuleProtocolsKey = "network_interface_firewall_rule_protocols"
+const DataSourceServerNetworkInterfaceFirewallRulesAddressesKey = "network_interface_firewall_rules_addresses"
+const DataSourceServerNetworkInterfaceFirewallRulesBitsKey = "network_interface_firewall_rules_bits"
+const DataSourceServerNetworkInterfaceFirewallRulesCommandsKey = "network_interface_firewall_rules_commands"
+const DataSourceServerNetworkInterfaceFirewallRulesIdsKey = "network_interface_firewall_rules_ids"
+const DataSourceServerNetworkInterfaceFirewallRulesPortsKey = "network_interface_firewall_rules_ports"
+const DataSourceServerNetworkInterfaceFirewallRulesPositionsKey = "network_interface_firewall_rules_positions"
+const DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey = "network_interface_firewall_rules_protocols"
 const DataSourceServerNetworkInterfaceGatewaysKey = "network_interface_gateways"
 const DataSourceServerNetworkInterfaceIdsKey = "network_interface_ids"
 const DataSourceServerNetworkInterfaceLabelsKey = "network_interface_labels"
@@ -126,7 +126,7 @@ func dataSourceServer() *schema.Resource {
 				Description: "The default firewall rules for the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerNetworkInterfaceFirewallRuleAddressesKey: &schema.Schema{
+			DataSourceServerNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The addresses for the firewall rules assigned to the server's network interfaces",
@@ -135,7 +135,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRuleBitsKey: &schema.Schema{
+			DataSourceServerNetworkInterfaceFirewallRulesBitsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The bitmasks of the firewall rules assigned to the server's network interfaces",
@@ -144,7 +144,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeInt},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRuleCommandsKey: &schema.Schema{
+			DataSourceServerNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The commands for the firewall rules assigned to the server's network interfaces",
@@ -153,7 +153,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRuleIdsKey: &schema.Schema{
+			DataSourceServerNetworkInterfaceFirewallRulesIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The identifiers for the firewall rules assigned to the server's network interfaces",
@@ -162,7 +162,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulePortsKey: &schema.Schema{
+			DataSourceServerNetworkInterfaceFirewallRulesPortsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
@@ -171,7 +171,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeInt},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulePositionsKey: &schema.Schema{
+			DataSourceServerNetworkInterfaceFirewallRulesPositionsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The position of the firewall rules assigned to the server's network interfaces",
@@ -180,7 +180,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeInt},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRuleProtocolsKey: &schema.Schema{
+			DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The protocols for the firewall rules assigned to the server's network interfaces",
@@ -382,13 +382,13 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 	d.Set(DataSourceServerMemoryKey, server.Memory)
 	d.Set(DataSourceServerNetworkInterfaceAddressesKey, networkInterfaceAddresses)
 
-	d.Set(DataSourceServerNetworkInterfaceFirewallRuleAddressesKey, networkInterfaceFirewallRuleAddresses)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRuleBitsKey, networkInterfaceFirewallRuleBits)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRuleCommandsKey, networkInterfaceFirewallRuleCommands)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRuleIdsKey, networkInterfaceFirewallRuleIds)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulePortsKey, networkInterfaceFirewallRulePorts)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulePositionsKey, networkInterfaceFirewallRulePositions)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRuleProtocolsKey, networkInterfaceFirewallRuleProtocols)
+	d.Set(DataSourceServerNetworkInterfaceFirewallRulesAddressesKey, networkInterfaceFirewallRuleAddresses)
+	d.Set(DataSourceServerNetworkInterfaceFirewallRulesBitsKey, networkInterfaceFirewallRuleBits)
+	d.Set(DataSourceServerNetworkInterfaceFirewallRulesCommandsKey, networkInterfaceFirewallRuleCommands)
+	d.Set(DataSourceServerNetworkInterfaceFirewallRulesIdsKey, networkInterfaceFirewallRuleIds)
+	d.Set(DataSourceServerNetworkInterfaceFirewallRulesPortsKey, networkInterfaceFirewallRulePorts)
+	d.Set(DataSourceServerNetworkInterfaceFirewallRulesPositionsKey, networkInterfaceFirewallRulePositions)
+	d.Set(DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey, networkInterfaceFirewallRuleProtocols)
 
 	d.Set(DataSourceServerNetworkInterfaceGatewaysKey, networkInterfaceGateways)
 	d.Set(DataSourceServerNetworkInterfaceDefaultFirewallRulesKey, networkInterfaceDefaultFirewallRules)

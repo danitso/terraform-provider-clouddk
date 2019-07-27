@@ -77,13 +77,13 @@ This data source has no arguments.
 * `memory` - This is the server's memory allocation in megabytes.
 * `network_interface_addresses` - This is the IP addresses assigned to the server's network interfaces.
 * `network_interface_default_firewall_rules` - This is the default firewall rules for the server's network interfaces.
-* `network_interface_firewall_rule_addresses` - This is the addresses for the firewall rules assigned to the server's network interfaces.
-* `network_interface_firewall_rule_bits` - This is the bitmasks for the firewall rules assigned to the server's network interfaces.
-* `network_interface_firewall_rule_commands` - This is the commands for the firewall rules assigned to the server's network interfaces.
-* `network_interface_firewall_rule_ids` - This is the identifiers for the firewall rules assigned to the server's network interfaces.
-* `network_interface_firewall_rule_ports` - This is the ports for the firewall rules assigned to the server's network interfaces.
-* `network_interface_firewall_rule_positions` - This is the position of the firewall rules assigned to the server's network interfaces.
-* `network_interface_firewall_rule_protocols` - This is the protocols for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rules_addresses` - This is the addresses for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rules_bits` - This is the bitmasks for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rules_commands` - This is the commands for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rules_ids` - This is the identifiers for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rules_ports` - This is the ports for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rules_positions` - This is the position of the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rules_protocols` - This is the protocols for the firewall rules assigned to the server's network interfaces.
 * `network_interface_gateways` - This is the gateways assigned to the server's network interfaces.
 * `network_interface_ids` - This is the server's network interface identifiers.
 * `network_interface_labels` - This is the server's network interface labels.

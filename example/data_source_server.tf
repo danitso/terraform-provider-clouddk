@@ -72,39 +72,39 @@ output "data_clouddk_server_example_network_interface_default_firewall_rules" {
   value       = "${data.clouddk_server.example.network_interface_default_firewall_rules}"
 }
 
-output "data_clouddk_server_example_network_interface_firewall_rule_addresses" {
+output "data_clouddk_server_example_network_interface_firewall_rules_addresses" {
   description = "The commands for the firewall rules assigned to the server's network interfaces"
-  value       = "${data.clouddk_server.example.network_interface_firewall_rule_addresses}"
+  value       = "${data.clouddk_server.example.network_interface_firewall_rules_addresses}"
 }
 
-output "data_clouddk_server_example_network_interface_firewall_rule_bits" {
+output "data_clouddk_server_example_network_interface_firewall_rules_bits" {
   description = "The bits for the firewall rules assigned to the server's network interfaces"
-  value       = "${data.clouddk_server.example.network_interface_firewall_rule_bits}"
+  value       = "${data.clouddk_server.example.network_interface_firewall_rules_bits}"
 }
 
-output "data_clouddk_server_example_network_interface_firewall_rule_commands" {
+output "data_clouddk_server_example_network_interface_firewall_rules_commands" {
   description = "The commands for the firewall rules assigned to the server's network interfaces"
-  value       = "${data.clouddk_server.example.network_interface_firewall_rule_commands}"
+  value       = "${data.clouddk_server.example.network_interface_firewall_rules_commands}"
 }
 
-output "data_clouddk_server_example_network_interface_firewall_rule_ids" {
+output "data_clouddk_server_example_network_interface_firewall_rules_ids" {
   description = "The identifiers for the firewall rules assigned to the server's network interfaces"
-  value       = "${data.clouddk_server.example.network_interface_firewall_rule_ids}"
+  value       = "${data.clouddk_server.example.network_interface_firewall_rules_ids}"
 }
 
-output "data_clouddk_server_example_network_interface_firewall_rule_ports" {
+output "data_clouddk_server_example_network_interface_firewall_rules_ports" {
   description = "The ports for the firewall rules assigned to the server's network interfaces"
-  value       = "${data.clouddk_server.example.network_interface_firewall_rule_ports}"
+  value       = "${data.clouddk_server.example.network_interface_firewall_rules_ports}"
 }
 
-output "data_clouddk_server_example_network_interface_firewall_rule_positions" {
+output "data_clouddk_server_example_network_interface_firewall_rules_positions" {
   description = "The position of the firewall rules assigned to the server's network interfaces"
-  value       = "${data.clouddk_server.example.network_interface_firewall_rule_positions}"
+  value       = "${data.clouddk_server.example.network_interface_firewall_rules_positions}"
 }
 
-output "data_clouddk_server_example_network_interface_firewall_rule_protocols" {
+output "data_clouddk_server_example_network_interface_firewall_rules_protocols" {
   description = "The protocols for the firewall rules assigned to the server's network interfaces"
-  value       = "${data.clouddk_server.example.network_interface_firewall_rule_protocols}"
+  value       = "${data.clouddk_server.example.network_interface_firewall_rules_protocols}"
 }
 
 output "data_clouddk_server_example_network_interface_gateways" {
