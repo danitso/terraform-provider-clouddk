@@ -78,7 +78,7 @@ output "data_clouddk_server_example_network_interface_firewall_rules_addresses" 
 }
 
 output "data_clouddk_server_example_network_interface_firewall_rules_bits" {
-  description = "The bits for the firewall rules assigned to the server's network interfaces"
+  description = "The subnet masks for the firewall rules assigned to the server's network interfaces"
   value       = "${data.clouddk_server.example.network_interface_firewall_rules_bits}"
 }
 

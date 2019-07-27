@@ -78,7 +78,7 @@ This data source has no arguments.
 * `network_interface_addresses` - This is the IP addresses assigned to the server's network interfaces.
 * `network_interface_default_firewall_rules` - This is the default firewall rules for the server's network interfaces.
 * `network_interface_firewall_rules_addresses` - This is the addresses for the firewall rules assigned to the server's network interfaces.
-* `network_interface_firewall_rules_bits` - This is the bitmasks for the firewall rules assigned to the server's network interfaces.
+* `network_interface_firewall_rules_bits` - This is the subnet masks for the firewall rules assigned to the server's network interfaces.
 * `network_interface_firewall_rules_commands` - This is the commands for the firewall rules assigned to the server's network interfaces.
 * `network_interface_firewall_rules_ids` - This is the identifiers for the firewall rules assigned to the server's network interfaces.
 * `network_interface_firewall_rules_ports` - This is the ports for the firewall rules assigned to the server's network interfaces.

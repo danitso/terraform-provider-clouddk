@@ -138,7 +138,7 @@ func dataSourceServer() *schema.Resource {
 			DataSourceServerNetworkInterfaceFirewallRulesBitsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
-				Description: "The bitmasks of the firewall rules assigned to the server's network interfaces",
+				Description: "The subnet masks of the firewall rules assigned to the server's network interfaces",
 				Elem: &schema.Schema{
 					Type: schema.TypeList,
 					Elem: &schema.Schema{Type: schema.TypeInt},
