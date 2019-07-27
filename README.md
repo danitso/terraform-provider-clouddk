@@ -47,6 +47,20 @@ If you're building the provider, follow the instructions to [install it as a plu
 * `primary` - Whether a disk is the primary disk.
 * `sizes` - This is the server's disk sizes in gigabytes.
 
+### IP Addresses (clouddk_ip_addresses)
+
+#### Arguments
+
+* `id` - (Required) This is the server's identifier.
+
+#### Attributes
+
+* `addresses` - This is the IP addresses assigned to the server's network interfaces.
+* `gateways` - This is the gateways assigned to the server's network interfaces.
+* `netmasks` - This is the netmasks assigned to the server's network interfaces.
+* `network_interface_ids` - This is the network interface identifiers.
+* `networks` - This is the networks assigned to the server's network interfaces.
+
 ### Locations (clouddk_locations)
 
 #### Arguments

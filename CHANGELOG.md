@@ -2,9 +2,11 @@
 
 FEATURES:
 
+* **New Data Source:** `clouddk_disks`
+* **New Data Source:** `clouddk_ip_addresses`
 * **New Data Source:** `clouddk_locations`
+* **New Data Source:** `clouddk_network_interfaces`
 * **New Data Source:** `clouddk_packages`
 * **New Data Source:** `clouddk_server`
-* **New Data Source:** `clouddk_server_disks`
 * **New Data Source:** `clouddk_servers`
 * **New Data Source:** `clouddk_templates`
