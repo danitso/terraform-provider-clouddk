@@ -40,7 +40,7 @@ func dataSourceDisks() *schema.Resource {
 			DataSourceDisksPrimaryKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
-				Description: "Whether the disk is the primary disk",
+				Description: "Whether a disk is the primary disk",
 				Elem:        &schema.Schema{Type: schema.TypeBool},
 			},
 			DataSourceDisksSizesKey: &schema.Schema{

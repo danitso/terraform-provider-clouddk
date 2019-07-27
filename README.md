@@ -44,7 +44,7 @@ If you're building the provider, follow the instructions to [install it as a plu
 
 * `ids` - This is the server's disk identifiers.
 * `labels` - This is the server's disk labels.
-* `primary` - Whether the disk is the primary disk.
+* `primary` - Whether a disk is the primary disk.
 * `sizes` - This is the server's disk sizes in gigabytes.
 
 ### Locations (clouddk_locations)
@@ -57,6 +57,29 @@ This data source has no arguments.
 
 * `ids` - This is the list of location identifiers.
 * `names` - This is the list of location names.
+
+### Network Interfaces (clouddk_network_interfaces)
+
+#### Arguments
+
+* `id` - (Required) This is the server's identifier.
+
+#### Attributes
+
+* `addresses` - This is the IP addresses assigned to the server's network interfaces.
+* `default_firewall_rules` - This is the default firewall rules for the server's network interfaces.
+* `firewall_rules_addresses` - This is the CIDR blocks for the firewall rules assigned to the server's network interfaces.
+* `firewall_rules_commands` - This is the commands for the firewall rules assigned to the server's network interfaces.
+* `firewall_rules_ids` - This is the identifiers for the firewall rules assigned to the server's network interfaces.
+* `firewall_rules_ports` - This is the ports for the firewall rules assigned to the server's network interfaces.
+* `firewall_rules_protocols` - This is the protocols for the firewall rules assigned to the server's network interfaces.
+* `gateways` - This is the gateways assigned to the server's network interfaces.
+* `ids` - This is the server's network interface identifiers.
+* `labels` - This is the server's network interface labels.
+* `netmasks` - This is the netmasks assigned to the server's network interfaces.
+* `networks` - This is the networks assigned to the server's network interfaces.
+* `primary` - Whether a network interface is the primary interface.
+* `rate_limits` - This is the rate limits for the server's network interfaces.
 
 ### Packages (clouddk_packages)
 
@@ -81,7 +104,7 @@ This data source has no arguments.
 * `cpus` - This is the server's CPU count.
 * `disk_ids` - This is the server's disk identifiers.
 * `disk_labels` - This is the server's disk labels.
-* `disk_primary` - Whether the disk is the primary disk.
+* `disk_primary` - Whether a disk is the primary disk.
 * `disk_sizes` - This is the server's disk sizes in gigabytes.
 * `hostname` - This is the server's hostname.
 * `label` - This is the server's label.
