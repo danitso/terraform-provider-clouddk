@@ -60,6 +60,21 @@ If you're building the provider, follow the instructions to [install it as a plu
 * `primary` - Whether a disk is the primary disk.
 * `sizes` - This is the server's disk sizes in gigabytes.
 
+### Firewall Rules (clouddk_firewall_rules)
+
+#### Arguments
+
+* `id` - (Required) This is the network interface's identifier.
+* `server_id` - (Required) This is the server's identifier.
+
+#### Attributes
+
+* `addresses` - This is the CIDR blocks for the firewall rules assigned to the network interface.
+* `commands` - This is the commands for the firewall rules assigned to the network interface.
+* `ids` - This is the identifiers for the firewall rules assigned to the network interface.
+* `ports` - This is the ports for the firewall rules assigned to the network interface.
+* `protocols` - This is the protocols for the firewall rules assigned to the network interface.
+
 ### IP Addresses (clouddk_ip_addresses)
 
 #### Arguments

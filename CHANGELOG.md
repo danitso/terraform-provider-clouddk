@@ -4,6 +4,7 @@ FEATURES:
 
 * **New Data Source:** `clouddk_disk`
 * **New Data Source:** `clouddk_disks`
+* **New Data Source:** `clouddk_firewall_rules`
 * **New Data Source:** `clouddk_ip_addresses`
 * **New Data Source:** `clouddk_locations`
 * **New Data Source:** `clouddk_network_interface`
