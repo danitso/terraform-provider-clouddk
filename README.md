@@ -72,6 +72,29 @@ This data source has no arguments.
 * `ids` - This is the list of location identifiers.
 * `names` - This is the list of location names.
 
+### Network Interface (clouddk_network_interface)
+
+#### Arguments
+
+* `id` - (Required) This is the server's identifier.
+* `network_interface_id` - (Required) This is the network interface's identifier.
+
+#### Attributes
+
+* `addresses` - This is the IP addresses assigned to the network interface.
+* `default_firewall_rule` - This is the default firewall rule for the network interface.
+* `firewall_rules_addresses` - This is the CIDR blocks for the firewall rules assigned to the network interface.
+* `firewall_rules_commands` - This is the commands for the firewall rules assigned to the network interface.
+* `firewall_rules_ids` - This is the identifiers for the firewall rules assigned to the network interface.
+* `firewall_rules_ports` - This is the ports for the firewall rules assigned to the network interface.
+* `firewall_rules_protocols` - This is the protocols for the firewall rules assigned to the network interface.
+* `gateways` - This is the gateways assigned to the network interface.
+* `label` - This is the label for the network interface.
+* `netmasks` - This is the netmasks assigned to the network interface.
+* `networks` - This is the networks assigned to the network interface.
+* `primary` - Whether a network interface is the primary interface.
+* `rate_limit` - This is the rate limit for the network interface.
+
 ### Network Interfaces (clouddk_network_interfaces)
 
 #### Arguments

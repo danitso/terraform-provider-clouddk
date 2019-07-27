@@ -17,6 +17,7 @@ func Provider() *schema.Provider {
 			"clouddk_disks":              dataSourceDisks(),
 			"clouddk_ip_addresses":       dataSourceIPAddresses(),
 			"clouddk_locations":          dataSourceLocations(),
+			"clouddk_network_interface":  dataSourceNetworkInterface(),
 			"clouddk_network_interfaces": dataSourceNetworkInterfaces(),
 			"clouddk_packages":           dataSourcePackages(),
 			"clouddk_server":             dataSourceServer(),
