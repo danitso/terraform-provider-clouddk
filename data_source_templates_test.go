@@ -19,20 +19,19 @@ func TestDataSourceTemplatesInstantiation(t *testing.T) {
 func TestDataSourceTemplatesSchema(t *testing.T) {
 	s := dataSourceTemplates()
 
-	if s.Schema[DataSourceTemplatesIdsKey] == nil {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Missing attribute \"%s\"", DataSourceTemplatesIdsKey)
+	attributeKeys := []string{
+		DataSourceTemplatesIdsKey,
+		DataSourceTemplatesNamesKey,
 	}
 
-	if s.Schema[DataSourceTemplatesIdsKey].Computed != true {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Attribute \"%s\" is not computed", DataSourceTemplatesIdsKey)
-	}
+	for _, v := range attributeKeys {
+		if s.Schema[v] == nil {
+			t.Fatalf("Error in dataSourceTemplates.Schema: Missing attribute \"%s\"", v)
+		}
 
-	if s.Schema[DataSourceTemplatesNamesKey] == nil {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Missing attribute \"%s\"", DataSourceTemplatesNamesKey)
-	}
-
-	if s.Schema[DataSourceTemplatesNamesKey].Computed != true {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Attribute \"%s\" is not computed", DataSourceTemplatesNamesKey)
+		if s.Schema[v].Computed != true {
+			t.Fatalf("Error in dataSourceTemplates.Schema: Attribute \"%s\" is not computed", v)
+		}
 	}
 }
 

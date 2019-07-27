@@ -19,76 +19,26 @@ func TestDataSourceServersInstantiation(t *testing.T) {
 func TestDataSourceServersSchema(t *testing.T) {
 	s := dataSourceServers()
 
-	if s.Schema[DataSourceServersHostnamesKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersHostnamesKey)
+	attributeKeys := []string{
+		DataSourceServersHostnamesKey,
+		DataSourceServersIdsKey,
+		DataSourceServersLabelsKey,
+		DataSourceServersLocationIdsKey,
+		DataSourceServersLocationNamesKey,
+		DataSourceServersPackageIdsKey,
+		DataSourceServersPackageNamesKey,
+		DataSourceServersTemplateIdsKey,
+		DataSourceServersTemplateNamesKey,
 	}
 
-	if s.Schema[DataSourceServersHostnamesKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersHostnamesKey)
-	}
+	for _, v := range attributeKeys {
+		if s.Schema[v] == nil {
+			t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", v)
+		}
 
-	if s.Schema[DataSourceServersIdsKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersIdsKey)
-	}
-
-	if s.Schema[DataSourceServersIdsKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersIdsKey)
-	}
-
-	if s.Schema[DataSourceServersLabelsKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersLabelsKey)
-	}
-
-	if s.Schema[DataSourceServersLabelsKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersLabelsKey)
-	}
-
-	if s.Schema[DataSourceServersLocationIdsKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersLocationIdsKey)
-	}
-
-	if s.Schema[DataSourceServersLocationIdsKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersLocationIdsKey)
-	}
-
-	if s.Schema[DataSourceServersLocationNamesKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersLocationNamesKey)
-	}
-
-	if s.Schema[DataSourceServersLocationNamesKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersLocationNamesKey)
-	}
-
-	if s.Schema[DataSourceServersPackageIdsKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersPackageIdsKey)
-	}
-
-	if s.Schema[DataSourceServersPackageIdsKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersPackageIdsKey)
-	}
-
-	if s.Schema[DataSourceServersPackageNamesKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersPackageNamesKey)
-	}
-
-	if s.Schema[DataSourceServersPackageNamesKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersPackageNamesKey)
-	}
-
-	if s.Schema[DataSourceServersTemplateIdsKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersTemplateIdsKey)
-	}
-
-	if s.Schema[DataSourceServersTemplateIdsKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersTemplateIdsKey)
-	}
-
-	if s.Schema[DataSourceServersTemplateNamesKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing attribute \"%s\"", DataSourceServersTemplateNamesKey)
-	}
-
-	if s.Schema[DataSourceServersTemplateNamesKey].Computed != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", DataSourceServersTemplateNamesKey)
+		if s.Schema[v].Computed != true {
+			t.Fatalf("Error in dataSourceServers.Schema: Attribute \"%s\" is not computed", v)
+		}
 	}
 }
 

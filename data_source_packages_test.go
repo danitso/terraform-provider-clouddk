@@ -17,19 +17,18 @@ func TestDataSourcePackagesInstantiation(t *testing.T) {
 func TestDataSourcePackagesSchema(t *testing.T) {
 	s := dataSourcePackages()
 
-	if s.Schema[DataSourcePackagesIdsKey] == nil {
-		t.Fatalf("Error in dataSourcePackages.Schema: Missing attribute \"%s\"", DataSourcePackagesIdsKey)
+	attributeKeys := []string{
+		DataSourcePackagesIdsKey,
+		DataSourcePackagesNamesKey,
 	}
 
-	if s.Schema[DataSourcePackagesIdsKey].Computed != true {
-		t.Fatalf("Error in dataSourcePackages.Schema: Attribute \"%s\" is not computed", DataSourcePackagesIdsKey)
-	}
+	for _, v := range attributeKeys {
+		if s.Schema[v] == nil {
+			t.Fatalf("Error in dataSourcePackages.Schema: Missing attribute \"%s\"", v)
+		}
 
-	if s.Schema[DataSourcePackagesNamesKey] == nil {
-		t.Fatalf("Error in dataSourcePackages.Schema: Missing attribute \"%s\"", DataSourcePackagesNamesKey)
-	}
-
-	if s.Schema[DataSourcePackagesNamesKey].Computed != true {
-		t.Fatalf("Error in dataSourcePackages.Schema: Attribute \"%s\" is not computed", DataSourcePackagesNamesKey)
+		if s.Schema[v].Computed != true {
+			t.Fatalf("Error in dataSourcePackages.Schema: Attribute \"%s\" is not computed", v)
+		}
 	}
 }
