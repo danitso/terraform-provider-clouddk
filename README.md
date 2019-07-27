@@ -94,7 +94,7 @@ This data source has no arguments.
 * `template_id` - This is the template identifier.
 * `template_name` - This is the template name.
 
-### Server (clouddk_server_disks)
+### Server Disks (clouddk_server_disks)
 
 #### Arguments
 
