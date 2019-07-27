@@ -170,7 +170,7 @@ func dataSourceNetworkInterfaceRead(d *schema.ResourceData, m interface{}) error
 		firewallRulesProtocols[v.Position-1] = v.Protocol
 	}
 
-	d.SetId(id)
+	d.SetId(networkInterfaceId)
 
 	d.Set(DataSourceNetworkInterfaceAddressesKey, addresses)
 

@@ -18,6 +18,6 @@ output "data_clouddk_disks_example_primary" {
 }
 
 output "data_clouddk_disks_example_sizes" {
-  description = "The server's disk identifiers"
+  description = "The server's disk sizes in gigabytes"
   value       = "${data.clouddk_disks.example.sizes}"
 }

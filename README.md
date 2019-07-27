@@ -34,6 +34,19 @@ If you're building the provider, follow the instructions to [install it as a plu
 
 ## Data Sources
 
+### Disk (clouddk_disk)
+
+#### Arguments
+
+* `id` - (Required) This is the server's identifier.
+* `disk_id` - (Required) This is the disk's identifier.
+
+#### Attributes
+
+* `label` - This is the disk label.
+* `primary` - Whether the disk is the primary disk.
+* `size` - This is the disk size in gigabytes.
+
 ### Disks (clouddk_disks)
 
 #### Arguments

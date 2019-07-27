@@ -2,6 +2,7 @@
 
 FEATURES:
 
+* **New Data Source:** `clouddk_disk`
 * **New Data Source:** `clouddk_disks`
 * **New Data Source:** `clouddk_ip_addresses`
 * **New Data Source:** `clouddk_locations`
