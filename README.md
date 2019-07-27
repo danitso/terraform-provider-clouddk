@@ -34,6 +34,19 @@ If you're building the provider, follow the instructions to [install it as a plu
 
 ## Data Sources
 
+### Disks (clouddk_disks)
+
+#### Arguments
+
+* `id` - (Required) This is the server's identifier.
+
+#### Attributes
+
+* `ids` - This is the server's disk identifiers.
+* `labels` - This is the server's disk labels.
+* `primary` - Whether the disk is the primary disk.
+* `sizes` - This is the server's disk sizes in gigabytes.
+
 ### Locations (clouddk_locations)
 
 #### Arguments
@@ -93,19 +106,6 @@ This data source has no arguments.
 * `package_name` - This is the package name.
 * `template_id` - This is the template identifier.
 * `template_name` - This is the template name.
-
-### Server Disks (clouddk_server_disks)
-
-#### Arguments
-
-* `id` - (Required) This is the server's identifier.
-
-#### Attributes
-
-* `ids` - This is the server's disk identifiers.
-* `labels` - This is the server's disk labels.
-* `primary` - Whether the disk is the primary disk.
-* `sizes` - This is the server's disk sizes in gigabytes.
 
 ### Servers (clouddk_servers)
 

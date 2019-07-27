@@ -9,41 +9,41 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceServerDisksIdKey = "id"
-const DataSourceServerDisksIdsKey = "ids"
-const DataSourceServerDisksLabelsKey = "labels"
-const DataSourceServerDisksPrimaryKey = "primary"
-const DataSourceServerDisksSizesKey = "sizes"
+const DataSourceDisksIdKey = "id"
+const DataSourceDisksIdsKey = "ids"
+const DataSourceDisksLabelsKey = "labels"
+const DataSourceDisksPrimaryKey = "primary"
+const DataSourceDisksSizesKey = "sizes"
 
-// dataSourceServerDisks() retrieves information about a server's disks.
-func dataSourceServerDisks() *schema.Resource {
+// dataSourceDisks() retrieves information about a server's disks.
+func dataSourceDisks() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceServerDisksIdKey: &schema.Schema{
+			DataSourceDisksIdKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
 				ForceNew:    true,
 			},
-			DataSourceServerDisksIdsKey: &schema.Schema{
+			DataSourceDisksIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk identifiers",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerDisksLabelsKey: &schema.Schema{
+			DataSourceDisksLabelsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk labels",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerDisksPrimaryKey: &schema.Schema{
+			DataSourceDisksPrimaryKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "Whether the disk is the primary disk",
 				Elem:        &schema.Schema{Type: schema.TypeBool},
 			},
-			DataSourceServerDisksSizesKey: &schema.Schema{
+			DataSourceDisksSizesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk sizes in gigabytes",
@@ -51,15 +51,15 @@ func dataSourceServerDisks() *schema.Resource {
 			},
 		},
 
-		Read: dataSourceServerDisksRead,
+		Read: dataSourceDisksRead,
 	}
 }
 
-// dataSourceServerDisksRead() reads information about a server's disks.
-func dataSourceServerDisksRead(d *schema.ResourceData, m interface{}) error {
+// dataSourceDisksRead() reads information about a server's disks.
+func dataSourceDisksRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
 
-	id := d.Get(DataSourceServerDisksIdKey).(string)
+	id := d.Get(DataSourceDisksIdKey).(string)
 	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks", id), new(bytes.Buffer))
 
 	if reqErr != nil {
@@ -90,10 +90,10 @@ func dataSourceServerDisksRead(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(id)
 
-	d.Set(DataSourceServerDisksIdsKey, diskIds)
-	d.Set(DataSourceServerDisksLabelsKey, diskLabels)
-	d.Set(DataSourceServerDisksPrimaryKey, diskPrimary)
-	d.Set(DataSourceServerDisksSizesKey, diskSizes)
+	d.Set(DataSourceDisksIdsKey, diskIds)
+	d.Set(DataSourceDisksLabelsKey, diskLabels)
+	d.Set(DataSourceDisksPrimaryKey, diskPrimary)
+	d.Set(DataSourceDisksSizesKey, diskSizes)
 
 	return nil
 }
