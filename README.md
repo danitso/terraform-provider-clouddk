@@ -243,20 +243,33 @@ This data source has no arguments.
 
 ## Resources
 
+### Disk (clouddk_disk)
+
+#### Arguments
+
+* `label` - (Required) This is the disk label.
+* `server_id` - (Required) This is the server's identifier.
+* `size` - (Required) This is the disk size in gigabytes.
+
+#### Attributes
+
+* `id` - This is the disk's identifier.
+* `primary` - Whether the disk is the primary disk.
+
 ### Firewall Rule (clouddk_firewall_rule)
 
 #### Arguments
 
-* `address` - This is the CIDR block for the firewall rule.
-* `command` - This is the command for the firewall rule.
+* `address` - (Required) This is the CIDR block for the firewall rule.
+* `command` - (Required) This is the command for the firewall rule.
 * `network_interface_id` - (Required) This is the network interface's identifier.
-* `port` - This is the port for the firewall rule.
-* `protocol` - This is the protocol for the firewall rule.
+* `port` - (Required) This is the port for the firewall rule.
+* `protocol` - (Required) This is the protocol for the firewall rule.
 * `server_id` - (Required) This is the server's identifier.
 
 #### Attributes
 
-This resource has no additional attributes.
+* `id` - This is the firewall rule's identifier.
 
 ### Server (clouddk_server)
 
@@ -278,6 +291,7 @@ This resource has no additional attributes.
 * `disk_primary` - Whether a disk is the primary disk.
 * `disk_sizes` - This is the server's disk sizes in gigabytes.
 * `hostname` - This is the server's hostname.
+* `id` - This is the server's identifier.
 * `label` - This is the server's label.
 * `location_id` - This is the location identifier.
 * `location_name` - This is the location name.

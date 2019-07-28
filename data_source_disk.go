@@ -77,10 +77,15 @@ func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	disk := DiskBody{}
 	json.NewDecoder(res.Body).Decode(&disk)
 
-	d.SetId(diskId)
+	return dataSourceDiskReadResponseBody(d, m, &disk)
+}
+
+// dataSourceDiskReadResponseBody() parses information about a server's disk.
+func dataSourceDiskReadResponseBody(d *schema.ResourceData, m interface{}, disk *DiskBody) error {
+	d.SetId(disk.Identifier)
 
 	d.Set(DataSourceDiskLabelKey, disk.Label)
-	d.Set(DataSourceDiskPrimaryKey, (disk.Primary == 1))
+	d.Set(DataSourceDiskPrimaryKey, disk.Primary)
 	d.Set(DataSourceDiskSizeKey, disk.Size)
 
 	return nil

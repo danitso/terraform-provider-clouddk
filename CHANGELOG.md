@@ -1,3 +1,13 @@
+## 0.2.0 (UNRELEASED)
+
+FEATURES:
+
+* **New Resource:** `clouddk_disk`
+
+ENHANCEMENTS:
+
+data-source/resource: Improved API error handling when resources are temporarily locked
+
 ## 0.1.0
 
 FEATURES:

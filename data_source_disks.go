@@ -86,7 +86,7 @@ func dataSourceDisksRead(d *schema.ResourceData, m interface{}) error {
 	for i, v := range disks {
 		diskIds[i] = v.Identifier
 		diskLabels[i] = v.Label
-		diskPrimary[i] = (v.Primary == 1)
+		diskPrimary[i] = v.Primary
 		diskSizes[i] = v.Size
 	}
 

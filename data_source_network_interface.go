@@ -187,7 +187,7 @@ func dataSourceNetworkInterfaceRead(d *schema.ResourceData, m interface{}) error
 	d.Set(DataSourceNetworkInterfaceLabelKey, networkInterface.Label)
 	d.Set(DataSourceNetworkInterfaceNetmasksKey, netmasks)
 	d.Set(DataSourceNetworkInterfaceNetworksKey, networks)
-	d.Set(DataSourceNetworkInterfacePrimaryKey, (networkInterface.Primary == 1))
+	d.Set(DataSourceNetworkInterfacePrimaryKey, networkInterface.Primary)
 	d.Set(DataSourceNetworkInterfaceRateLimitKey, networkInterface.RateLimit)
 
 	return nil

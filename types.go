@@ -21,7 +21,13 @@ type DiskBody struct {
 	Identifier string `json:"identifier"`
 	Label      string `json:"label"`
 	Size       int    `json:"size"`
-	Primary    int    `json:"primary"`
+	Primary    Bool   `json:"primary"`
+}
+
+// DiskCreateBody describes a disk creation object.
+type DiskCreateBody struct {
+	Label string `json:"label"`
+	Size  int    `json:"size"`
 }
 
 // DiskListBody describes a disk list.
@@ -77,7 +83,7 @@ type NetworkInterfaceBody struct {
 	Label               string               `json:"label"`
 	RateLimit           int                  `json:"rate_limit"`
 	DefaultFirewallRule string               `json:"default_firewall_rule"`
-	Primary             int                  `json:"primary"`
+	Primary             Bool                 `json:"primary"`
 	IPAddresses         IPAddressListBody    `json:"ipAddresses"`
 	FirewallRules       FirewallRuleListBody `json:"firewallRules"`
 }

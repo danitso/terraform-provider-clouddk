@@ -28,6 +28,7 @@ func Provider() *schema.Provider {
 			"clouddk_templates":          dataSourceTemplates(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"clouddk_disk":          resourceDisk(),
 			"clouddk_firewall_rule": resourceFirewallRule(),
 			"clouddk_server":        resourceServer(),
 		},

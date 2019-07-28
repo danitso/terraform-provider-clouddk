@@ -286,7 +286,7 @@ func dataSourceServerReadResponseBody(d *schema.ResourceData, m interface{}, ser
 	for i, v := range server.Disks {
 		diskIds[i] = v.Identifier
 		diskLabels[i] = v.Label
-		diskPrimary[i] = (v.Primary == 1)
+		diskPrimary[i] = v.Primary
 		diskSizes[i] = v.Size
 	}
 
@@ -346,7 +346,7 @@ func dataSourceServerReadResponseBody(d *schema.ResourceData, m interface{}, ser
 		networkInterfaceLabels[i] = v.Label
 		networkInterfaceNetmasks[i] = netmasks
 		networkInterfaceNetworks[i] = networks
-		networkInterfacePrimary[i] = (v.Primary == 1)
+		networkInterfacePrimary[i] = v.Primary
 		networkInterfaceRateLimits[i] = v.RateLimit
 	}
 

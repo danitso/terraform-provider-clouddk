@@ -231,7 +231,7 @@ func dataSourceNetworkInterfacesRead(d *schema.ResourceData, m interface{}) erro
 		networkInterfaceLabels[i] = v.Label
 		networkInterfaceNetmasks[i] = netmasks
 		networkInterfaceNetworks[i] = networks
-		networkInterfacePrimary[i] = (v.Primary == 1)
+		networkInterfacePrimary[i] = v.Primary
 		networkInterfaceRateLimits[i] = v.RateLimit
 	}
 
