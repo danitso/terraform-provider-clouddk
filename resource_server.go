@@ -4,9 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -247,15 +245,7 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 	reqBody := new(bytes.Buffer)
 	json.NewEncoder(reqBody).Encode(body)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "POST", "cloudservers", reqBody)
-
-	if reqErr != nil {
-		return reqErr
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-
-	res, resErr := doClientRequest(req, []int{200}, 60, 10)
+	res, resErr := doClientRequest(&clientSettings, "POST", "cloudservers", reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
@@ -274,43 +264,17 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	// Wait for the server to boot to ensure that we can proceed with any post-creation flows.
-	log.Printf("[DEBUG] Waiting for server %s to boot", d.Id())
+	// Keep attempting to boot the server to bypass an API issue which causes the booted flag to remain 0 (false).
+	res, resErr = doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/start", server.Identifier), new(bytes.Buffer), []int{200}, 20, 30)
 
-	timeDelay := int64(10)
-	timeMax := float64(600)
-	timeStart := time.Now()
-	timeElapsed := timeStart.Sub(timeStart)
-
-	serverHostname := d.Get(ResourceServerHostname).(string)
-
-	for timeElapsed.Seconds() < timeMax {
-		timeElapsed = time.Now().Sub(timeStart)
-
-		if int64(timeElapsed.Seconds())%timeDelay == 0 {
-			log.Printf("[DEBUG] Querying the API for information about the server '%s' (id: %s)", serverHostname, d.Id())
-
-			readErr := dataSourceServerRead(d, m)
-
-			if readErr != nil {
-				return readErr
-			}
-
-			log.Printf("[DEBUG] Determining if the server '%s' (id: %s) has been booted", serverHostname, d.Id())
-
-			if d.Get(DataSourceServerBootedKey).(bool) {
-				return nil
-			}
-
-			log.Printf("[DEBUG] The server '%s' (id: %s) has not been booted - Checking again in %d seconds", serverHostname, d.Id(), timeDelay)
-
-			time.Sleep(1 * time.Second)
-		}
-
-		time.Sleep(100 * time.Millisecond)
+	if resErr != nil {
+		return resErr
 	}
 
-	return fmt.Errorf("The server '%s' (id: %s) seems to be unable to boot", serverHostname, d.Id())
+	server = ServerBody{}
+	json.NewDecoder(res.Body).Decode(&server)
+
+	return dataSourceServerReadResponseBody(d, m, &server)
 }
 
 // resourceServerRead reads information about an existing server.
@@ -356,15 +320,7 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	reqBody := new(bytes.Buffer)
 	json.NewEncoder(reqBody).Encode(body)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s", d.Id()), reqBody)
-
-	if reqErr != nil {
-		return reqErr
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-
-	res, resErr := doClientRequest(req, []int{200}, 60, 10)
+	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s", d.Id()), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
@@ -380,13 +336,7 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer))
-
-	if reqErr != nil {
-		return reqErr
-	}
-
-	_, err := doClientRequest(req, []int{200, 404}, 60, 10)
+	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		return err

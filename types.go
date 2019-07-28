@@ -1,13 +1,27 @@
 package main
 
+import "bytes"
+
 // Bool allows a JSON boolean value to also be an integer
 type Bool bool
 
-func (bit *Bool) UnmarshalJSON(b []byte) error {
+func (this *Bool) UnmarshalJSON(b []byte) error {
 	txt := string(b)
-	*bit = Bool(txt == "1" || txt == "true")
+	*this = Bool(txt == "1" || txt == "true")
 
 	return nil
+}
+
+func (this Bool) MarshalJSON() ([]byte, error) {
+	buffer := new(bytes.Buffer)
+
+	if this {
+		buffer.WriteString("1")
+	} else {
+		buffer.WriteString("0")
+	}
+
+	return buffer.Bytes(), nil
 }
 
 // ClientSettings describes the client settings.
@@ -32,6 +46,12 @@ type DiskCreateBody struct {
 
 // DiskListBody describes a disk list.
 type DiskListBody []DiskBody
+
+// ErrorBody describes an error object.
+type ErrorBody struct {
+	Message string `json:"message"`
+	Status  int    `json:"status"`
+}
 
 // FirewallRuleBody describes a firewall rule object.
 type FirewallRuleBody struct {

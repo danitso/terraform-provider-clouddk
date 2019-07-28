@@ -86,15 +86,7 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 	reqBody := new(bytes.Buffer)
 	json.NewEncoder(reqBody).Encode(body)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), reqBody)
-
-	if reqErr != nil {
-		return reqErr
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-
-	res, resErr := doClientRequest(req, []int{200}, 60, 10)
+	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
@@ -172,15 +164,7 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	reqBody := new(bytes.Buffer)
 	json.NewEncoder(reqBody).Encode(body)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), reqBody)
-
-	if reqErr != nil {
-		return reqErr
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-
-	res, resErr := doClientRequest(req, []int{200}, 60, 10)
+	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
@@ -200,13 +184,7 @@ func resourceFirewallRuleDelete(d *schema.ResourceData, m interface{}) error {
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer))
-
-	if reqErr != nil {
-		return reqErr
-	}
-
-	_, err := doClientRequest(req, []int{200, 404}, 60, 10)
+	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		return err
