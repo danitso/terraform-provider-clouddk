@@ -94,13 +94,10 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, resErr := doClientRequest(req, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
-	} else if res.StatusCode != 200 {
-		return fmt.Errorf("Failed to create the firewall rule - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	firewallRule := FirewallRuleBody{}
@@ -183,13 +180,10 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, resErr := doClientRequest(req, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
-	} else if res.StatusCode != 200 {
-		return fmt.Errorf("Failed to update the firewall rule - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	firewallRule := FirewallRuleBody{}
@@ -212,13 +206,10 @@ func resourceFirewallRuleDelete(d *schema.ResourceData, m interface{}) error {
 		return reqErr
 	}
 
-	client := &http.Client{}
-	res, resErr := client.Do(req)
+	_, err := doClientRequest(req, []int{200, 404}, 60, 10)
 
-	if resErr != nil {
-		return resErr
-	} else if res.StatusCode != 200 && res.StatusCode != 404 {
-		return fmt.Errorf("Failed to delete the firewall rule - Reason: The API responded with HTTP %s", res.Status)
+	if err != nil {
+		return err
 	}
 
 	d.SetId("")

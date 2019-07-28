@@ -255,13 +255,10 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, resErr := doClientRequest(req, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
-	} else if res.StatusCode != 200 {
-		return fmt.Errorf("Failed to create the server - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	server := ServerBody{}
@@ -367,13 +364,10 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, resErr := doClientRequest(req, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
-	} else if res.StatusCode != 200 {
-		return fmt.Errorf("Failed to update the server - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	server := ServerBody{}
@@ -386,48 +380,19 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
 
-	// Due to some locking issues caused by how cloud.dk works, we may initially receive an HTTP 500 response. In this case we want to
-	// try to delete the resource again once we have waited for a short period of time. We do this multiple times before giving up.
-	timeDelay := int64(10)
-	timeMax := float64(600)
-	timeStart := time.Now()
-	timeElapsed := timeStart.Sub(timeStart)
+	req, reqErr := getClientRequestObject(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer))
 
-	responseStatus := ""
-	serverHostname := d.Get(ResourceServerHostname).(string)
-
-	for timeElapsed.Seconds() < timeMax {
-		if int64(timeElapsed.Seconds())%timeDelay == 0 {
-			log.Printf("[DEBUG] Querying the API in order to delete server '%s' (id: %s)", serverHostname, d.Id())
-
-			req, reqErr := getClientRequestObject(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer))
-
-			if reqErr != nil {
-				return reqErr
-			}
-
-			client := &http.Client{}
-			res, resErr := client.Do(req)
-
-			if resErr != nil {
-				return resErr
-			} else if res.StatusCode == 200 || res.StatusCode == 404 {
-				d.SetId("")
-
-				return nil
-			} else {
-				responseStatus = res.Status
-
-				log.Printf("[DEBUG] Failed to delete server '%s' (id: %s) - Retrying in %d seconds", serverHostname, d.Id(), timeDelay)
-			}
-
-			time.Sleep(1 * time.Second)
-		}
-
-		time.Sleep(100 * time.Millisecond)
-
-		timeElapsed = time.Now().Sub(timeStart)
+	if reqErr != nil {
+		return reqErr
 	}
 
-	return fmt.Errorf("Failed to delete the server - Reason: The API responded with HTTP %s", responseStatus)
+	_, err := doClientRequest(req, []int{200, 404}, 60, 10)
+
+	if err != nil {
+		return err
+	}
+
+	d.SetId("")
+
+	return nil
 }
