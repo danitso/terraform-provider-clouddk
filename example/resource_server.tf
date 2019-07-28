@@ -17,7 +17,7 @@ resource "clouddk_server" "example" {
     user     = "root"
     password = "${random_string.clouddk_server_example_root_password.result}"
 
-    timeout = "30s"
+    timeout = "300s"
   }
 
   provisioner "remote-exec" {
