@@ -38,6 +38,15 @@ type FirewallRuleBody struct {
 	Port       string `json:"port"`
 }
 
+// FirewallRuleCreateBody describes a firewall rule creation object.
+type FirewallRuleCreateBody struct {
+	Command  string `json:"command"`
+	Protocol string `json:"protocol"`
+	Address  string `json:"address"`
+	Bits     int    `json:"bits"`
+	Port     string `json:"port"`
+}
+
 // FirewallRuleListBody describes a firewall rule list.
 type FirewallRuleListBody []FirewallRuleBody
 

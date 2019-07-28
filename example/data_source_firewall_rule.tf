@@ -1,7 +1,7 @@
 data "clouddk_firewall_rule" "example" {
-  id = "${element(data.clouddk_firewall_rules.example.ids, 0)}"
-  network_interface_id = "${element(data.clouddk_network_interfaces.example.ids, 0)}"
-  server_id = "${element(data.clouddk_servers.example.ids, 0)}"
+  id                   = "${clouddk_firewall_rule.example.id}"
+  network_interface_id = "${clouddk_firewall_rule.example.network_interface_id}"
+  server_id            = "${clouddk_server.example.id}"
 }
 
 output "data_clouddk_firewall_rule_example_address" {

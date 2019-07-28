@@ -243,6 +243,21 @@ This data source has no arguments.
 
 ## Resources
 
+### Firewall Rule (clouddk_firewall_rule)
+
+#### Arguments
+
+* `network_interface_id` - (Required) This is the network interface's identifier.
+* `server_id` - (Required) This is the server's identifier.
+* `address` - This is the CIDR block for the firewall rule.
+* `command` - This is the command for the firewall rule.
+* `port` - This is the port for the firewall rule.
+* `protocol` - This is the protocol for the firewall rule.
+
+#### Attributes
+
+This resource has no additional attributes.
+
 ### Server (clouddk_server)
 
 #### Arguments

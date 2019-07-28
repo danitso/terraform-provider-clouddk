@@ -1,5 +1,5 @@
 data "clouddk_ip_addresses" "example" {
-  id = "${element(data.clouddk_servers.example.ids, 0)}"
+  id = "${clouddk_server.example.id}"
 }
 
 output "data_clouddk_ip_addresses_example_addresses" {

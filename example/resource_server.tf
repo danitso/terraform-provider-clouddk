@@ -1,15 +1,36 @@
 resource "clouddk_server" "example" {
-  hostname = "terraform-provider-clouddk-example"
-  label = "Terraform Example"
+  hostname      = "terraform-provider-clouddk-example"
+  label         = "Terraform Example"
   root_password = "${random_string.clouddk_server_example_root_password.result}"
 
   location_id = "${element(data.clouddk_locations.example.ids, 0)}"
-  package_id = "${element(data.clouddk_packages.example.ids, index(data.clouddk_packages.example.names, "clouddk.s1"))}"
+  package_id  = "${element(data.clouddk_packages.example.ids, index(data.clouddk_packages.example.names, "clouddk.s1"))}"
   template_id = "${element(data.clouddk_templates.example.ids, index(data.clouddk_templates.example.ids, "ubuntu-18.04-x64"))}"
+
+  connection {
+    type = "ssh"
+
+    agent = false
+
+    host     = "${element(flatten(self.network_interface_addresses), 0)}"
+    port     = 22
+    user     = "root"
+    password = "${random_string.clouddk_server_example_root_password.result}"
+
+    timeout = "30s"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo The server was successfully provisioned!",
+      "echo Continuing in 5 seconds",
+      "sleep 5",
+    ]
+  }
 }
 
 resource "random_string" "clouddk_server_example_root_password" {
-  length = 32
+  length  = 32
   special = false
 }
 

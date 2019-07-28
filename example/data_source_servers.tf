@@ -1,4 +1,6 @@
-data "clouddk_servers" "example" {}
+data "clouddk_servers" "example" {
+  depends_on = ["clouddk_server.example"]
+}
 
 output "data_clouddk_servers_example_hostnames" {
   description = "The server hostnames"
@@ -44,10 +46,11 @@ output "data_clouddk_servers_example_template_names" {
   description = "The server template names"
   value       = "${data.clouddk_servers.example.template_names}"
 }
+
 #==============================================================================
 data "clouddk_servers" "example_filter" {
   filter {
-    hostname = "terraform"
+    hostname = "${clouddk_server.example.hostname}"
   }
 }
 

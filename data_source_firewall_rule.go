@@ -68,8 +68,12 @@ func dataSourceFirewallRule() *schema.Resource {
 // dataSourceFirewallRuleRead() reads information about a firewall rule for a network interface.
 func dataSourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
+	firewallRuleId := d.Id()
 
-	firewallRuleId := d.Get(DataSourceFirewallRuleIdKey).(string)
+	if d.Get(DataSourceFirewallRuleIdKey) != nil {
+		firewallRuleId = d.Get(DataSourceFirewallRuleIdKey).(string)
+	}
+
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
@@ -91,7 +95,12 @@ func dataSourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 	firewallRule := FirewallRuleBody{}
 	json.NewDecoder(res.Body).Decode(&firewallRule)
 
-	d.SetId(firewallRuleId)
+	return dataSourceFirewallRuleReadResponseBody(d, m, &firewallRule)
+}
+
+// dataSourceFirewallRuleReadResponseBody() reads information about a firewall rule for a network interface.
+func dataSourceFirewallRuleReadResponseBody(d *schema.ResourceData, m interface{}, firewallRule *FirewallRuleBody) error {
+	d.SetId(firewallRule.Identifier)
 
 	d.Set(DataSourceFirewallRuleAddressKey, fmt.Sprintf("%s/%d", firewallRule.Address, firewallRule.Bits))
 	d.Set(DataSourceFirewallRuleCommandKey, firewallRule.Command)
