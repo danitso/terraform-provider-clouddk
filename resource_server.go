@@ -411,25 +411,6 @@ func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server *ServerBody) error {
 	clientSettings := m.(ClientSettings)
 
-	// Keep trying to boot the server until we get a successful reply from the API.
-	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/start", d.Id()), new(bytes.Buffer), []int{200}, 40, 15)
-
-	if resErr != nil {
-		return resErr
-	}
-
-	json.NewDecoder(res.Body).Decode(&server)
-
-	parseErr := dataSourceServerReadResponseBody(d, m, server)
-
-	if parseErr != nil {
-		return parseErr
-	}
-
-	if d.Get(DataSourceServerBootedKey).(bool) {
-		return nil
-	}
-
 	// For some reason the API is still indicating that the server has not been booted. Let's wait a while for that to change.
 	timeDelay := int64(10)
 	timeMax := float64(600)

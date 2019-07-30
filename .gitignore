@@ -23,6 +23,7 @@ modules-dev/
 *.test
 *.tfplan
 *.tfstate
+*.tfstate.lock.info
 
 .*.swp
 .DS_Store
