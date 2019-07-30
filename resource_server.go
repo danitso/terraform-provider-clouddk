@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -336,6 +338,14 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceServerUpdate updates an existing server.
 func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, d.Id(), 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to update the server without any issues.
 	clientSettings := m.(ClientSettings)
 
 	body := ServerUpdateBody{
@@ -364,6 +374,14 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceServerUpdatePrimaryNetworkInterface updates the primary interface on an existing server.
 func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m interface{}, server *ServerBody) error {
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, server.Identifier, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to update the primary network interface without any issues.
 	clientSettings := m.(ClientSettings)
 
 	networkInterfaceUpdateBody := NetworkInterfaceUpdateBody{
@@ -394,6 +412,14 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 
 // resourceServerDelete deletes an existing server.
 func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, d.Id(), 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to delete the server without any issues.
 	clientSettings := m.(ClientSettings)
 
 	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer), []int{200, 404}, 60, 10)
@@ -419,19 +445,10 @@ func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server
 
 	for timeElapsed.Seconds() < timeMax {
 		if int64(timeElapsed.Seconds())%timeDelay == 0 {
-			req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", server.Identifier), new(bytes.Buffer))
+			res, err := doClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", server.Identifier), new(bytes.Buffer), []int{200}, 1, 1)
 
-			if reqErr != nil {
-				return reqErr
-			}
-
-			client := &http.Client{}
-			res, resErr := client.Do(req)
-
-			if resErr != nil {
-				return resErr
-			} else if res.StatusCode != 200 {
-				return fmt.Errorf("Failed to determine if the server '%s' (id: %s) was booted - Reason: HTTP %s", d.Get(ResourceServerHostnameKey).(string), server.Identifier, res.Status)
+			if err != nil {
+				return err
 			}
 
 			json.NewDecoder(res.Body).Decode(server)
@@ -448,3 +465,80 @@ func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server
 
 	return fmt.Errorf("The server '%s' (id: %s) does not appear to be able to boot", d.Get(ResourceServerHostnameKey).(string), server.Identifier)
 }
+
+// resourceServerWaitForTransactions() locks until no server transactions are running.
+func resourceServerWaitForTransactions(d *schema.ResourceData, m interface{}, serverId string, retryLimit int, retryDelay int) error {
+	clientSettings := m.(ClientSettings)
+
+	// Acquire the lock for the serverMap variable.
+	log.Printf("[DEBUG] Acquiring lock for server map (id: %s)", serverId)
+	serverMapMutex.Lock()
+
+	// Create a mutex for the specified server, if none already exists.
+	if serverMap[serverId] == nil {
+		log.Printf("[DEBUG] Creating mutex for server (id: %s)", serverId)
+		serverMap[serverId] = &sync.Mutex{}
+	}
+
+	// Now that we know a mutex for the server exists, we can unlock the mutex for the map and acquire the lock for the server instead.
+	log.Printf("[DEBUG] Releasing lock for server map (id: %s)", serverId)
+	serverMapMutex.Unlock()
+
+	log.Printf("[DEBUG] Acquiring lock for server (id: %s)", serverId)
+	serverMap[serverId].Lock()
+
+	// We can now go ahead and retrieve the transactions for the server. We will keep doing this until all transactions are eithed failed or completed.
+	timeDelay := int64(retryDelay)
+	timeMax := float64(retryLimit * retryDelay)
+	timeStart := time.Now()
+	timeElapsed := timeStart.Sub(timeStart)
+
+	continueToWait := false
+
+	for timeElapsed.Seconds() < timeMax {
+		if int64(timeElapsed.Seconds())%timeDelay == 0 {
+			res, err := doClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/logs", serverId), new(bytes.Buffer), []int{200}, 1, 1)
+
+			if err != nil {
+				return err
+			}
+
+			logsList := LogsListBody{}
+			json.NewDecoder(res.Body).Decode(&logsList)
+
+			continueToWait = false
+
+			for _, v := range logsList {
+				if v.Status == "pending" || v.Status == "running" {
+					continueToWait = true
+
+					break
+				}
+			}
+
+			if !continueToWait {
+				break
+			}
+
+			time.Sleep(1 * time.Second)
+		}
+
+		time.Sleep(200 * time.Millisecond)
+
+		timeElapsed = time.Now().Sub(timeStart)
+	}
+
+	// We need to make sure to unlock the mutex for the server again now that we are done using it.
+	log.Printf("[DEBUG] Releasing lock for server (id: %s)", serverId)
+	serverMap[serverId].Unlock()
+
+	// Throw an error in case there are still transactions pending or running
+	if continueToWait {
+		return fmt.Errorf("Timeout while waiting for transactions to end (id: %s)", serverId)
+	}
+
+	return nil
+}
+
+var serverMap = make(map[string]*sync.Mutex)
+var serverMapMutex = &sync.Mutex{}

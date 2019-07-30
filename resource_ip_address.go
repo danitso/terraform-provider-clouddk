@@ -61,9 +61,17 @@ func resourceIPAddress() *schema.Resource {
 
 // resourceIPAddressCreate() creates an IP address.
 func resourceIPAddressCreate(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
-
 	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
+
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to create the IP address without any issues.
+	clientSettings := m.(ClientSettings)
 
 	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/ip-addresses", serverId), new(bytes.Buffer), []int{200}, 60, 10)
 
@@ -135,10 +143,19 @@ func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceIPAddressDelete deletes an existing IP address.
 func resourceIPAddressDelete(d *schema.ResourceData, m interface{}) error {
+	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
+
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to delete the IP address without any issues.
 	clientSettings := m.(ClientSettings)
 
 	address := d.Id()
-	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
 
 	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/ip-addresses?address=%s", serverId, address), new(bytes.Buffer), []int{200, 404}, 60, 10)
 

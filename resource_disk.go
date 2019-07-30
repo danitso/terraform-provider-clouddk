@@ -45,9 +45,17 @@ func resourceDisk() *schema.Resource {
 
 // resourceDiskCreate() creates a disk.
 func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
-
 	serverId := d.Get(DataSourceDiskServerIdKey).(string)
+
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to create the disk without any issues.
+	clientSettings := m.(ClientSettings)
 
 	body := DiskCreateBody{
 		Label: d.Get(DataSourceDiskLabelKey).(string),
@@ -109,11 +117,18 @@ func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceDiskUpdate updates an existing disk.
 func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
+	serverId := d.Get(DataSourceDiskServerIdKey).(string)
+
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to update the disk without any issues.
 	clientSettings := m.(ClientSettings)
-
 	diskId := d.Id()
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
-
 	body := DiskCreateBody{
 		Label: d.Get(DataSourceDiskLabelKey).(string),
 		Size:  d.Get(DataSourceDiskSizeKey).(int),
@@ -140,10 +155,18 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceDiskDelete deletes an existing disk.
 func resourceDiskDelete(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to delete the disk without any issues.
+	clientSettings := m.(ClientSettings)
 	diskId := d.Id()
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
 	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200, 404}, 60, 10)
 

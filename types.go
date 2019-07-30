@@ -97,6 +97,19 @@ type LocationBody struct {
 // LocationListBody describes a datacenter location list.
 type LocationListBody []LocationBody
 
+// LogsBody describes a logs object.
+type LogsBody struct {
+	Identifier       int    `json:"id"`
+	Action           string `json:"action"`
+	Status           string `json:"status"`
+	TargetType       string `json:"target_type"`
+	TargetIdentifier int    `json:"target_id"`
+	CreatedAt        string `json:"created_at"`
+}
+
+// LogsListBody describes a logs list.
+type LogsListBody []LogsBody
+
 // NetworkInterfaceBody describes a network interface object.
 type NetworkInterfaceBody struct {
 	Identifier          string               `json:"identifier"`

@@ -58,11 +58,19 @@ func resourceFirewallRule() *schema.Resource {
 
 // resourceFirewallRuleCreate() creates a firewall rule.
 func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
+	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
+
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to create the firewall rule without any issues.
 	clientSettings := m.(ClientSettings)
 
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
-
 	address := strings.Split(d.Get(DataSourceFirewallRuleAddressKey).(string), "/")
 
 	if len(address) != 2 {
@@ -139,12 +147,20 @@ func resourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceFirewallRuleUpdate updates an existing firewall rule.
 func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
+	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
+
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to update the firewall rule without any issues.
 	clientSettings := m.(ClientSettings)
 
 	firewallRuleId := d.Id()
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
-
 	address := strings.Split(d.Get(DataSourceFirewallRuleAddressKey).(string), "/")
 
 	if len(address) != 2 {
@@ -186,11 +202,20 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceFirewallRuleDelete deletes an existing firewall rule.
 func resourceFirewallRuleDelete(d *schema.ResourceData, m interface{}) error {
+	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
+
+	// We need to wait for transactions to end before proceeding.
+	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
+
+	if transactionsErr != nil {
+		return transactionsErr
+	}
+
+	// We should now be able to delete the firewall rule without any issues.
 	clientSettings := m.(ClientSettings)
 
 	firewallRuleId := d.Id()
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
 	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer), []int{200, 404}, 60, 10)
 

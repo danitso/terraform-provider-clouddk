@@ -1,4 +1,4 @@
 package main
 
-var TerraformProviderName = "terraform-provider-clouddk"
-var TerraformProviderVersion = "0.1.0"
+const TerraformProviderName = "terraform-provider-clouddk"
+const TerraformProviderVersion = "0.1.0"
