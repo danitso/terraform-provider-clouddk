@@ -6,9 +6,9 @@ FEATURES:
 
 ENHANCEMENTS:
 
-provider: Improved API error handling
-resource/server: Added `primary_network_interface_default_firewall_rule` argument
-resource/server: Added `primary_network_interface_label` argument
+* provider: Improved API error handling
+* resource/server: Added `primary_network_interface_default_firewall_rule` argument
+* resource/server: Added `primary_network_interface_label` argument
 
 ## 0.1.0
 
