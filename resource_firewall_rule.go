@@ -84,7 +84,11 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	reqBody := new(bytes.Buffer)
-	json.NewEncoder(reqBody).Encode(body)
+	encodeErr := json.NewEncoder(reqBody).Encode(body)
+
+	if encodeErr != nil {
+		return encodeErr
+	}
 
 	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), reqBody, []int{200}, 60, 10)
 
@@ -162,7 +166,11 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	reqBody := new(bytes.Buffer)
-	json.NewEncoder(reqBody).Encode(body)
+	encodeErr := json.NewEncoder(reqBody).Encode(body)
+
+	if encodeErr != nil {
+		return encodeErr
+	}
 
 	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), reqBody, []int{200}, 60, 10)
 

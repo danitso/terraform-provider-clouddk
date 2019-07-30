@@ -5,51 +5,66 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const ResourceServerHostname = "hostname"
-const ResourceServerLabel = "label"
-const ResourceServerLocationId = "location_id"
-const ResourceServerPackageId = "package_id"
-const ResourceServerRootPassword = "root_password"
-const ResourceServerTemplateId = "template_id"
+const ResourceServerHostnameKey = "hostname"
+const ResourceServerLabelKey = "label"
+const ResourceServerLocationIdKey = "location_id"
+const ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey = "primary_network_interface_default_firewall_rule"
+const ResourceServerPrimaryNetworkInterfaceLabelKey = "primary_network_interface_label"
+const ResourceServerPackageIdKey = "package_id"
+const ResourceServerRootPasswordKey = "root_password"
+const ResourceServerTemplateIdKey = "template_id"
 
 // resourceServer() manages a server.
 func resourceServer() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			ResourceServerHostname: &schema.Schema{
+			ResourceServerHostnameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The hostname",
 			},
-			ResourceServerLabel: &schema.Schema{
+			ResourceServerLabelKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The label",
 			},
-			ResourceServerLocationId: &schema.Schema{
+			ResourceServerLocationIdKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The location identifier",
 				ForceNew:    true,
 			},
-			ResourceServerPackageId: &schema.Schema{
+			ResourceServerPackageIdKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The package identifier",
 				ForceNew:    true,
 			},
-			ResourceServerRootPassword: &schema.Schema{
+			ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey: &schema.Schema{
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "ACCEPT",
+				Description: "The default firewall rule for the primary network interface",
+			},
+			ResourceServerPrimaryNetworkInterfaceLabelKey: &schema.Schema{
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "Primary Network Interface",
+				Description: "The label for the primary network interface",
+			},
+			ResourceServerRootPasswordKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The root password",
 				ForceNew:    true,
 				Sensitive:   true,
 			},
-			ResourceServerTemplateId: &schema.Schema{
+			ResourceServerTemplateIdKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The template identifier",
@@ -234,16 +249,20 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
 
 	body := ServerCreateBody{
-		Hostname:            d.Get(ResourceServerHostname).(string),
-		Label:               d.Get(ResourceServerLabel).(string),
-		InitialRootPassword: d.Get(ResourceServerRootPassword).(string),
-		Package:             d.Get(ResourceServerPackageId).(string),
-		Template:            d.Get(ResourceServerTemplateId).(string),
-		Location:            d.Get(ResourceServerLocationId).(string),
+		Hostname:            d.Get(ResourceServerHostnameKey).(string),
+		Label:               d.Get(ResourceServerLabelKey).(string),
+		InitialRootPassword: d.Get(ResourceServerRootPasswordKey).(string),
+		Package:             d.Get(ResourceServerPackageIdKey).(string),
+		Template:            d.Get(ResourceServerTemplateIdKey).(string),
+		Location:            d.Get(ResourceServerLocationIdKey).(string),
 	}
 
 	reqBody := new(bytes.Buffer)
-	json.NewEncoder(reqBody).Encode(body)
+	encodeErr := json.NewEncoder(reqBody).Encode(body)
+
+	if encodeErr != nil {
+		return encodeErr
+	}
 
 	res, resErr := doClientRequest(&clientSettings, "POST", "cloudservers", reqBody, []int{200}, 60, 10)
 
@@ -264,17 +283,15 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	// Keep attempting to boot the server to bypass an API issue which causes the booted flag to remain 0 (false).
-	res, resErr = doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/start", server.Identifier), new(bytes.Buffer), []int{200}, 20, 30)
+	// Due to API issues, We need to keep booting the server and wait for the booted flag to be toggled before continuing.
+	bootErr := resourceServerWaitForBootFlag(d, m, &server)
 
-	if resErr != nil {
-		return resErr
+	if bootErr != nil {
+		return bootErr
 	}
 
-	server = ServerBody{}
-	json.NewDecoder(res.Body).Decode(&server)
-
-	return dataSourceServerReadResponseBody(d, m, &server)
+	// We should now be able to change the properties for the primary network interface.
+	return resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
 }
 
 // resourceServerRead reads information about an existing server.
@@ -305,7 +322,16 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 	server := ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
-	return dataSourceServerReadResponseBody(d, m, &server)
+	parseErr := dataSourceServerReadResponseBody(d, m, &server)
+
+	if parseErr != nil {
+		return parseErr
+	}
+
+	d.Set(ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey, server.NetworkInterfaces[0].DefaultFirewallRule)
+	d.Set(ResourceServerPrimaryNetworkInterfaceLabelKey, server.NetworkInterfaces[0].Label)
+
+	return nil
 }
 
 // resourceServerUpdate updates an existing server.
@@ -313,12 +339,16 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(ClientSettings)
 
 	body := ServerUpdateBody{
-		Hostname: d.Get(ResourceServerHostname).(string),
-		Label:    d.Get(ResourceServerLabel).(string),
+		Hostname: d.Get(ResourceServerHostnameKey).(string),
+		Label:    d.Get(ResourceServerLabelKey).(string),
 	}
 
 	reqBody := new(bytes.Buffer)
-	json.NewEncoder(reqBody).Encode(body)
+	encodeErr := json.NewEncoder(reqBody).Encode(body)
+
+	if encodeErr != nil {
+		return encodeErr
+	}
 
 	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s", d.Id()), reqBody, []int{200}, 60, 10)
 
@@ -329,7 +359,37 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	server := ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
-	return dataSourceServerReadResponseBody(d, m, &server)
+	return resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
+}
+
+// resourceServerUpdatePrimaryNetworkInterface updates the primary interface on an existing server.
+func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m interface{}, server *ServerBody) error {
+	clientSettings := m.(ClientSettings)
+
+	networkInterfaceUpdateBody := NetworkInterfaceUpdateBody{
+		DefaultFirewallRule: d.Get(ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey).(string),
+		Label:               d.Get(ResourceServerPrimaryNetworkInterfaceLabelKey).(string),
+	}
+
+	reqBody := new(bytes.Buffer)
+	encodeErr := json.NewEncoder(reqBody).Encode(networkInterfaceUpdateBody)
+
+	if encodeErr != nil {
+		return encodeErr
+	}
+
+	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, server.NetworkInterfaces[0].Identifier), reqBody, []int{200}, 60, 10)
+
+	if resErr != nil {
+		return resErr
+	}
+
+	networkInterfaceBody := NetworkInterfaceBody{}
+	json.NewDecoder(res.Body).Decode(&networkInterfaceBody)
+
+	server.NetworkInterfaces[0] = networkInterfaceBody
+
+	return dataSourceServerReadResponseBody(d, m, server)
 }
 
 // resourceServerDelete deletes an existing server.
@@ -345,4 +405,65 @@ func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 	d.SetId("")
 
 	return nil
+}
+
+// resourceServerWaitForBootFlag() waits for the boot flag to be toggled.
+func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server *ServerBody) error {
+	clientSettings := m.(ClientSettings)
+
+	// Keep trying to boot the server until we get a successful reply from the API.
+	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/start", d.Id()), new(bytes.Buffer), []int{200}, 40, 15)
+
+	if resErr != nil {
+		return resErr
+	}
+
+	json.NewDecoder(res.Body).Decode(&server)
+
+	parseErr := dataSourceServerReadResponseBody(d, m, server)
+
+	if parseErr != nil {
+		return parseErr
+	}
+
+	if d.Get(DataSourceServerBootedKey).(bool) {
+		return nil
+	}
+
+	// For some reason the API is still indicating that the server has not been booted. Let's wait a while for that to change.
+	timeDelay := int64(10)
+	timeMax := float64(600)
+	timeStart := time.Now()
+	timeElapsed := timeStart.Sub(timeStart)
+
+	for timeElapsed.Seconds() < timeMax {
+		if int64(timeElapsed.Seconds())%timeDelay == 0 {
+			req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", server.Identifier), new(bytes.Buffer))
+
+			if reqErr != nil {
+				return reqErr
+			}
+
+			client := &http.Client{}
+			res, resErr := client.Do(req)
+
+			if resErr != nil {
+				return resErr
+			} else if res.StatusCode != 200 {
+				return fmt.Errorf("Failed to determine if the server '%s' (id: %s) was booted - Reason: HTTP %s", d.Get(ResourceServerHostnameKey).(string), server.Identifier, res.Status)
+			}
+
+			json.NewDecoder(res.Body).Decode(server)
+
+			if server.Booted {
+				return dataSourceServerReadResponseBody(d, m, server)
+			}
+		}
+
+		time.Sleep(200 * time.Millisecond)
+
+		timeElapsed = time.Now().Sub(timeStart)
+	}
+
+	return fmt.Errorf("The server '%s' (id: %s) does not appear to be able to boot", d.Get(ResourceServerHostnameKey).(string), server.Identifier)
 }

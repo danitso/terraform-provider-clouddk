@@ -111,6 +111,12 @@ type NetworkInterfaceBody struct {
 // NetworkInterfaceListBody describes a network interface list.
 type NetworkInterfaceListBody []NetworkInterfaceBody
 
+// NetworkInterfaceUpdateBody describes a network interface update object.
+type NetworkInterfaceUpdateBody struct {
+	Label               string `json:"label"`
+	DefaultFirewallRule string `json:"default_firewall_rule"`
+}
+
 // PackageBody describes a server package object.
 type PackageBody struct {
 	Identifier string `json:"identifier"`

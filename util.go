@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform/version"
@@ -43,21 +44,25 @@ func doClientRequest(settings *ClientSettings, method string, path string, body 
 	var response *http.Response
 	var responseError error
 
+	bodyString := body.String()
 	errorMessage := ""
 
 	for timeElapsed.Seconds() < timeMax {
 		if int64(timeElapsed.Seconds())%timeDelay == 0 {
 			log.Printf("[DEBUG] Querying the API - Method: %s - Path: %s", method, path)
 
-			request, requestError := getClientRequestObject(settings, method, path, body)
+			requestBody := bytes.NewBufferString(bodyString)
+			request, requestError := getClientRequestObject(settings, method, path, requestBody)
 
 			if requestError != nil {
 				return nil, requestError
 			}
 
-			if body.Len() > 0 {
+			if requestBody.Len() > 0 {
 				request.Header.Set("Content-Type", "application/json")
-				log.Printf("[DEBUG] Method: %s - Path: %s - Content-Type: %s - Content-Length: %d - Payload: %s", method, path, request.Header.Get("Content-Type"), request.ContentLength, body.String())
+				log.Printf("[DEBUG] Adding body to request - Method: %s - Path: %s - Content-Type: %s - Content-Length: %d - Body: %s", method, path, request.Header.Get("Content-Type"), requestBody.Len(), bodyString)
+			} else if method == "POST" || method == "PUT" {
+				log.Printf("[DEBUG] WARNING: No request body specified - Method: %s - Path: %s", method, path)
 			}
 
 			client := &http.Client{}
@@ -85,7 +90,9 @@ func doClientRequest(settings *ClientSettings, method string, path string, body 
 			}
 
 			if response.StatusCode != 500 {
-				break
+				if response.StatusCode != 400 || !strings.Contains(errorBody.Message, "CloudServer") {
+					break
+				}
 			}
 
 			log.Printf("[DEBUG] Failed to query the API - Reason: %s - Method: %s - Path: %s", errorMessage, method, path)

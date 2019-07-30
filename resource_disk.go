@@ -55,7 +55,11 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	reqBody := new(bytes.Buffer)
-	json.NewEncoder(reqBody).Encode(body)
+	encodeErr := json.NewEncoder(reqBody).Encode(body)
+
+	if encodeErr != nil {
+		return encodeErr
+	}
 
 	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/disks", serverId), reqBody, []int{200}, 60, 10)
 
@@ -116,7 +120,11 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	reqBody := new(bytes.Buffer)
-	json.NewEncoder(reqBody).Encode(body)
+	encodeErr := json.NewEncoder(reqBody).Encode(body)
+
+	if encodeErr != nil {
+		return encodeErr
+	}
 
 	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200}, 60, 10)
 

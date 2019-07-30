@@ -18,12 +18,12 @@ func TestResourceServerSchema(t *testing.T) {
 	s := resourceServer()
 
 	requiredKeys := []string{
-		ResourceServerHostname,
-		ResourceServerLabel,
-		ResourceServerLocationId,
-		ResourceServerPackageId,
-		ResourceServerRootPassword,
-		ResourceServerTemplateId,
+		ResourceServerHostnameKey,
+		ResourceServerLabelKey,
+		ResourceServerLocationIdKey,
+		ResourceServerPackageIdKey,
+		ResourceServerRootPasswordKey,
+		ResourceServerTemplateIdKey,
 	}
 
 	for _, v := range requiredKeys {
@@ -33,6 +33,21 @@ func TestResourceServerSchema(t *testing.T) {
 
 		if s.Schema[v].Required != true {
 			t.Fatalf("Error in resourceServer.Schema: Argument \"%s\" is not required", v)
+		}
+	}
+
+	optionalKeys := []string{
+		ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey,
+		ResourceServerPrimaryNetworkInterfaceLabelKey,
+	}
+
+	for _, v := range optionalKeys {
+		if s.Schema[v] == nil {
+			t.Fatalf("Error in resourceServer.Schema: Missing argument \"%s\"", v)
+		}
+
+		if s.Schema[v].Optional != true {
+			t.Fatalf("Error in resourceServer.Schema: Argument \"%s\" is not optional", v)
 		}
 	}
 

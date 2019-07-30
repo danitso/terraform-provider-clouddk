@@ -6,7 +6,9 @@ FEATURES:
 
 ENHANCEMENTS:
 
-data-source/resource: Improved API error handling when resources are temporarily locked
+provider: Improved API error handling
+resource/server: Added `primary_network_interface_default_firewall_rule` argument
+resource/server: Added `primary_network_interface_label` argument
 
 ## 0.1.0
 

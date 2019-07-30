@@ -279,6 +279,8 @@ This data source has no arguments.
 * `label` - (Required) This is the server's label.
 * `location_id` - (Required) This is the server's location.
 * `package_id` - (Required) This is the server's package.
+* `primary_network_interface_default_firewall_rule` - This is the default firewall rule for the server's primary network interface.
+* `primary_network_interface_label` - This is the label for the server's primary network interface.
 * `root_password` - (Required) This is the initial root password.
 * `template_id` - (Required) This is the server's template.
 
