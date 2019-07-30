@@ -30,6 +30,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"clouddk_disk":          resourceDisk(),
 			"clouddk_firewall_rule": resourceFirewallRule(),
+			"clouddk_ip_address":    resourceIPAddress(),
 			"clouddk_server":        resourceServer(),
 		},
 		Schema: map[string]*schema.Schema{

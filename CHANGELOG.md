@@ -3,6 +3,7 @@
 FEATURES:
 
 * **New Resource:** `clouddk_disk`
+* **New Resource:** `clouddk_ip_address`
 
 ENHANCEMENTS:
 

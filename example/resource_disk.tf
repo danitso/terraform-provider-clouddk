@@ -1,6 +1,6 @@
 resource "clouddk_disk" "example" {
   label = "Terraform Example"
-  size = 16
+  size = 8
 
   server_id = "${clouddk_server.example.id}"
 }
