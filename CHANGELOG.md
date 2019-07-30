@@ -8,7 +8,7 @@ FEATURES:
 ENHANCEMENTS:
 
 * provider: Improved API error handling
-* provider: Added support for server transactions
+* provider: Improved stability
 * resource/server: Added `primary_network_interface_default_firewall_rule` argument
 * resource/server: Added `primary_network_interface_label` argument
 
