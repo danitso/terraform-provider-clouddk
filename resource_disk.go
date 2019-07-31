@@ -45,17 +45,9 @@ func resourceDisk() *schema.Resource {
 
 // resourceDiskCreate() creates a disk.
 func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
-	serverId := d.Get(DataSourceDiskServerIdKey).(string)
-
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to create the disk without any issues.
 	clientSettings := m.(ClientSettings)
+
+	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 
 	body := DiskCreateBody{
 		Label: d.Get(DataSourceDiskLabelKey).(string),
@@ -69,10 +61,25 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 		return encodeErr
 	}
 
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
+	}
+
 	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/disks", serverId), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
+		resourceServerUnlock(d, m, serverId)
+
 		return resErr
+	}
+
+	lockErr = resourceServerUnlock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
 	}
 
 	disk := DiskBody{}
@@ -117,17 +124,9 @@ func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceDiskUpdate updates an existing disk.
 func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
-	serverId := d.Get(DataSourceDiskServerIdKey).(string)
-
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to update the disk without any issues.
 	clientSettings := m.(ClientSettings)
+
+	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 	diskId := d.Id()
 	body := DiskCreateBody{
 		Label: d.Get(DataSourceDiskLabelKey).(string),
@@ -141,10 +140,25 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 		return encodeErr
 	}
 
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
+	}
+
 	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200}, 60, 10)
 
 	if resErr != nil {
+		resourceServerUnlock(d, m, serverId)
+
 		return resErr
+	}
+
+	lockErr = resourceServerUnlock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
 	}
 
 	disk := DiskBody{}
@@ -155,23 +169,30 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceDiskDelete deletes an existing disk.
 func resourceDiskDelete(d *schema.ResourceData, m interface{}) error {
-	serverId := d.Get(DataSourceDiskServerIdKey).(string)
-
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to delete the disk without any issues.
 	clientSettings := m.(ClientSettings)
+
+	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 	diskId := d.Id()
+
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
+	}
 
 	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
+		resourceServerUnlock(d, m, serverId)
+
 		return err
+	}
+
+	lockErr = resourceServerUnlock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
 	}
 
 	d.SetId("")

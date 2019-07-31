@@ -58,18 +58,9 @@ func resourceFirewallRule() *schema.Resource {
 
 // resourceFirewallRuleCreate() creates a firewall rule.
 func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
-
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to create the firewall rule without any issues.
 	clientSettings := m.(ClientSettings)
 
+	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
 	address := strings.Split(d.Get(DataSourceFirewallRuleAddressKey).(string), "/")
 
@@ -98,10 +89,25 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 		return encodeErr
 	}
 
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
+	}
+
 	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
+		resourceServerUnlock(d, m, serverId)
+
 		return resErr
+	}
+
+	lockErr = resourceServerUnlock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
 	}
 
 	firewallRule := FirewallRuleBody{}
@@ -149,14 +155,6 @@ func resourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to update the firewall rule without any issues.
 	clientSettings := m.(ClientSettings)
 
 	firewallRuleId := d.Id()
@@ -188,10 +186,25 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 		return encodeErr
 	}
 
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
+	}
+
 	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
+		resourceServerUnlock(d, m, serverId)
+
 		return resErr
+	}
+
+	lockErr = resourceServerUnlock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
 	}
 
 	firewallRule := FirewallRuleBody{}
@@ -202,25 +215,31 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceFirewallRuleDelete deletes an existing firewall rule.
 func resourceFirewallRuleDelete(d *schema.ResourceData, m interface{}) error {
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
-
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, serverId, 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to delete the firewall rule without any issues.
 	clientSettings := m.(ClientSettings)
 
+	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 	firewallRuleId := d.Id()
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
+
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
+	}
 
 	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
+		resourceServerUnlock(d, m, serverId)
+
 		return err
+	}
+
+	lockErr = resourceServerUnlock(d, m, serverId)
+
+	if lockErr != nil {
+		return lockErr
 	}
 
 	d.SetId("")

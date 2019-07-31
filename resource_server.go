@@ -21,6 +21,9 @@ const ResourceServerPackageIdKey = "package_id"
 const ResourceServerRootPasswordKey = "root_password"
 const ResourceServerTemplateIdKey = "template_id"
 
+var serverMap = make(map[string]*sync.Mutex)
+var serverMapMutex = &sync.Mutex{}
+
 // resourceServer() manages a server.
 func resourceServer() *schema.Resource {
 	return &schema.Resource{
@@ -285,15 +288,37 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
-	// Due to API issues, We need to keep booting the server and wait for the booted flag to be toggled before continuing.
+	// Wait for the server to boot before proceeding as we may otherwise cause timeouts in provisioners.
 	bootErr := resourceServerWaitForBootFlag(d, m, &server)
 
 	if bootErr != nil {
 		return bootErr
 	}
 
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, d.Id())
+
+	if lockErr != nil {
+		return lockErr
+	}
+
 	// We should now be able to change the properties for the primary network interface.
-	return resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
+	updateNetworkError := resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
+
+	if updateNetworkError != nil {
+		resourceServerUnlock(d, m, d.Id())
+
+		return nil
+	}
+
+	// We need to release the lock for the server to allow other operations to continue.
+	lockErr = resourceServerUnlock(d, m, d.Id())
+
+	if lockErr != nil {
+		return lockErr
+	}
+
+	return nil
 }
 
 // resourceServerRead reads information about an existing server.
@@ -338,14 +363,6 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceServerUpdate updates an existing server.
 func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, d.Id(), 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to update the server without any issues.
 	clientSettings := m.(ClientSettings)
 
 	body := ServerUpdateBody{
@@ -360,6 +377,14 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 		return encodeErr
 	}
 
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, d.Id())
+
+	if lockErr != nil {
+		return lockErr
+	}
+
+	// We should now be able to proceed without any issues.
 	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s", d.Id()), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
@@ -369,19 +394,26 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	server := ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
-	return resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
+	updateNetworkError := resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
+
+	if updateNetworkError != nil {
+		resourceServerUnlock(d, m, d.Id())
+
+		return nil
+	}
+
+	// We need to release the lock for the server to allow other operations to continue.
+	lockErr = resourceServerUnlock(d, m, d.Id())
+
+	if lockErr != nil {
+		return lockErr
+	}
+
+	return nil
 }
 
 // resourceServerUpdatePrimaryNetworkInterface updates the primary interface on an existing server.
 func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m interface{}, server *ServerBody) error {
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, server.Identifier, 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to update the primary network interface without any issues.
 	clientSettings := m.(ClientSettings)
 
 	networkInterfaceUpdateBody := NetworkInterfaceUpdateBody{
@@ -412,20 +444,27 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 
 // resourceServerDelete deletes an existing server.
 func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
-	// We need to wait for transactions to end before proceeding.
-	transactionsErr := resourceServerWaitForTransactions(d, m, d.Id(), 60, 10)
-
-	if transactionsErr != nil {
-		return transactionsErr
-	}
-
-	// We should now be able to delete the server without any issues.
 	clientSettings := m.(ClientSettings)
 
+	// We need to acquire the lock for the server to reduce the risk of race conditions.
+	lockErr := resourceServerLock(d, m, d.Id())
+
+	if lockErr != nil {
+		return lockErr
+	}
+
+	// We should now be able to proceed without any issues.
 	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		return err
+	}
+
+	// We need to release the lock for the server to allow other operations to continue.
+	lockErr = resourceServerUnlock(d, m, d.Id())
+
+	if lockErr != nil {
+		return lockErr
 	}
 
 	d.SetId("")
@@ -433,42 +472,12 @@ func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-// resourceServerWaitForBootFlag() waits for the boot flag to be toggled.
-func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server *ServerBody) error {
+// resourceServerLock() acquires the lock for a specific server.
+func resourceServerLock(d *schema.ResourceData, m interface{}, serverId string) error {
 	clientSettings := m.(ClientSettings)
 
-	// For some reason the API is still indicating that the server has not been booted. Let's wait a while for that to change.
-	timeDelay := int64(10)
-	timeMax := float64(600)
-	timeStart := time.Now()
-	timeElapsed := timeStart.Sub(timeStart)
-
-	for timeElapsed.Seconds() < timeMax {
-		if int64(timeElapsed.Seconds())%timeDelay == 0 {
-			res, err := doClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", server.Identifier), new(bytes.Buffer), []int{200}, 1, 1)
-
-			if err != nil {
-				return err
-			}
-
-			json.NewDecoder(res.Body).Decode(server)
-
-			if server.Booted {
-				return dataSourceServerReadResponseBody(d, m, server)
-			}
-		}
-
-		time.Sleep(200 * time.Millisecond)
-
-		timeElapsed = time.Now().Sub(timeStart)
-	}
-
-	return fmt.Errorf("The server '%s' (id: %s) does not appear to be able to boot", d.Get(ResourceServerHostnameKey).(string), server.Identifier)
-}
-
-// resourceServerWaitForTransactions() locks until no server transactions are running.
-func resourceServerWaitForTransactions(d *schema.ResourceData, m interface{}, serverId string, retryLimit int, retryDelay int) error {
-	clientSettings := m.(ClientSettings)
+	retryLimit := 90
+	retryDelay := 10
 
 	// Acquire the lock for the serverMap variable.
 	log.Printf("[DEBUG] Acquiring lock for server map (id: %s)", serverId)
@@ -528,17 +537,58 @@ func resourceServerWaitForTransactions(d *schema.ResourceData, m interface{}, se
 		timeElapsed = time.Now().Sub(timeStart)
 	}
 
-	// We need to make sure to unlock the mutex for the server again now that we are done using it.
-	log.Printf("[DEBUG] Releasing lock for server (id: %s)", serverId)
-	serverMap[serverId].Unlock()
-
 	// Throw an error in case there are still transactions pending or running
 	if continueToWait {
+		log.Printf("[DEBUG] Releasing lock for server (id: %s)", serverId)
+		serverMap[serverId].Unlock()
+
 		return fmt.Errorf("Timeout while waiting for transactions to end (id: %s)", serverId)
 	}
 
 	return nil
 }
 
-var serverMap = make(map[string]*sync.Mutex)
-var serverMapMutex = &sync.Mutex{}
+// resourceServerUnlock() releases the lock for a specific server.
+func resourceServerUnlock(d *schema.ResourceData, m interface{}, serverId string) error {
+	if serverMap[serverId] == nil {
+		return fmt.Errorf("Cannot unlock a server which has never been locked during this session (id: %s)", serverId)
+	}
+
+	log.Printf("[DEBUG] Releasing lock for server (id: %s)", serverId)
+	serverMap[serverId].Unlock()
+
+	return nil
+}
+
+// resourceServerWaitForBootFlag() waits for the boot flag to be toggled.
+func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server *ServerBody) error {
+	clientSettings := m.(ClientSettings)
+
+	// For some reason the API is still indicating that the server has not been booted. Let's wait a while for that to change.
+	timeDelay := int64(10)
+	timeMax := float64(600)
+	timeStart := time.Now()
+	timeElapsed := timeStart.Sub(timeStart)
+
+	for timeElapsed.Seconds() < timeMax {
+		if int64(timeElapsed.Seconds())%timeDelay == 0 {
+			res, err := doClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", server.Identifier), new(bytes.Buffer), []int{200}, 1, 1)
+
+			if err != nil {
+				return err
+			}
+
+			json.NewDecoder(res.Body).Decode(server)
+
+			if server.Booted {
+				return dataSourceServerReadResponseBody(d, m, server)
+			}
+		}
+
+		time.Sleep(200 * time.Millisecond)
+
+		timeElapsed = time.Now().Sub(timeStart)
+	}
+
+	return fmt.Errorf("The server '%s' (id: %s) does not appear to be able to boot", d.Get(ResourceServerHostnameKey).(string), server.Identifier)
+}
