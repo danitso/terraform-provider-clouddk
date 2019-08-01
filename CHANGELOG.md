@@ -1,3 +1,9 @@
+## 0.2.1
+
+BUG FIXES:
+
+* provider: Fixed compatibility issues with Terraform 0.12+
+
 ## 0.2.0
 
 FEATURES:

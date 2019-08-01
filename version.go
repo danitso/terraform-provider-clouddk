@@ -1,4 +1,4 @@
 package main
 
 const TerraformProviderName = "terraform-provider-clouddk"
-const TerraformProviderVersion = "0.2.0"
+const TerraformProviderVersion = "0.2.1"
