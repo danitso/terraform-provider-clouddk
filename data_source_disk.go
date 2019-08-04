@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -54,7 +55,7 @@ func dataSourceDisk() *schema.Resource {
 
 // dataSourceDiskRead() reads information about a server's disk.
 func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	diskId := d.Get(DataSourceDiskIdKey).(string)
 	serverId := d.Get(DataSourceDiskServerIdKey).(string)
@@ -81,7 +82,7 @@ func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 }
 
 // dataSourceDiskReadResponseBody() parses information about a server's disk.
-func dataSourceDiskReadResponseBody(d *schema.ResourceData, m interface{}, disk *DiskBody) error {
+func dataSourceDiskReadResponseBody(d *schema.ResourceData, m interface{}, disk *clouddk.DiskBody) error {
 	d.SetId(disk.Identifier)
 
 	d.Set(DataSourceDiskLabelKey, disk.Label)
