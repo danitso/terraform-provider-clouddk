@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -64,10 +65,10 @@ func dataSourceIPAddresses() *schema.Resource {
 
 // dataSourceIPAddressesRead() reads information about IP addresses.
 func dataSourceIPAddressesRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	id := d.Get(DataSourceIPAddressesIdKey).(string)
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", id), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", id), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -82,7 +83,7 @@ func dataSourceIPAddressesRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the information about the IP addresses - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	ipAddresses := IPAddressListBody{}
+	ipAddresses := clouddk.IPAddressListBody{}
 	json.NewDecoder(res.Body).Decode(&ipAddresses)
 
 	addresses := make([]interface{}, len(ipAddresses))

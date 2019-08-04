@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -71,12 +72,12 @@ func dataSourceFirewallRules() *schema.Resource {
 
 // dataSourceFirewallRulesRead() reads information about firewall rules for a network interface.
 func dataSourceFirewallRulesRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	networkInterfaceId := d.Get(DataSourceFirewallRulesIdKey).(string)
 	serverId := d.Get(DataSourceFirewallRulesServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -91,7 +92,7 @@ func dataSourceFirewallRulesRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the information about the firewall rules - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	firewallRules := FirewallRuleListBody{}
+	firewallRules := clouddk.FirewallRuleListBody{}
 	json.NewDecoder(res.Body).Decode(&firewallRules)
 
 	firewallRulesAddresses := make([]interface{}, len(firewallRules))

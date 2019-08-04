@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -34,8 +35,8 @@ func dataSourceLocations() *schema.Resource {
 
 // dataSourceLocationsRead() reads information about datacenter locations.
 func dataSourceLocationsRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", "locations", new(bytes.Buffer))
+	clientSettings := m.(clouddk.ClientSettings)
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", "locations", new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -50,7 +51,7 @@ func dataSourceLocationsRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the information about the locations - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	list := make(LocationListBody, 0)
+	list := make(clouddk.LocationListBody, 0)
 	json.NewDecoder(res.Body).Decode(&list)
 
 	ids := make([]interface{}, len(list))

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -63,7 +64,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		return nil, errors.New("The API key cannot be an empty string")
 	}
 
-	clientSettings := ClientSettings{
+	clientSettings := clouddk.ClientSettings{
 		Endpoint: endpoint,
 		Key:      key,
 	}

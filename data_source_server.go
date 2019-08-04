@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -248,14 +249,14 @@ func dataSourceServer() *schema.Resource {
 
 // dataSourceServerRead() reads information about a server.
 func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 	id := d.Id()
 
 	if d.Get(DataSourceServerIdKey) != nil {
 		id = d.Get(DataSourceServerIdKey).(string)
 	}
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", id), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", id), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -270,14 +271,14 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the information about the server - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	server := ServerBody{}
+	server := clouddk.ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
 	return dataSourceServerReadResponseBody(d, m, &server)
 }
 
 // dataSourceServerReadResponseBody() reads the response body for a server request.
-func dataSourceServerReadResponseBody(d *schema.ResourceData, m interface{}, server *ServerBody) error {
+func dataSourceServerReadResponseBody(d *schema.ResourceData, m interface{}, server *clouddk.ServerBody) error {
 	diskIds := make([]interface{}, len(server.Disks))
 	diskLabels := make([]interface{}, len(server.Disks))
 	diskPrimary := make([]interface{}, len(server.Disks))

@@ -12,8 +12,8 @@ import (
 	"time"
 )
 
-// getClientRequestObject() returns a new HTTP request object.
-func getClientRequestObject(settings *ClientSettings, method string, path string, body io.Reader) (*http.Request, error) {
+// GetClientRequestObject() returns a new HTTP request object.
+func GetClientRequestObject(settings *ClientSettings, method string, path string, body io.Reader) (*http.Request, error) {
 	req, reqErr := http.NewRequest(method, fmt.Sprintf("%s/%s", settings.Endpoint, path), body)
 
 	if reqErr != nil {
@@ -26,8 +26,8 @@ func getClientRequestObject(settings *ClientSettings, method string, path string
 	return req, nil
 }
 
-// doClientRequest() performs a HTTP request and does so multiple times, if required.
-func doClientRequest(settings *ClientSettings, method string, path string, body *bytes.Buffer, successCodes []int, retryLimit int, retryDelay int) (*http.Response, error) {
+// DoClientRequest() performs a HTTP request and does so multiple times, if required.
+func DoClientRequest(settings *ClientSettings, method string, path string, body *bytes.Buffer, successCodes []int, retryLimit int, retryDelay int) (*http.Response, error) {
 	timeDelay := int64(retryDelay)
 	timeMax := float64(retryLimit * retryDelay)
 	timeStart := time.Now()
@@ -44,7 +44,7 @@ func doClientRequest(settings *ClientSettings, method string, path string, body 
 			log.Printf("[DEBUG] Querying the API - Method: %s - Path: %s", method, path)
 
 			requestBody := bytes.NewBufferString(bodyString)
-			request, requestError := getClientRequestObject(settings, method, path, requestBody)
+			request, requestError := GetClientRequestObject(settings, method, path, requestBody)
 
 			if requestError != nil {
 				return nil, requestError

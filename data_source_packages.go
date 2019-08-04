@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -34,8 +35,8 @@ func dataSourcePackages() *schema.Resource {
 
 // dataSourcePackagesRead() reads information about server packages.
 func dataSourcePackagesRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", "cloudservers/get-packages", new(bytes.Buffer))
+	clientSettings := m.(clouddk.ClientSettings)
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", "cloudservers/get-packages", new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -50,7 +51,7 @@ func dataSourcePackagesRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the information about the packages - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	list := make(PackageeListBody, 0)
+	list := make(clouddk.PackageeListBody, 0)
 	json.NewDecoder(res.Body).Decode(&list)
 
 	ids := make([]interface{}, len(list))

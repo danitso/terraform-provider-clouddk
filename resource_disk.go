@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -45,11 +46,11 @@ func resourceDisk() *schema.Resource {
 
 // resourceDiskCreate() creates a disk.
 func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 
-	body := DiskCreateBody{
+	body := clouddk.DiskCreateBody{
 		Label: d.Get(DataSourceDiskLabelKey).(string),
 		Size:  d.Get(DataSourceDiskSizeKey).(int),
 	}
@@ -68,7 +69,7 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/disks", serverId), reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/disks", serverId), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		resourceServerUnlock(d, m, serverId)
@@ -82,7 +83,7 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	disk := DiskBody{}
+	disk := clouddk.DiskBody{}
 	json.NewDecoder(res.Body).Decode(&disk)
 
 	return dataSourceDiskReadResponseBody(d, m, &disk)
@@ -90,12 +91,12 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 
 // resourceDiskRead reads information about an existing disk.
 func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	diskId := d.Id()
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -116,7 +117,7 @@ func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the disk information - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	disk := DiskBody{}
+	disk := clouddk.DiskBody{}
 	json.NewDecoder(res.Body).Decode(&disk)
 
 	return dataSourceDiskReadResponseBody(d, m, &disk)
@@ -124,11 +125,12 @@ func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceDiskUpdate updates an existing disk.
 func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 	diskId := d.Id()
-	body := DiskCreateBody{
+
+	body := clouddk.DiskCreateBody{
 		Label: d.Get(DataSourceDiskLabelKey).(string),
 		Size:  d.Get(DataSourceDiskSizeKey).(int),
 	}
@@ -147,7 +149,7 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200}, 60, 10)
 
 	if resErr != nil {
 		resourceServerUnlock(d, m, serverId)
@@ -161,7 +163,7 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	disk := DiskBody{}
+	disk := clouddk.DiskBody{}
 	json.NewDecoder(res.Body).Decode(&disk)
 
 	return dataSourceDiskReadResponseBody(d, m, &disk)
@@ -169,7 +171,7 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceDiskDelete deletes an existing disk.
 func resourceDiskDelete(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	serverId := d.Get(DataSourceDiskServerIdKey).(string)
 	diskId := d.Id()
@@ -181,7 +183,7 @@ func resourceDiskDelete(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		resourceServerUnlock(d, m, serverId)

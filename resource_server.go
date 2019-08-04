@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -251,9 +252,9 @@ func resourceServer() *schema.Resource {
 
 // resourceServerCreate() creates a server.
 func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
-	body := ServerCreateBody{
+	body := clouddk.ServerCreateBody{
 		Hostname:            d.Get(ResourceServerHostnameKey).(string),
 		Label:               d.Get(ResourceServerLabelKey).(string),
 		InitialRootPassword: d.Get(ResourceServerRootPasswordKey).(string),
@@ -269,13 +270,13 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		return encodeErr
 	}
 
-	res, resErr := doClientRequest(&clientSettings, "POST", "cloudservers", reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", "cloudservers", reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
 	}
 
-	server := ServerBody{}
+	server := clouddk.ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
 	parseErr := dataSourceServerReadResponseBody(d, m, &server)
@@ -323,9 +324,9 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 
 // resourceServerRead reads information about an existing server.
 func resourceServerRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -346,7 +347,7 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the server information - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	server := ServerBody{}
+	server := clouddk.ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
 	parseErr := dataSourceServerReadResponseBody(d, m, &server)
@@ -363,9 +364,9 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceServerUpdate updates an existing server.
 func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
-	body := ServerUpdateBody{
+	body := clouddk.ServerUpdateBody{
 		Hostname: d.Get(ResourceServerHostnameKey).(string),
 		Label:    d.Get(ResourceServerLabelKey).(string),
 	}
@@ -385,13 +386,13 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// We should now be able to proceed without any issues.
-	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s", d.Id()), reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s", d.Id()), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
 	}
 
-	server := ServerBody{}
+	server := clouddk.ServerBody{}
 	json.NewDecoder(res.Body).Decode(&server)
 
 	updateNetworkError := resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
@@ -413,10 +414,10 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 // resourceServerUpdatePrimaryNetworkInterface updates the primary interface on an existing server.
-func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m interface{}, server *ServerBody) error {
-	clientSettings := m.(ClientSettings)
+func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m interface{}, server *clouddk.ServerBody) error {
+	clientSettings := m.(clouddk.ClientSettings)
 
-	networkInterfaceUpdateBody := NetworkInterfaceUpdateBody{
+	networkInterfaceUpdateBody := clouddk.NetworkInterfaceUpdateBody{
 		DefaultFirewallRule: d.Get(ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey).(string),
 		Label:               d.Get(ResourceServerPrimaryNetworkInterfaceLabelKey).(string),
 	}
@@ -428,13 +429,13 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 		return encodeErr
 	}
 
-	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, server.NetworkInterfaces[0].Identifier), reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, server.NetworkInterfaces[0].Identifier), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		return resErr
 	}
 
-	networkInterfaceBody := NetworkInterfaceBody{}
+	networkInterfaceBody := clouddk.NetworkInterfaceBody{}
 	json.NewDecoder(res.Body).Decode(&networkInterfaceBody)
 
 	server.NetworkInterfaces[0] = networkInterfaceBody
@@ -444,7 +445,7 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 
 // resourceServerDelete deletes an existing server.
 func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
 	lockErr := resourceServerLock(d, m, d.Id())
@@ -454,7 +455,7 @@ func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// We should now be able to proceed without any issues.
-	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		return err
@@ -474,7 +475,7 @@ func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 
 // resourceServerLock() acquires the lock for a specific server.
 func resourceServerLock(d *schema.ResourceData, m interface{}, serverId string) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	retryLimit := 90
 	retryDelay := 10
@@ -506,13 +507,13 @@ func resourceServerLock(d *schema.ResourceData, m interface{}, serverId string) 
 
 	for timeElapsed.Seconds() < timeMax {
 		if int64(timeElapsed.Seconds())%timeDelay == 0 {
-			res, err := doClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/logs", serverId), new(bytes.Buffer), []int{200}, 1, 1)
+			res, err := clouddk.DoClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/logs", serverId), new(bytes.Buffer), []int{200}, 1, 1)
 
 			if err != nil {
 				return err
 			}
 
-			logsList := LogsListBody{}
+			logsList := clouddk.LogsListBody{}
 			json.NewDecoder(res.Body).Decode(&logsList)
 
 			continueToWait = false
@@ -561,8 +562,8 @@ func resourceServerUnlock(d *schema.ResourceData, m interface{}, serverId string
 }
 
 // resourceServerWaitForBootFlag() waits for the boot flag to be toggled.
-func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server *ServerBody) error {
-	clientSettings := m.(ClientSettings)
+func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server *clouddk.ServerBody) error {
+	clientSettings := m.(clouddk.ClientSettings)
 
 	// For some reason the API is still indicating that the server has not been booted. Let's wait a while for that to change.
 	timeDelay := int64(10)
@@ -572,7 +573,7 @@ func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server
 
 	for timeElapsed.Seconds() < timeMax {
 		if int64(timeElapsed.Seconds())%timeDelay == 0 {
-			res, err := doClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", server.Identifier), new(bytes.Buffer), []int{200}, 1, 1)
+			res, err := clouddk.DoClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", server.Identifier), new(bytes.Buffer), []int{200}, 1, 1)
 
 			if err != nil {
 				return err

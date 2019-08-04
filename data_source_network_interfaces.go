@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -154,10 +155,10 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 
 // dataSourceNetworkInterfacesRead() reads information about a server.
 func dataSourceNetworkInterfacesRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	id := d.Get(DataSourceNetworkInterfacesIdKey).(string)
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces", id), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces", id), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -172,7 +173,7 @@ func dataSourceNetworkInterfacesRead(d *schema.ResourceData, m interface{}) erro
 		return fmt.Errorf("Failed to read the information about the network interfaces - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	networkInterfaces := NetworkInterfaceListBody{}
+	networkInterfaces := clouddk.NetworkInterfaceListBody{}
 	json.NewDecoder(res.Body).Decode(&networkInterfaces)
 
 	networkInterfaceAddresses := make([]interface{}, len(networkInterfaces))

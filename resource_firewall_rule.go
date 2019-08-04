@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -58,7 +59,7 @@ func resourceFirewallRule() *schema.Resource {
 
 // resourceFirewallRuleCreate() creates a firewall rule.
 func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
@@ -74,7 +75,7 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Invalid address '%s' for firewall rule (%s)", d.Get(DataSourceFirewallRuleAddressKey).(string), bitsErr.Error())
 	}
 
-	body := FirewallRuleCreateBody{
+	body := clouddk.FirewallRuleCreateBody{
 		Command:  d.Get(DataSourceFirewallRuleCommandKey).(string),
 		Protocol: d.Get(DataSourceFirewallRuleProtocolKey).(string),
 		Address:  address[0],
@@ -96,7 +97,7 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		resourceServerUnlock(d, m, serverId)
@@ -110,7 +111,7 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	firewallRule := FirewallRuleBody{}
+	firewallRule := clouddk.FirewallRuleBody{}
 	json.NewDecoder(res.Body).Decode(&firewallRule)
 
 	return dataSourceFirewallRuleReadResponseBody(d, m, &firewallRule)
@@ -118,13 +119,13 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 
 // resourceFirewallRuleRead reads information about an existing firewall rule.
 func resourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	firewallRuleId := d.Id()
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -145,7 +146,7 @@ func resourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the firewall rule information - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	firewallRule := FirewallRuleBody{}
+	firewallRule := clouddk.FirewallRuleBody{}
 	json.NewDecoder(res.Body).Decode(&firewallRule)
 
 	return dataSourceFirewallRuleReadResponseBody(d, m, &firewallRule)
@@ -155,7 +156,7 @@ func resourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	firewallRuleId := d.Id()
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
@@ -171,7 +172,7 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Invalid address '%s' for firewall rule (%s)", d.Get(DataSourceFirewallRuleAddressKey).(string), bitsErr.Error())
 	}
 
-	body := FirewallRuleCreateBody{
+	body := clouddk.FirewallRuleCreateBody{
 		Command:  d.Get(DataSourceFirewallRuleCommandKey).(string),
 		Protocol: d.Get(DataSourceFirewallRuleProtocolKey).(string),
 		Address:  address[0],
@@ -193,7 +194,7 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	res, resErr := doClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
 		resourceServerUnlock(d, m, serverId)
@@ -207,7 +208,7 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	firewallRule := FirewallRuleBody{}
+	firewallRule := clouddk.FirewallRuleBody{}
 	json.NewDecoder(res.Body).Decode(&firewallRule)
 
 	return dataSourceFirewallRuleReadResponseBody(d, m, &firewallRule)
@@ -215,7 +216,7 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceFirewallRuleDelete deletes an existing firewall rule.
 func resourceFirewallRuleDelete(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 	firewallRuleId := d.Id()
@@ -228,7 +229,7 @@ func resourceFirewallRuleDelete(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		resourceServerUnlock(d, m, serverId)

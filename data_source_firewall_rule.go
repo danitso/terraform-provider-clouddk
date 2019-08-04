@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -67,7 +68,7 @@ func dataSourceFirewallRule() *schema.Resource {
 
 // dataSourceFirewallRuleRead() reads information about a firewall rule for a network interface.
 func dataSourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 	firewallRuleId := d.Id()
 
 	if d.Get(DataSourceFirewallRuleIdKey) != nil {
@@ -77,7 +78,7 @@ func dataSourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
 	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -92,14 +93,14 @@ func dataSourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the information about the firewall rule - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	firewallRule := FirewallRuleBody{}
+	firewallRule := clouddk.FirewallRuleBody{}
 	json.NewDecoder(res.Body).Decode(&firewallRule)
 
 	return dataSourceFirewallRuleReadResponseBody(d, m, &firewallRule)
 }
 
 // dataSourceFirewallRuleReadResponseBody() reads information about a firewall rule for a network interface.
-func dataSourceFirewallRuleReadResponseBody(d *schema.ResourceData, m interface{}, firewallRule *FirewallRuleBody) error {
+func dataSourceFirewallRuleReadResponseBody(d *schema.ResourceData, m interface{}, firewallRule *clouddk.FirewallRuleBody) error {
 	d.SetId(firewallRule.Identifier)
 
 	d.Set(DataSourceFirewallRuleAddressKey, fmt.Sprintf("%s/%d", firewallRule.Address, firewallRule.Bits))

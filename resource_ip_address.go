@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -61,7 +62,7 @@ func resourceIPAddress() *schema.Resource {
 
 // resourceIPAddressCreate() creates an IP address.
 func resourceIPAddressCreate(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
 
@@ -72,7 +73,7 @@ func resourceIPAddressCreate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	res, resErr := doClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/ip-addresses", serverId), new(bytes.Buffer), []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/ip-addresses", serverId), new(bytes.Buffer), []int{200}, 60, 10)
 
 	if resErr != nil {
 		resourceServerUnlock(d, m, serverId)
@@ -86,7 +87,7 @@ func resourceIPAddressCreate(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	ipAddresses := IPAddressListBody{}
+	ipAddresses := clouddk.IPAddressListBody{}
 	json.NewDecoder(res.Body).Decode(&ipAddresses)
 
 	d.SetId(ipAddresses[len(ipAddresses)-1].Address)
@@ -102,12 +103,12 @@ func resourceIPAddressCreate(d *schema.ResourceData, m interface{}) error {
 
 // resourceIPAddressRead reads information about an existing IP address.
 func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	address := d.Id()
 	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
 
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", serverId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", serverId), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -128,7 +129,7 @@ func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the IP address information - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	ipAddresses := IPAddressListBody{}
+	ipAddresses := clouddk.IPAddressListBody{}
 	json.NewDecoder(res.Body).Decode(&ipAddresses)
 
 	for _, v := range ipAddresses {
@@ -150,7 +151,7 @@ func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceIPAddressDelete deletes an existing IP address.
 func resourceIPAddressDelete(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
 	address := d.Id()
@@ -162,7 +163,7 @@ func resourceIPAddressDelete(d *schema.ResourceData, m interface{}) error {
 		return lockErr
 	}
 
-	_, err := doClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/ip-addresses?address=%s", serverId, address), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/ip-addresses?address=%s", serverId, address), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		resourceServerUnlock(d, m, serverId)

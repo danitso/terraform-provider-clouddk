@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -69,8 +70,8 @@ func dataSourceTemplatesRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// Retrieve the list of templates by invoking the API action.
-	clientSettings := m.(ClientSettings)
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", path, new(bytes.Buffer))
+	clientSettings := m.(clouddk.ClientSettings)
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", path, new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -85,7 +86,7 @@ func dataSourceTemplatesRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the information about the templates - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	list := make(TemplateListBody, 0)
+	list := make(clouddk.TemplateListBody, 0)
 	json.NewDecoder(res.Body).Decode(&list)
 
 	ids := make([]interface{}, len(list))

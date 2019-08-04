@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danitso/terraform-provider-clouddk/clouddk"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -57,10 +58,10 @@ func dataSourceDisks() *schema.Resource {
 
 // dataSourceDisksRead() reads information about a server's disks.
 func dataSourceDisksRead(d *schema.ResourceData, m interface{}) error {
-	clientSettings := m.(ClientSettings)
+	clientSettings := m.(clouddk.ClientSettings)
 
 	id := d.Get(DataSourceDisksIdKey).(string)
-	req, reqErr := getClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks", id), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks", id), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -75,7 +76,7 @@ func dataSourceDisksRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("Failed to read the information about the disks - Reason: The API responded with HTTP %s", res.Status)
 	}
 
-	disks := DiskListBody{}
+	disks := clouddk.DiskListBody{}
 	json.NewDecoder(res.Body).Decode(&disks)
 
 	diskIds := make([]interface{}, len(disks))
