@@ -1,3 +1,13 @@
+## 0.3.0 (UNRELEASED)
+
+ENHANCEMENTS:
+
+* provider: Moved API functions and structures to `clouddk` package
+
+BUG FIXES:
+
+* provider: Fixed issue related to HTTP 400 parsing
+
 ## 0.2.1
 
 BUG FIXES:
