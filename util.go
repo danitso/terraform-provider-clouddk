@@ -90,7 +90,7 @@ func doClientRequest(settings *ClientSettings, method string, path string, body 
 			}
 
 			if response.StatusCode != 500 {
-				if response.StatusCode != 400 || !strings.Contains(errorBody.Message, "CloudServer") {
+				if response.StatusCode != 400 || !strings.Contains(errorBody.Message, "CloudServer that is not yet built") {
 					break
 				}
 			}
