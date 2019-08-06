@@ -5,5 +5,5 @@ const (
 	TerraformProviderName = "terraform-provider-clouddk"
 
 	// TerraformProviderVersion specifies the version number.
-	TerraformProviderVersion = "0.2.1"
+	TerraformProviderVersion = "0.3.0"
 )
