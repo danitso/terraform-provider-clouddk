@@ -10,27 +10,27 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-// resourceDisk() manages a disk.
+// resourceDisk manages a disk.
 func resourceDisk() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceDiskLabelKey: &schema.Schema{
+			dataSourceDiskLabelKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The disk label",
 			},
-			DataSourceDiskPrimaryKey: &schema.Schema{
+			dataSourceDiskPrimaryKey: &schema.Schema{
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "Whether the disk is the primary disk",
 			},
-			DataSourceDiskServerIdKey: &schema.Schema{
+			dataSourceDiskServerIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
 				ForceNew:    true,
 			},
-			DataSourceDiskSizeKey: &schema.Schema{
+			dataSourceDiskSizeKey: &schema.Schema{
 				Type:        schema.TypeInt,
 				Required:    true,
 				Description: "The disk size in gigabytes",
@@ -44,15 +44,15 @@ func resourceDisk() *schema.Resource {
 	}
 }
 
-// resourceDiskCreate() creates a disk.
+// resourceDiskCreate creates a disk.
 func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	serverId := d.Get(DataSourceDiskServerIdKey).(string)
+	serverID := d.Get(dataSourceDiskServerIDKey).(string)
 
 	body := clouddk.DiskCreateBody{
-		Label: d.Get(DataSourceDiskLabelKey).(string),
-		Size:  d.Get(DataSourceDiskSizeKey).(int),
+		Label: d.Get(dataSourceDiskLabelKey).(string),
+		Size:  d.Get(dataSourceDiskSizeKey).(int),
 	}
 
 	reqBody := new(bytes.Buffer)
@@ -63,21 +63,21 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverId)
+	lockErr := resourceServerLock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/disks", serverId), reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/disks", serverID), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
-		resourceServerUnlock(d, m, serverId)
+		resourceServerUnlock(d, m, serverID)
 
 		return resErr
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverId)
+	lockErr = resourceServerUnlock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
@@ -93,10 +93,10 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	diskId := d.Id()
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
+	diskID := d.Id()
+	serverID := d.Get(dataSourceDiskServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -127,12 +127,12 @@ func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
 func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	serverId := d.Get(DataSourceDiskServerIdKey).(string)
-	diskId := d.Id()
+	diskID := d.Id()
+	serverID := d.Get(dataSourceDiskServerIDKey).(string)
 
 	body := clouddk.DiskCreateBody{
-		Label: d.Get(DataSourceDiskLabelKey).(string),
-		Size:  d.Get(DataSourceDiskSizeKey).(int),
+		Label: d.Get(dataSourceDiskLabelKey).(string),
+		Size:  d.Get(dataSourceDiskSizeKey).(int),
 	}
 
 	reqBody := new(bytes.Buffer)
@@ -143,21 +143,21 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverId)
+	lockErr := resourceServerLock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer), []int{200}, 60, 10)
 
 	if resErr != nil {
-		resourceServerUnlock(d, m, serverId)
+		resourceServerUnlock(d, m, serverID)
 
 		return resErr
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverId)
+	lockErr = resourceServerUnlock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
@@ -173,25 +173,25 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceDiskDelete(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	serverId := d.Get(DataSourceDiskServerIdKey).(string)
-	diskId := d.Id()
+	diskID := d.Id()
+	serverID := d.Get(dataSourceDiskServerIDKey).(string)
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverId)
+	lockErr := resourceServerLock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
 	}
 
-	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
-		resourceServerUnlock(d, m, serverId)
+		resourceServerUnlock(d, m, serverID)
 
 		return err
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverId)
+	lockErr = resourceServerUnlock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourceServerInstantiation() tests whether the dataSourceServer instance can be instantiated.
+// TestDataSourceServerInstantiation tests whether the dataSourceServer instance can be instantiated.
 func TestDataSourceServerInstantiation(t *testing.T) {
 	s := dataSourceServer()
 
@@ -13,48 +13,48 @@ func TestDataSourceServerInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceServerSchema() tests the dataSourceServer schema.
+// TestDataSourceServerSchema tests the dataSourceServer schema.
 func TestDataSourceServerSchema(t *testing.T) {
 	s := dataSourceServer()
 
-	if s.Schema[DataSourceServerIdKey] == nil {
-		t.Fatalf("Error in dataSourceServer.Schema: Missing argument \"%s\"", DataSourceServerIdKey)
+	if s.Schema[dataSourceServerIDKey] == nil {
+		t.Fatalf("Error in dataSourceServer.Schema: Missing argument \"%s\"", dataSourceServerIDKey)
 	}
 
-	if s.Schema[DataSourceServerIdKey].Required != true {
-		t.Fatalf("Error in dataSourceServer.Schema: Argument \"%s\" is not required", DataSourceServerIdKey)
+	if s.Schema[dataSourceServerIDKey].Required != true {
+		t.Fatalf("Error in dataSourceServer.Schema: Argument \"%s\" is not required", dataSourceServerIDKey)
 	}
 
 	attributeKeys := []string{
-		DataSourceServerBootedKey,
-		DataSourceServerCPUsKey,
-		DataSourceServerDiskIdsKey,
-		DataSourceServerDiskLabelsKey,
-		DataSourceServerDiskPrimaryKey,
-		DataSourceServerDiskSizesKey,
-		DataSourceServerHostnameKey,
-		DataSourceServerLabelKey,
-		DataSourceServerMemoryKey,
-		DataSourceServerNetworkInterfaceAddressesKey,
-		DataSourceServerNetworkInterfaceDefaultFirewallRulesKey,
-		DataSourceServerNetworkInterfaceFirewallRulesAddressesKey,
-		DataSourceServerNetworkInterfaceFirewallRulesCommandsKey,
-		DataSourceServerNetworkInterfaceFirewallRulesIdsKey,
-		DataSourceServerNetworkInterfaceFirewallRulesPortsKey,
-		DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey,
-		DataSourceServerNetworkInterfaceGatewaysKey,
-		DataSourceServerNetworkInterfaceIdsKey,
-		DataSourceServerNetworkInterfaceLabelsKey,
-		DataSourceServerNetworkInterfaceNetmasksKey,
-		DataSourceServerNetworkInterfaceNetworksKey,
-		DataSourceServerNetworkInterfacePrimaryKey,
-		DataSourceServerNetworkInterfaceRateLimitsKey,
-		DataSourceServerLocationIdKey,
-		DataSourceServerLocationNameKey,
-		DataSourceServerPackageIdKey,
-		DataSourceServerPackageNameKey,
-		DataSourceServerTemplateIdKey,
-		DataSourceServerTemplateNameKey,
+		dataSourceServerBootedKey,
+		dataSourceServerCPUsKey,
+		dataSourceServerDiskIdsKey,
+		dataSourceServerDiskLabelsKey,
+		dataSourceServerDiskPrimaryKey,
+		dataSourceServerDiskSizesKey,
+		dataSourceServerHostnameKey,
+		dataSourceServerLabelKey,
+		dataSourceServerMemoryKey,
+		dataSourceServerNetworkInterfaceAddressesKey,
+		dataSourceServerNetworkInterfaceDefaultFirewallRulesKey,
+		dataSourceServerNetworkInterfaceFirewallRulesAddressesKey,
+		dataSourceServerNetworkInterfaceFirewallRulesCommandsKey,
+		dataSourceServerNetworkInterfaceFirewallRulesIdsKey,
+		dataSourceServerNetworkInterfaceFirewallRulesPortsKey,
+		dataSourceServerNetworkInterfaceFirewallRulesProtocolsKey,
+		dataSourceServerNetworkInterfaceGatewaysKey,
+		dataSourceServerNetworkInterfaceIdsKey,
+		dataSourceServerNetworkInterfaceLabelsKey,
+		dataSourceServerNetworkInterfaceNetmasksKey,
+		dataSourceServerNetworkInterfaceNetworksKey,
+		dataSourceServerNetworkInterfacePrimaryKey,
+		dataSourceServerNetworkInterfaceRateLimitsKey,
+		dataSourceServerLocationIDKey,
+		dataSourceServerLocationNameKey,
+		dataSourceServerPackageIDKey,
+		dataSourceServerPackageNameKey,
+		dataSourceServerTemplateIDKey,
+		dataSourceServerTemplateNameKey,
 	}
 
 	for _, v := range attributeKeys {

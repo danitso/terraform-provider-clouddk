@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourceDisksInstantiation() tests whether the dataSourceDisks instance can be instantiated.
+// TestDataSourceDisksInstantiation tests whether the dataSourceDisks instance can be instantiated.
 func TestDataSourceDisksInstantiation(t *testing.T) {
 	s := dataSourceDisks()
 
@@ -13,23 +13,23 @@ func TestDataSourceDisksInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceDisksSchema() tests the dataSourceDisks schema.
+// TestDataSourceDisksSchema tests the dataSourceDisks schema.
 func TestDataSourceDisksSchema(t *testing.T) {
 	s := dataSourceDisks()
 
-	if s.Schema[DataSourceDisksIdKey] == nil {
-		t.Fatalf("Error in dataSourceDisks.Schema: Missing argument \"%s\"", DataSourceDisksIdKey)
+	if s.Schema[dataSourceDisksIDKey] == nil {
+		t.Fatalf("Error in dataSourceDisks.Schema: Missing argument \"%s\"", dataSourceDisksIDKey)
 	}
 
-	if s.Schema[DataSourceDisksIdKey].Required != true {
-		t.Fatalf("Error in dataSourceDisks.Schema: Argument \"%s\" is not required", DataSourceDisksIdKey)
+	if s.Schema[dataSourceDisksIDKey].Required != true {
+		t.Fatalf("Error in dataSourceDisks.Schema: Argument \"%s\" is not required", dataSourceDisksIDKey)
 	}
 
 	attributeKeys := []string{
-		DataSourceDisksIdsKey,
-		DataSourceDisksLabelsKey,
-		DataSourceDisksPrimaryKey,
-		DataSourceDisksSizesKey,
+		dataSourceDisksIdsKey,
+		dataSourceDisksLabelsKey,
+		dataSourceDisksPrimaryKey,
+		dataSourceDisksSizesKey,
 	}
 
 	for _, v := range attributeKeys {

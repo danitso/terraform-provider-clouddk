@@ -10,19 +10,21 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourcePackagesIdsKey = "ids"
-const DataSourcePackagesNamesKey = "names"
+const (
+	dataSourcePackagesIdsKey   = "ids"
+	dataSourcePackagesNamesKey = "names"
+)
 
-// dataSourcePackages() retrieves a list of server packages.
+// dataSourcePackages retrieves a list of server packages.
 func dataSourcePackages() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourcePackagesIdsKey: &schema.Schema{
+			dataSourcePackagesIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourcePackagesNamesKey: &schema.Schema{
+			dataSourcePackagesNamesKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -33,7 +35,7 @@ func dataSourcePackages() *schema.Resource {
 	}
 }
 
-// dataSourcePackagesRead() reads information about server packages.
+// dataSourcePackagesRead reads information about server packages.
 func dataSourcePackagesRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", "cloudservers/get-packages", new(bytes.Buffer))
@@ -64,8 +66,8 @@ func dataSourcePackagesRead(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId("locations")
 
-	d.Set(DataSourcePackagesIdsKey, ids)
-	d.Set(DataSourcePackagesNamesKey, names)
+	d.Set(dataSourcePackagesIdsKey, ids)
+	d.Set(dataSourcePackagesNamesKey, names)
 
 	return nil
 }

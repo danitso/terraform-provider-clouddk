@@ -10,55 +10,57 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceFirewallRulesAddressesKey = "addresses"
-const DataSourceFirewallRulesCommandsKey = "commands"
-const DataSourceFirewallRulesIdKey = "id"
-const DataSourceFirewallRulesIdsKey = "ids"
-const DataSourceFirewallRulesPortsKey = "ports"
-const DataSourceFirewallRulesProtocolsKey = "protocols"
-const DataSourceFirewallRulesServerIdKey = "server_id"
+const (
+	dataSourceFirewallRulesAddressesKey = "addresses"
+	dataSourceFirewallRulesCommandsKey  = "commands"
+	dataSourceFirewallRulesIDKey        = "id"
+	dataSourceFirewallRulesIdsKey       = "ids"
+	dataSourceFirewallRulesPortsKey     = "ports"
+	dataSourceFirewallRulesProtocolsKey = "protocols"
+	dataSourceFirewallRulesServerIDKey  = "server_id"
+)
 
-// dataSourceFirewallRules() retrieves information about firewall rules for a network interface.
+// dataSourceFirewallRules retrieves information about firewall rules for a network interface.
 func dataSourceFirewallRules() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceFirewallRulesAddressesKey: &schema.Schema{
+			dataSourceFirewallRulesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The CIDR blocks for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceFirewallRulesCommandsKey: &schema.Schema{
+			dataSourceFirewallRulesCommandsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The commands for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceFirewallRulesIdKey: &schema.Schema{
+			dataSourceFirewallRulesIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The network interface identifier",
 				ForceNew:    true,
 			},
-			DataSourceFirewallRulesIdsKey: &schema.Schema{
+			dataSourceFirewallRulesIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The identifiers for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceFirewallRulesPortsKey: &schema.Schema{
+			dataSourceFirewallRulesPortsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceFirewallRulesProtocolsKey: &schema.Schema{
+			dataSourceFirewallRulesProtocolsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The protocols for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceFirewallRulesServerIdKey: &schema.Schema{
+			dataSourceFirewallRulesServerIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
@@ -70,14 +72,14 @@ func dataSourceFirewallRules() *schema.Resource {
 	}
 }
 
-// dataSourceFirewallRulesRead() reads information about firewall rules for a network interface.
+// dataSourceFirewallRulesRead reads information about firewall rules for a network interface.
 func dataSourceFirewallRulesRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	networkInterfaceId := d.Get(DataSourceFirewallRulesIdKey).(string)
-	serverId := d.Get(DataSourceFirewallRulesServerIdKey).(string)
+	networkInterfaceID := d.Get(dataSourceFirewallRulesIDKey).(string)
+	serverID := d.Get(dataSourceFirewallRulesServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverID, networkInterfaceID), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -109,13 +111,13 @@ func dataSourceFirewallRulesRead(d *schema.ResourceData, m interface{}) error {
 		firewallRulesProtocols[v.Position-1] = v.Protocol
 	}
 
-	d.SetId(networkInterfaceId)
+	d.SetId(networkInterfaceID)
 
-	d.Set(DataSourceFirewallRulesAddressesKey, firewallRulesAddresses)
-	d.Set(DataSourceFirewallRulesCommandsKey, firewallRulesCommands)
-	d.Set(DataSourceFirewallRulesIdsKey, firewallRulesIds)
-	d.Set(DataSourceFirewallRulesPortsKey, firewallRulesPorts)
-	d.Set(DataSourceFirewallRulesProtocolsKey, firewallRulesProtocols)
+	d.Set(dataSourceFirewallRulesAddressesKey, firewallRulesAddresses)
+	d.Set(dataSourceFirewallRulesCommandsKey, firewallRulesCommands)
+	d.Set(dataSourceFirewallRulesIdsKey, firewallRulesIds)
+	d.Set(dataSourceFirewallRulesPortsKey, firewallRulesPorts)
+	d.Set(dataSourceFirewallRulesProtocolsKey, firewallRulesProtocols)
 
 	return nil
 }

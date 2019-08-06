@@ -12,37 +12,37 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-// resourceFirewallRule() manages a firewall rule.
+// resourceFirewallRule manages a firewall rule.
 func resourceFirewallRule() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceFirewallRuleAddressKey: &schema.Schema{
+			dataSourceFirewallRuleAddressKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The CIDR block for the firewall rule",
 			},
-			DataSourceFirewallRuleCommandKey: &schema.Schema{
+			dataSourceFirewallRuleCommandKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The command for the firewall rule",
 			},
-			DataSourceFirewallRuleNetworkInterfaceIdKey: &schema.Schema{
+			dataSourceFirewallRuleNetworkInterfaceIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The network interface identifier",
 				ForceNew:    true,
 			},
-			DataSourceFirewallRulePortKey: &schema.Schema{
+			dataSourceFirewallRulePortKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The port for the firewall rule",
 			},
-			DataSourceFirewallRuleProtocolKey: &schema.Schema{
+			dataSourceFirewallRuleProtocolKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The protocol for the firewall rule",
 			},
-			DataSourceFirewallRuleServerIdKey: &schema.Schema{
+			dataSourceFirewallRuleServerIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
@@ -57,30 +57,30 @@ func resourceFirewallRule() *schema.Resource {
 	}
 }
 
-// resourceFirewallRuleCreate() creates a firewall rule.
+// resourceFirewallRuleCreate creates a firewall rule.
 func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
-	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
-	address := strings.Split(d.Get(DataSourceFirewallRuleAddressKey).(string), "/")
+	serverID := d.Get(dataSourceFirewallRuleServerIDKey).(string)
+	networkInterfaceID := d.Get(dataSourceFirewallRuleNetworkInterfaceIDKey).(string)
+	address := strings.Split(d.Get(dataSourceFirewallRuleAddressKey).(string), "/")
 
 	if len(address) != 2 {
-		return fmt.Errorf("Invalid address '%s' for firewall rule (must be defined as x.x.x.x/x)", d.Get(DataSourceFirewallRuleAddressKey).(string))
+		return fmt.Errorf("Invalid address '%s' for firewall rule (must be defined as x.x.x.x/x)", d.Get(dataSourceFirewallRuleAddressKey).(string))
 	}
 
 	bits, bitsErr := strconv.Atoi(address[1])
 
 	if bitsErr != nil {
-		return fmt.Errorf("Invalid address '%s' for firewall rule (%s)", d.Get(DataSourceFirewallRuleAddressKey).(string), bitsErr.Error())
+		return fmt.Errorf("Invalid address '%s' for firewall rule (%s)", d.Get(dataSourceFirewallRuleAddressKey).(string), bitsErr.Error())
 	}
 
 	body := clouddk.FirewallRuleCreateBody{
-		Command:  d.Get(DataSourceFirewallRuleCommandKey).(string),
-		Protocol: d.Get(DataSourceFirewallRuleProtocolKey).(string),
+		Command:  d.Get(dataSourceFirewallRuleCommandKey).(string),
+		Protocol: d.Get(dataSourceFirewallRuleProtocolKey).(string),
 		Address:  address[0],
 		Bits:     bits,
-		Port:     d.Get(DataSourceFirewallRulePortKey).(string),
+		Port:     d.Get(dataSourceFirewallRulePortKey).(string),
 	}
 
 	reqBody := new(bytes.Buffer)
@@ -91,21 +91,21 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverId)
+	lockErr := resourceServerLock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverId, networkInterfaceId), reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverID, networkInterfaceID), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
-		resourceServerUnlock(d, m, serverId)
+		resourceServerUnlock(d, m, serverID)
 
 		return resErr
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverId)
+	lockErr = resourceServerUnlock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
@@ -121,11 +121,11 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 func resourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	firewallRuleId := d.Id()
-	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
+	firewallRuleID := d.Id()
+	networkInterfaceID := d.Get(dataSourceFirewallRuleNetworkInterfaceIDKey).(string)
+	serverID := d.Get(dataSourceFirewallRuleServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverID, networkInterfaceID, firewallRuleID), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -154,30 +154,30 @@ func resourceFirewallRuleRead(d *schema.ResourceData, m interface{}) error {
 
 // resourceFirewallRuleUpdate updates an existing firewall rule.
 func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
+	serverID := d.Get(dataSourceFirewallRuleServerIDKey).(string)
 
 	clientSettings := m.(clouddk.ClientSettings)
 
-	firewallRuleId := d.Id()
-	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
-	address := strings.Split(d.Get(DataSourceFirewallRuleAddressKey).(string), "/")
+	firewallRuleID := d.Id()
+	networkInterfaceID := d.Get(dataSourceFirewallRuleNetworkInterfaceIDKey).(string)
+	address := strings.Split(d.Get(dataSourceFirewallRuleAddressKey).(string), "/")
 
 	if len(address) != 2 {
-		return fmt.Errorf("Invalid address '%s' for firewall rule (must be defined as x.x.x.x/x)", d.Get(DataSourceFirewallRuleAddressKey).(string))
+		return fmt.Errorf("Invalid address '%s' for firewall rule (must be defined as x.x.x.x/x)", d.Get(dataSourceFirewallRuleAddressKey).(string))
 	}
 
 	bits, bitsErr := strconv.Atoi(address[1])
 
 	if bitsErr != nil {
-		return fmt.Errorf("Invalid address '%s' for firewall rule (%s)", d.Get(DataSourceFirewallRuleAddressKey).(string), bitsErr.Error())
+		return fmt.Errorf("Invalid address '%s' for firewall rule (%s)", d.Get(dataSourceFirewallRuleAddressKey).(string), bitsErr.Error())
 	}
 
 	body := clouddk.FirewallRuleCreateBody{
-		Command:  d.Get(DataSourceFirewallRuleCommandKey).(string),
-		Protocol: d.Get(DataSourceFirewallRuleProtocolKey).(string),
+		Command:  d.Get(dataSourceFirewallRuleCommandKey).(string),
+		Protocol: d.Get(dataSourceFirewallRuleProtocolKey).(string),
 		Address:  address[0],
 		Bits:     bits,
-		Port:     d.Get(DataSourceFirewallRulePortKey).(string),
+		Port:     d.Get(dataSourceFirewallRulePortKey).(string),
 	}
 
 	reqBody := new(bytes.Buffer)
@@ -188,21 +188,21 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverId)
+	lockErr := resourceServerLock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), reqBody, []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverID, networkInterfaceID, firewallRuleID), reqBody, []int{200}, 60, 10)
 
 	if resErr != nil {
-		resourceServerUnlock(d, m, serverId)
+		resourceServerUnlock(d, m, serverID)
 
 		return resErr
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverId)
+	lockErr = resourceServerUnlock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
@@ -218,26 +218,26 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceFirewallRuleDelete(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	serverId := d.Get(DataSourceFirewallRuleServerIdKey).(string)
-	firewallRuleId := d.Id()
-	networkInterfaceId := d.Get(DataSourceFirewallRuleNetworkInterfaceIdKey).(string)
+	serverID := d.Get(dataSourceFirewallRuleServerIDKey).(string)
+	firewallRuleID := d.Id()
+	networkInterfaceID := d.Get(dataSourceFirewallRuleNetworkInterfaceIDKey).(string)
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverId)
+	lockErr := resourceServerLock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
 	}
 
-	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverId, networkInterfaceId, firewallRuleId), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules/%s", serverID, networkInterfaceID, firewallRuleID), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
-		resourceServerUnlock(d, m, serverId)
+		resourceServerUnlock(d, m, serverID)
 
 		return err
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverId)
+	lockErr = resourceServerUnlock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr

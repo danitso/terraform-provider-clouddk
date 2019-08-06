@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourceNetworkInterfaceInstantiation() tests whether the dataSourceNetworkInterface instance can be instantiated.
+// TestDataSourceNetworkInterfaceInstantiation tests whether the dataSourceNetworkInterface instance can be instantiated.
 func TestDataSourceNetworkInterfaceInstantiation(t *testing.T) {
 	s := dataSourceNetworkInterface()
 
@@ -13,13 +13,13 @@ func TestDataSourceNetworkInterfaceInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceNetworkInterfaceSchema() tests the dataSourceNetworkInterface schema.
+// TestDataSourceNetworkInterfaceSchema tests the dataSourceNetworkInterface schema.
 func TestDataSourceNetworkInterfaceSchema(t *testing.T) {
 	s := dataSourceNetworkInterface()
 
 	idKeys := []string{
-		DataSourceNetworkInterfaceIdKey,
-		DataSourceNetworkInterfaceServerIdKey,
+		dataSourceNetworkInterfaceIDKey,
+		dataSourceNetworkInterfaceServerIDKey,
 	}
 
 	for _, v := range idKeys {
@@ -33,19 +33,19 @@ func TestDataSourceNetworkInterfaceSchema(t *testing.T) {
 	}
 
 	attributeKeys := []string{
-		DataSourceNetworkInterfaceAddressesKey,
-		DataSourceNetworkInterfaceDefaultFirewallRuleKey,
-		DataSourceNetworkInterfaceFirewallRulesAddressesKey,
-		DataSourceNetworkInterfaceFirewallRulesCommandsKey,
-		DataSourceNetworkInterfaceFirewallRulesIdsKey,
-		DataSourceNetworkInterfaceFirewallRulesPortsKey,
-		DataSourceNetworkInterfaceFirewallRulesProtocolsKey,
-		DataSourceNetworkInterfaceGatewaysKey,
-		DataSourceNetworkInterfaceLabelKey,
-		DataSourceNetworkInterfaceNetmasksKey,
-		DataSourceNetworkInterfaceNetworksKey,
-		DataSourceNetworkInterfacePrimaryKey,
-		DataSourceNetworkInterfaceRateLimitKey,
+		dataSourceNetworkInterfaceAddressesKey,
+		dataSourceNetworkInterfaceDefaultFirewallRuleKey,
+		dataSourceNetworkInterfaceFirewallRulesAddressesKey,
+		dataSourceNetworkInterfaceFirewallRulesCommandsKey,
+		dataSourceNetworkInterfaceFirewallRulesIdsKey,
+		dataSourceNetworkInterfaceFirewallRulesPortsKey,
+		dataSourceNetworkInterfaceFirewallRulesProtocolsKey,
+		dataSourceNetworkInterfaceGatewaysKey,
+		dataSourceNetworkInterfaceLabelKey,
+		dataSourceNetworkInterfaceNetmasksKey,
+		dataSourceNetworkInterfaceNetworksKey,
+		dataSourceNetworkInterfacePrimaryKey,
+		dataSourceNetworkInterfaceRateLimitKey,
 	}
 
 	for _, v := range attributeKeys {

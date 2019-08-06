@@ -19,27 +19,27 @@ func TestProviderInstantiation(t *testing.T) {
 func TestProviderSchema(t *testing.T) {
 	s := Provider()
 
-	if s.Schema[ProviderConfigurationEndpoint] == nil {
-		t.Fatalf("Error in Provider.Schema: Missing argument \"%s\"", ProviderConfigurationEndpoint)
+	if s.Schema[providerConfigurationEndpoint] == nil {
+		t.Fatalf("Error in Provider.Schema: Missing argument \"%s\"", providerConfigurationEndpoint)
 	}
 
-	if s.Schema[ProviderConfigurationEndpoint].Optional != true {
-		t.Fatalf("Error in Provider.Schema: Argument \"%s\" is not optional", ProviderConfigurationEndpoint)
+	if s.Schema[providerConfigurationEndpoint].Optional != true {
+		t.Fatalf("Error in Provider.Schema: Argument \"%s\" is not optional", providerConfigurationEndpoint)
 	}
 
-	if s.Schema[ProviderConfigurationEndpoint].Type != schema.TypeString {
-		t.Fatalf("Error in Provider.Schema: Argument \"%s\" is not a string", ProviderConfigurationEndpoint)
+	if s.Schema[providerConfigurationEndpoint].Type != schema.TypeString {
+		t.Fatalf("Error in Provider.Schema: Argument \"%s\" is not a string", providerConfigurationEndpoint)
 	}
 
-	if s.Schema[ProviderConfigurationKey] == nil {
-		t.Fatalf("Error in Provider.Schema: Missing argument \"%s\"", ProviderConfigurationKey)
+	if s.Schema[providerConfigurationKey] == nil {
+		t.Fatalf("Error in Provider.Schema: Missing argument \"%s\"", providerConfigurationKey)
 	}
 
-	if s.Schema[ProviderConfigurationKey].Required != true {
-		t.Fatalf("Error in Provider.Schema: Argument \"%s\" is not required", ProviderConfigurationKey)
+	if s.Schema[providerConfigurationKey].Required != true {
+		t.Fatalf("Error in Provider.Schema: Argument \"%s\" is not required", providerConfigurationKey)
 	}
 
-	if s.Schema[ProviderConfigurationKey].Type != schema.TypeString {
-		t.Fatalf("Error in Provider.Schema: Argument \"%s\" is not a string", ProviderConfigurationKey)
+	if s.Schema[providerConfigurationKey].Type != schema.TypeString {
+		t.Fatalf("Error in Provider.Schema: Argument \"%s\" is not a string", providerConfigurationKey)
 	}
 }

@@ -7,10 +7,12 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const ProviderConfigurationEndpoint = "endpoint"
-const ProviderConfigurationKey = "key"
+const (
+	providerConfigurationEndpoint = "endpoint"
+	providerConfigurationKey      = "key"
+)
 
-// Provider() returns the object for this provider.
+// Provider returns the object for this provider.
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		ConfigureFunc: providerConfigure,
@@ -35,13 +37,13 @@ func Provider() *schema.Provider {
 			"clouddk_server":        resourceServer(),
 		},
 		Schema: map[string]*schema.Schema{
-			ProviderConfigurationEndpoint: &schema.Schema{
+			providerConfigurationEndpoint: &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "https://api.cloud.dk/v1",
 				Description: "The API endpoint",
 			},
-			ProviderConfigurationKey: &schema.Schema{
+			providerConfigurationKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The API key",
@@ -52,13 +54,13 @@ func Provider() *schema.Provider {
 
 // providerConfigure() configures the provider before processing any IronMQ resources.
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	endpoint := d.Get(ProviderConfigurationEndpoint).(string)
+	endpoint := d.Get(providerConfigurationEndpoint).(string)
 
 	if len(endpoint) < 1 {
 		return nil, errors.New("The API endpoint cannot be an empty string")
 	}
 
-	key := d.Get(ProviderConfigurationKey).(string)
+	key := d.Get(providerConfigurationKey).(string)
 
 	if len(key) < 1 {
 		return nil, errors.New("The API key cannot be an empty string")

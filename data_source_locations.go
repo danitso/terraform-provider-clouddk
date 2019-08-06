@@ -10,19 +10,21 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceLocationsIdsKey = "ids"
-const DataSourceLocationsNamesKey = "names"
+const (
+	dataSourceLocationsIdsKey   = "ids"
+	dataSourceLocationsNamesKey = "names"
+)
 
-// dataSourceLocations() retrieves a list of datacenter locations.
+// dataSourceLocations retrieves a list of datacenter locations.
 func dataSourceLocations() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceLocationsIdsKey: &schema.Schema{
+			dataSourceLocationsIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceLocationsNamesKey: &schema.Schema{
+			dataSourceLocationsNamesKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -33,7 +35,7 @@ func dataSourceLocations() *schema.Resource {
 	}
 }
 
-// dataSourceLocationsRead() reads information about datacenter locations.
+// dataSourceLocationsRead reads information about datacenter locations.
 func dataSourceLocationsRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", "locations", new(bytes.Buffer))
@@ -64,8 +66,8 @@ func dataSourceLocationsRead(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId("locations")
 
-	d.Set(DataSourceLocationsIdsKey, ids)
-	d.Set(DataSourceLocationsNamesKey, names)
+	d.Set(dataSourceLocationsIdsKey, ids)
+	d.Set(dataSourceLocationsNamesKey, names)
 
 	return nil
 }

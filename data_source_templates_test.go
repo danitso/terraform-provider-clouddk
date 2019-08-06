@@ -20,8 +20,8 @@ func TestDataSourceTemplatesSchema(t *testing.T) {
 	s := dataSourceTemplates()
 
 	attributeKeys := []string{
-		DataSourceTemplatesIdsKey,
-		DataSourceTemplatesNamesKey,
+		dataSourceTemplatesIdsKey,
+		dataSourceTemplatesNamesKey,
 	}
 
 	for _, v := range attributeKeys {
@@ -39,37 +39,37 @@ func TestDataSourceTemplatesSchema(t *testing.T) {
 func TestDataSourceTemplatesSchemaFilter(t *testing.T) {
 	s := dataSourceTemplates()
 
-	if s.Schema[DataSourceTemplatesFilterKey] == nil {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Missing block \"%s\"", DataSourceTemplatesFilterKey)
+	if s.Schema[dataSourceTemplatesFilterKey] == nil {
+		t.Fatalf("Error in dataSourceTemplates.Schema: Missing block \"%s\"", dataSourceTemplatesFilterKey)
 	}
 
-	if s.Schema[DataSourceTemplatesFilterKey].Optional != true {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Block \"%s\" is not optional", DataSourceTemplatesFilterKey)
+	if s.Schema[dataSourceTemplatesFilterKey].Optional != true {
+		t.Fatalf("Error in dataSourceTemplates.Schema: Block \"%s\" is not optional", dataSourceTemplatesFilterKey)
 	}
 
-	if s.Schema[DataSourceTemplatesFilterKey].Type != schema.TypeList {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Block \"%s\" is not a list", DataSourceTemplatesFilterKey)
+	if s.Schema[dataSourceTemplatesFilterKey].Type != schema.TypeList {
+		t.Fatalf("Error in dataSourceTemplates.Schema: Block \"%s\" is not a list", dataSourceTemplatesFilterKey)
 	}
 
-	if s.Schema[DataSourceTemplatesFilterKey].MaxItems != 1 {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Block \"%s\" is not limited to a single definition", DataSourceTemplatesFilterKey)
+	if s.Schema[dataSourceTemplatesFilterKey].MaxItems != 1 {
+		t.Fatalf("Error in dataSourceTemplates.Schema: Block \"%s\" is not limited to a single definition", dataSourceTemplatesFilterKey)
 	}
 
-	if s.Schema[DataSourceTemplatesFilterKey].Elem == nil {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Missing element for block \"%s\"", DataSourceTemplatesFilterKey)
+	if s.Schema[dataSourceTemplatesFilterKey].Elem == nil {
+		t.Fatalf("Error in dataSourceTemplates.Schema: Missing element for block \"%s\"", dataSourceTemplatesFilterKey)
 	}
 
-	blockElement, blockElementCasted := s.Schema[DataSourceTemplatesFilterKey].Elem.(*schema.Resource)
+	blockElement, blockElementCasted := s.Schema[dataSourceTemplatesFilterKey].Elem.(*schema.Resource)
 
 	if !blockElementCasted {
-		t.Fatalf("Error in dataSourceTemplates.Schema: Element for block \"%s\" is not a pointer to schema.Resource", DataSourceTemplatesFilterKey)
+		t.Fatalf("Error in dataSourceTemplates.Schema: Element for block \"%s\" is not a pointer to schema.Resource", dataSourceTemplatesFilterKey)
 	}
 
-	if blockElement.Schema[DataSourceTemplatesFilterNameKey] == nil {
-		t.Fatalf("Error in dataSourceTemplates.Schema.subscriber: Missing argument \"%s\"", DataSourceTemplatesFilterNameKey)
+	if blockElement.Schema[dataSourceTemplatesFilterNameKey] == nil {
+		t.Fatalf("Error in dataSourceTemplates.Schema.subscriber: Missing argument \"%s\"", dataSourceTemplatesFilterNameKey)
 	}
 
-	if blockElement.Schema[DataSourceTemplatesFilterNameKey].Optional != true {
-		t.Fatalf("Error in dataSourceTemplates.Schema.subscriber: Argument \"%s\" is not optional", DataSourceTemplatesFilterNameKey)
+	if blockElement.Schema[dataSourceTemplatesFilterNameKey].Optional != true {
+		t.Fatalf("Error in dataSourceTemplates.Schema.subscriber: Argument \"%s\" is not optional", dataSourceTemplatesFilterNameKey)
 	}
 }

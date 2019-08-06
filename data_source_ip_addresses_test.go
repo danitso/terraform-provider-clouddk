@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourceIPAddressesInstantiation() tests whether the dataSourceIPAddresses instance can be instantiated.
+// TestDataSourceIPAddressesInstantiation tests whether the dataSourceIPAddresses instance can be instantiated.
 func TestDataSourceIPAddressesInstantiation(t *testing.T) {
 	s := dataSourceIPAddresses()
 
@@ -13,24 +13,24 @@ func TestDataSourceIPAddressesInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceIPAddressesSchema() tests the dataSourceIPAddresses schema.
+// TestDataSourceIPAddressesSchema tests the dataSourceIPAddresses schema.
 func TestDataSourceIPAddressesSchema(t *testing.T) {
 	s := dataSourceIPAddresses()
 
-	if s.Schema[DataSourceIPAddressesIdKey] == nil {
-		t.Fatalf("Error in dataSourceIPAddresses.Schema: Missing argument \"%s\"", DataSourceIPAddressesIdKey)
+	if s.Schema[dataSourceIPAddressesIDKey] == nil {
+		t.Fatalf("Error in dataSourceIPAddresses.Schema: Missing argument \"%s\"", dataSourceIPAddressesIDKey)
 	}
 
-	if s.Schema[DataSourceIPAddressesIdKey].Required != true {
-		t.Fatalf("Error in dataSourceIPAddresses.Schema: Argument \"%s\" is not required", DataSourceIPAddressesIdKey)
+	if s.Schema[dataSourceIPAddressesIDKey].Required != true {
+		t.Fatalf("Error in dataSourceIPAddresses.Schema: Argument \"%s\" is not required", dataSourceIPAddressesIDKey)
 	}
 
 	attributeKeys := []string{
-		DataSourceIPAddressesAddressesKey,
-		DataSourceIPAddressesGatewaysKey,
-		DataSourceIPAddressesNetmasksKey,
-		DataSourceIPAddressesNetworkInterfaceIdsKey,
-		DataSourceIPAddressesNetworksKey,
+		dataSourceIPAddressesAddressesKey,
+		dataSourceIPAddressesGatewaysKey,
+		dataSourceIPAddressesNetmasksKey,
+		dataSourceIPAddressesNetworkInterfaceIdsKey,
+		dataSourceIPAddressesNetworksKey,
 	}
 
 	for _, v := range attributeKeys {

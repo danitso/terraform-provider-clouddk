@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourceNetworkInterfacesInstantiation() tests whether the dataSourceNetworkInterfaces instance can be instantiated.
+// TestDataSourceNetworkInterfacesInstantiation tests whether the dataSourceNetworkInterfaces instance can be instantiated.
 func TestDataSourceNetworkInterfacesInstantiation(t *testing.T) {
 	s := dataSourceNetworkInterfaces()
 
@@ -13,33 +13,33 @@ func TestDataSourceNetworkInterfacesInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceNetworkInterfacesSchema() tests the dataSourceNetworkInterfaces schema.
+// TestDataSourceNetworkInterfacesSchema tests the dataSourceNetworkInterfaces schema.
 func TestDataSourceNetworkInterfacesSchema(t *testing.T) {
 	s := dataSourceNetworkInterfaces()
 
-	if s.Schema[DataSourceNetworkInterfacesIdKey] == nil {
-		t.Fatalf("Error in dataSourceNetworkInterfaces.Schema: Missing argument \"%s\"", DataSourceNetworkInterfacesIdKey)
+	if s.Schema[dataSourceNetworkInterfacesIDKey] == nil {
+		t.Fatalf("Error in dataSourceNetworkInterfaces.Schema: Missing argument \"%s\"", dataSourceNetworkInterfacesIDKey)
 	}
 
-	if s.Schema[DataSourceNetworkInterfacesIdKey].Required != true {
-		t.Fatalf("Error in dataSourceNetworkInterfaces.Schema: Argument \"%s\" is not required", DataSourceNetworkInterfacesIdKey)
+	if s.Schema[dataSourceNetworkInterfacesIDKey].Required != true {
+		t.Fatalf("Error in dataSourceNetworkInterfaces.Schema: Argument \"%s\" is not required", dataSourceNetworkInterfacesIDKey)
 	}
 
 	attributeKeys := []string{
-		DataSourceNetworkInterfacesAddressesKey,
-		DataSourceNetworkInterfacesDefaultFirewallRulesKey,
-		DataSourceNetworkInterfacesFirewallRulesAddressesKey,
-		DataSourceNetworkInterfacesFirewallRulesCommandsKey,
-		DataSourceNetworkInterfacesFirewallRulesIdsKey,
-		DataSourceNetworkInterfacesFirewallRulesPortsKey,
-		DataSourceNetworkInterfacesFirewallRulesProtocolsKey,
-		DataSourceNetworkInterfacesGatewaysKey,
-		DataSourceNetworkInterfacesIdsKey,
-		DataSourceNetworkInterfacesLabelsKey,
-		DataSourceNetworkInterfacesNetmasksKey,
-		DataSourceNetworkInterfacesNetworksKey,
-		DataSourceNetworkInterfacesPrimaryKey,
-		DataSourceNetworkInterfacesRateLimitsKey,
+		dataSourceNetworkInterfacesAddressesKey,
+		dataSourceNetworkInterfacesDefaultFirewallRulesKey,
+		dataSourceNetworkInterfacesFirewallRulesAddressesKey,
+		dataSourceNetworkInterfacesFirewallRulesCommandsKey,
+		dataSourceNetworkInterfacesFirewallRulesIdsKey,
+		dataSourceNetworkInterfacesFirewallRulesPortsKey,
+		dataSourceNetworkInterfacesFirewallRulesProtocolsKey,
+		dataSourceNetworkInterfacesGatewaysKey,
+		dataSourceNetworkInterfacesIdsKey,
+		dataSourceNetworkInterfacesLabelsKey,
+		dataSourceNetworkInterfacesNetmasksKey,
+		dataSourceNetworkInterfacesNetworksKey,
+		dataSourceNetworkInterfacesPrimaryKey,
+		dataSourceNetworkInterfacesRateLimitsKey,
 	}
 
 	for _, v := range attributeKeys {

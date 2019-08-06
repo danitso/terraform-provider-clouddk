@@ -10,107 +10,109 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceServerBootedKey = "booted"
-const DataSourceServerCPUsKey = "cpus"
-const DataSourceServerDiskIdsKey = "disk_ids"
-const DataSourceServerDiskLabelsKey = "disk_labels"
-const DataSourceServerDiskPrimaryKey = "disk_primary"
-const DataSourceServerDiskSizesKey = "disk_sizes"
-const DataSourceServerHostnameKey = "hostname"
-const DataSourceServerIdKey = "id"
-const DataSourceServerLabelKey = "label"
-const DataSourceServerMemoryKey = "memory"
-const DataSourceServerNetworkInterfaceAddressesKey = "network_interface_addresses"
-const DataSourceServerNetworkInterfaceDefaultFirewallRulesKey = "network_interface_default_firewall_rules"
-const DataSourceServerNetworkInterfaceFirewallRulesAddressesKey = "network_interface_firewall_rules_addresses"
-const DataSourceServerNetworkInterfaceFirewallRulesCommandsKey = "network_interface_firewall_rules_commands"
-const DataSourceServerNetworkInterfaceFirewallRulesIdsKey = "network_interface_firewall_rules_ids"
-const DataSourceServerNetworkInterfaceFirewallRulesPortsKey = "network_interface_firewall_rules_ports"
-const DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey = "network_interface_firewall_rules_protocols"
-const DataSourceServerNetworkInterfaceGatewaysKey = "network_interface_gateways"
-const DataSourceServerNetworkInterfaceIdsKey = "network_interface_ids"
-const DataSourceServerNetworkInterfaceLabelsKey = "network_interface_labels"
-const DataSourceServerNetworkInterfaceNetmasksKey = "network_interface_netmasks"
-const DataSourceServerNetworkInterfaceNetworksKey = "network_interface_networks"
-const DataSourceServerNetworkInterfacePrimaryKey = "network_interface_primary"
-const DataSourceServerNetworkInterfaceRateLimitsKey = "network_interface_rate_limits"
-const DataSourceServerLocationIdKey = "location_id"
-const DataSourceServerLocationNameKey = "location_name"
-const DataSourceServerPackageIdKey = "package_id"
-const DataSourceServerPackageNameKey = "package_name"
-const DataSourceServerTemplateIdKey = "template_id"
-const DataSourceServerTemplateNameKey = "template_name"
+const (
+	dataSourceServerBootedKey                                 = "booted"
+	dataSourceServerCPUsKey                                   = "cpus"
+	dataSourceServerDiskIdsKey                                = "disk_ids"
+	dataSourceServerDiskLabelsKey                             = "disk_labels"
+	dataSourceServerDiskPrimaryKey                            = "disk_primary"
+	dataSourceServerDiskSizesKey                              = "disk_sizes"
+	dataSourceServerHostnameKey                               = "hostname"
+	dataSourceServerIDKey                                     = "id"
+	dataSourceServerLabelKey                                  = "label"
+	dataSourceServerMemoryKey                                 = "memory"
+	dataSourceServerNetworkInterfaceAddressesKey              = "network_interface_addresses"
+	dataSourceServerNetworkInterfaceDefaultFirewallRulesKey   = "network_interface_default_firewall_rules"
+	dataSourceServerNetworkInterfaceFirewallRulesAddressesKey = "network_interface_firewall_rules_addresses"
+	dataSourceServerNetworkInterfaceFirewallRulesCommandsKey  = "network_interface_firewall_rules_commands"
+	dataSourceServerNetworkInterfaceFirewallRulesIdsKey       = "network_interface_firewall_rules_ids"
+	dataSourceServerNetworkInterfaceFirewallRulesPortsKey     = "network_interface_firewall_rules_ports"
+	dataSourceServerNetworkInterfaceFirewallRulesProtocolsKey = "network_interface_firewall_rules_protocols"
+	dataSourceServerNetworkInterfaceGatewaysKey               = "network_interface_gateways"
+	dataSourceServerNetworkInterfaceIdsKey                    = "network_interface_ids"
+	dataSourceServerNetworkInterfaceLabelsKey                 = "network_interface_labels"
+	dataSourceServerNetworkInterfaceNetmasksKey               = "network_interface_netmasks"
+	dataSourceServerNetworkInterfaceNetworksKey               = "network_interface_networks"
+	dataSourceServerNetworkInterfacePrimaryKey                = "network_interface_primary"
+	dataSourceServerNetworkInterfaceRateLimitsKey             = "network_interface_rate_limits"
+	dataSourceServerLocationIDKey                             = "location_id"
+	dataSourceServerLocationNameKey                           = "location_name"
+	dataSourceServerPackageIDKey                              = "package_id"
+	dataSourceServerPackageNameKey                            = "package_name"
+	dataSourceServerTemplateIDKey                             = "template_id"
+	dataSourceServerTemplateNameKey                           = "template_name"
+)
 
-// dataSourceServer() retrieves information about a server.
+// dataSourceServer retrieves information about a server.
 func dataSourceServer() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceServerBootedKey: &schema.Schema{
+			dataSourceServerBootedKey: &schema.Schema{
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "Whether the server has been booted",
 			},
-			DataSourceServerCPUsKey: &schema.Schema{
+			dataSourceServerCPUsKey: &schema.Schema{
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "The server's CPU count",
 			},
-			DataSourceServerDiskIdsKey: &schema.Schema{
+			dataSourceServerDiskIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk identifiers",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerDiskLabelsKey: &schema.Schema{
+			dataSourceServerDiskLabelsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk labels",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerDiskPrimaryKey: &schema.Schema{
+			dataSourceServerDiskPrimaryKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "Whether a disk is the primary disk",
 				Elem:        &schema.Schema{Type: schema.TypeBool},
 			},
-			DataSourceServerDiskSizesKey: &schema.Schema{
+			dataSourceServerDiskSizesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk sizes in gigabytes",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
-			DataSourceServerHostnameKey: &schema.Schema{
+			dataSourceServerHostnameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The server hostname",
 			},
-			DataSourceServerIdKey: &schema.Schema{
+			dataSourceServerIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
 				ForceNew:    true,
 			},
-			DataSourceServerLabelKey: &schema.Schema{
+			dataSourceServerLabelKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The server label",
 			},
-			DataSourceServerLocationIdKey: &schema.Schema{
+			dataSourceServerLocationIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The location identifier",
 			},
-			DataSourceServerLocationNameKey: &schema.Schema{
+			dataSourceServerLocationNameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The location name",
 			},
-			DataSourceServerMemoryKey: &schema.Schema{
+			dataSourceServerMemoryKey: &schema.Schema{
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "The server's memory allocation in megabytes",
 			},
-			DataSourceServerNetworkInterfaceAddressesKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The IP addresses assigned to the server's network interfaces",
@@ -119,13 +121,13 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceDefaultFirewallRulesKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceDefaultFirewallRulesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The default firewall rules for the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The CIDR blocks for the firewall rules assigned to the server's network interfaces",
@@ -134,7 +136,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The commands for the firewall rules assigned to the server's network interfaces",
@@ -143,7 +145,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesIdsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The identifiers for the firewall rules assigned to the server's network interfaces",
@@ -152,7 +154,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesPortsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesPortsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
@@ -161,7 +163,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The protocols for the firewall rules assigned to the server's network interfaces",
@@ -170,7 +172,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceGatewaysKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceGatewaysKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The gateways assigned to the server's network interfaces",
@@ -179,19 +181,19 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceIdsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's network interface identifiers",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerNetworkInterfaceLabelsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceLabelsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's network interface labels",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerNetworkInterfaceNetmasksKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceNetmasksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The netmasks assigned to the server's network interfaces",
@@ -200,7 +202,7 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceNetworksKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceNetworksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The networks assigned to the server's network interfaces",
@@ -209,34 +211,34 @@ func dataSourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfacePrimaryKey: &schema.Schema{
+			dataSourceServerNetworkInterfacePrimaryKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "Whether a network interface is the primary interface",
 				Elem:        &schema.Schema{Type: schema.TypeBool},
 			},
-			DataSourceServerNetworkInterfaceRateLimitsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceRateLimitsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The rate limits for the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
-			DataSourceServerPackageIdKey: &schema.Schema{
+			dataSourceServerPackageIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The package identifier",
 			},
-			DataSourceServerPackageNameKey: &schema.Schema{
+			dataSourceServerPackageNameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The package name",
 			},
-			DataSourceServerTemplateIdKey: &schema.Schema{
+			dataSourceServerTemplateIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The template identifier",
 			},
-			DataSourceServerTemplateNameKey: &schema.Schema{
+			dataSourceServerTemplateNameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The template name",
@@ -247,13 +249,13 @@ func dataSourceServer() *schema.Resource {
 	}
 }
 
-// dataSourceServerRead() reads information about a server.
+// dataSourceServerRead reads information about a server.
 func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 	id := d.Id()
 
-	if d.Get(DataSourceServerIdKey) != nil {
-		id = d.Get(DataSourceServerIdKey).(string)
+	if d.Get(dataSourceServerIDKey) != nil {
+		id = d.Get(dataSourceServerIDKey).(string)
 	}
 
 	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", id), new(bytes.Buffer))
@@ -353,38 +355,38 @@ func dataSourceServerReadResponseBody(d *schema.ResourceData, m interface{}, ser
 
 	d.SetId(server.Identifier)
 
-	d.Set(DataSourceServerBootedKey, server.Booted)
-	d.Set(DataSourceServerCPUsKey, server.CPUs)
-	d.Set(DataSourceServerDiskIdsKey, diskIds)
-	d.Set(DataSourceServerDiskLabelsKey, diskLabels)
-	d.Set(DataSourceServerDiskPrimaryKey, diskPrimary)
-	d.Set(DataSourceServerDiskSizesKey, diskSizes)
-	d.Set(DataSourceServerHostnameKey, server.Hostname)
-	d.Set(DataSourceServerLabelKey, server.Label)
-	d.Set(DataSourceServerLocationIdKey, server.Location.Identifier)
-	d.Set(DataSourceServerLocationNameKey, server.Location.Name)
-	d.Set(DataSourceServerMemoryKey, server.Memory)
-	d.Set(DataSourceServerNetworkInterfaceAddressesKey, networkInterfaceAddresses)
+	d.Set(dataSourceServerBootedKey, server.Booted)
+	d.Set(dataSourceServerCPUsKey, server.CPUs)
+	d.Set(dataSourceServerDiskIdsKey, diskIds)
+	d.Set(dataSourceServerDiskLabelsKey, diskLabels)
+	d.Set(dataSourceServerDiskPrimaryKey, diskPrimary)
+	d.Set(dataSourceServerDiskSizesKey, diskSizes)
+	d.Set(dataSourceServerHostnameKey, server.Hostname)
+	d.Set(dataSourceServerLabelKey, server.Label)
+	d.Set(dataSourceServerLocationIDKey, server.Location.Identifier)
+	d.Set(dataSourceServerLocationNameKey, server.Location.Name)
+	d.Set(dataSourceServerMemoryKey, server.Memory)
+	d.Set(dataSourceServerNetworkInterfaceAddressesKey, networkInterfaceAddresses)
 
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulesAddressesKey, networkInterfaceFirewallRuleAddresses)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulesCommandsKey, networkInterfaceFirewallRuleCommands)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulesIdsKey, networkInterfaceFirewallRuleIds)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulesPortsKey, networkInterfaceFirewallRulePorts)
-	d.Set(DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey, networkInterfaceFirewallRuleProtocols)
+	d.Set(dataSourceServerNetworkInterfaceFirewallRulesAddressesKey, networkInterfaceFirewallRuleAddresses)
+	d.Set(dataSourceServerNetworkInterfaceFirewallRulesCommandsKey, networkInterfaceFirewallRuleCommands)
+	d.Set(dataSourceServerNetworkInterfaceFirewallRulesIdsKey, networkInterfaceFirewallRuleIds)
+	d.Set(dataSourceServerNetworkInterfaceFirewallRulesPortsKey, networkInterfaceFirewallRulePorts)
+	d.Set(dataSourceServerNetworkInterfaceFirewallRulesProtocolsKey, networkInterfaceFirewallRuleProtocols)
 
-	d.Set(DataSourceServerNetworkInterfaceGatewaysKey, networkInterfaceGateways)
-	d.Set(DataSourceServerNetworkInterfaceDefaultFirewallRulesKey, networkInterfaceDefaultFirewallRules)
-	d.Set(DataSourceServerNetworkInterfaceIdsKey, networkInterfaceIds)
-	d.Set(DataSourceServerNetworkInterfaceLabelsKey, networkInterfaceLabels)
-	d.Set(DataSourceServerNetworkInterfaceNetmasksKey, networkInterfaceNetmasks)
-	d.Set(DataSourceServerNetworkInterfaceNetworksKey, networkInterfaceNetworks)
-	d.Set(DataSourceServerNetworkInterfacePrimaryKey, networkInterfacePrimary)
-	d.Set(DataSourceServerNetworkInterfaceRateLimitsKey, networkInterfaceRateLimits)
+	d.Set(dataSourceServerNetworkInterfaceGatewaysKey, networkInterfaceGateways)
+	d.Set(dataSourceServerNetworkInterfaceDefaultFirewallRulesKey, networkInterfaceDefaultFirewallRules)
+	d.Set(dataSourceServerNetworkInterfaceIdsKey, networkInterfaceIds)
+	d.Set(dataSourceServerNetworkInterfaceLabelsKey, networkInterfaceLabels)
+	d.Set(dataSourceServerNetworkInterfaceNetmasksKey, networkInterfaceNetmasks)
+	d.Set(dataSourceServerNetworkInterfaceNetworksKey, networkInterfaceNetworks)
+	d.Set(dataSourceServerNetworkInterfacePrimaryKey, networkInterfacePrimary)
+	d.Set(dataSourceServerNetworkInterfaceRateLimitsKey, networkInterfaceRateLimits)
 
-	d.Set(DataSourceServerPackageIdKey, server.Package.Identifier)
-	d.Set(DataSourceServerPackageNameKey, server.Package.Name)
-	d.Set(DataSourceServerTemplateIdKey, server.Template.Identifier)
-	d.Set(DataSourceServerTemplateNameKey, server.Template.Name)
+	d.Set(dataSourceServerPackageIDKey, server.Package.Identifier)
+	d.Set(dataSourceServerPackageNameKey, server.Package.Name)
+	d.Set(dataSourceServerTemplateIDKey, server.Template.Identifier)
+	d.Set(dataSourceServerTemplateNameKey, server.Template.Name)
 
 	return nil
 }

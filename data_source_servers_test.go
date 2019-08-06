@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-// TestDataSourceServersInstantiation() tests whether the dataSourceServers instance can be instantiated.
+// TestDataSourceServersInstantiation tests whether the dataSourceServers instance can be instantiated.
 func TestDataSourceServersInstantiation(t *testing.T) {
 	s := dataSourceServers()
 
@@ -15,20 +15,20 @@ func TestDataSourceServersInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceServersSchema() tests the dataSourceServers schema.
+// TestDataSourceServersSchema tests the dataSourceServers schema.
 func TestDataSourceServersSchema(t *testing.T) {
 	s := dataSourceServers()
 
 	attributeKeys := []string{
-		DataSourceServersHostnamesKey,
-		DataSourceServersIdsKey,
-		DataSourceServersLabelsKey,
-		DataSourceServersLocationIdsKey,
-		DataSourceServersLocationNamesKey,
-		DataSourceServersPackageIdsKey,
-		DataSourceServersPackageNamesKey,
-		DataSourceServersTemplateIdsKey,
-		DataSourceServersTemplateNamesKey,
+		dataSourceServersHostnamesKey,
+		dataSourceServersIdsKey,
+		dataSourceServersLabelsKey,
+		dataSourceServersLocationIdsKey,
+		dataSourceServersLocationNamesKey,
+		dataSourceServersPackageIdsKey,
+		dataSourceServersPackageNamesKey,
+		dataSourceServersTemplateIdsKey,
+		dataSourceServersTemplateNamesKey,
 	}
 
 	for _, v := range attributeKeys {
@@ -42,41 +42,41 @@ func TestDataSourceServersSchema(t *testing.T) {
 	}
 }
 
-// TestDataSourceServersSchemaFilter() tests the dataSourceServers.Filter schema.
+// TestDataSourceServersSchemaFilter tests the dataSourceServers.Filter schema.
 func TestDataSourceServersSchemaFilter(t *testing.T) {
 	s := dataSourceServers()
 
-	if s.Schema[DataSourceServersFilterKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing block \"%s\"", DataSourceServersFilterKey)
+	if s.Schema[dataSourceServersFilterKey] == nil {
+		t.Fatalf("Error in dataSourceServers.Schema: Missing block \"%s\"", dataSourceServersFilterKey)
 	}
 
-	if s.Schema[DataSourceServersFilterKey].Optional != true {
-		t.Fatalf("Error in dataSourceServers.Schema: Block \"%s\" is not optional", DataSourceServersFilterKey)
+	if s.Schema[dataSourceServersFilterKey].Optional != true {
+		t.Fatalf("Error in dataSourceServers.Schema: Block \"%s\" is not optional", dataSourceServersFilterKey)
 	}
 
-	if s.Schema[DataSourceServersFilterKey].Type != schema.TypeList {
-		t.Fatalf("Error in dataSourceServers.Schema: Block \"%s\" is not a list", DataSourceServersFilterKey)
+	if s.Schema[dataSourceServersFilterKey].Type != schema.TypeList {
+		t.Fatalf("Error in dataSourceServers.Schema: Block \"%s\" is not a list", dataSourceServersFilterKey)
 	}
 
-	if s.Schema[DataSourceServersFilterKey].MaxItems != 1 {
-		t.Fatalf("Error in dataSourceServers.Schema: Block \"%s\" is not limited to a single definition", DataSourceServersFilterKey)
+	if s.Schema[dataSourceServersFilterKey].MaxItems != 1 {
+		t.Fatalf("Error in dataSourceServers.Schema: Block \"%s\" is not limited to a single definition", dataSourceServersFilterKey)
 	}
 
-	if s.Schema[DataSourceServersFilterKey].Elem == nil {
-		t.Fatalf("Error in dataSourceServers.Schema: Missing element for block \"%s\"", DataSourceServersFilterKey)
+	if s.Schema[dataSourceServersFilterKey].Elem == nil {
+		t.Fatalf("Error in dataSourceServers.Schema: Missing element for block \"%s\"", dataSourceServersFilterKey)
 	}
 
-	blockElement, blockElementCasted := s.Schema[DataSourceServersFilterKey].Elem.(*schema.Resource)
+	blockElement, blockElementCasted := s.Schema[dataSourceServersFilterKey].Elem.(*schema.Resource)
 
 	if !blockElementCasted {
-		t.Fatalf("Error in dataSourceServers.Schema: Element for block \"%s\" is not a pointer to schema.Resource", DataSourceServersFilterKey)
+		t.Fatalf("Error in dataSourceServers.Schema: Element for block \"%s\" is not a pointer to schema.Resource", dataSourceServersFilterKey)
 	}
 
-	if blockElement.Schema[DataSourceServersFilterHostnameKey] == nil {
-		t.Fatalf("Error in dataSourceServers.Schema.subscriber: Missing argument \"%s\"", DataSourceServersFilterHostnameKey)
+	if blockElement.Schema[dataSourceServersFilterHostnameKey] == nil {
+		t.Fatalf("Error in dataSourceServers.Schema.subscriber: Missing argument \"%s\"", dataSourceServersFilterHostnameKey)
 	}
 
-	if blockElement.Schema[DataSourceServersFilterHostnameKey].Optional != true {
-		t.Fatalf("Error in dataSourceServers.Schema.subscriber: Argument \"%s\" is not optional", DataSourceServersFilterHostnameKey)
+	if blockElement.Schema[dataSourceServersFilterHostnameKey].Optional != true {
+		t.Fatalf("Error in dataSourceServers.Schema.subscriber: Argument \"%s\" is not optional", dataSourceServersFilterHostnameKey)
 	}
 }

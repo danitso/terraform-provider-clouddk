@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestResourceDiskInstantiation() tests whether the resourceDisk instance can be instantiated.
+// TestResourceDiskInstantiation tests whether the resourceDisk instance can be instantiated.
 func TestResourceDiskInstantiation(t *testing.T) {
 	s := resourceDisk()
 
@@ -13,14 +13,14 @@ func TestResourceDiskInstantiation(t *testing.T) {
 	}
 }
 
-// TestResourceDiskSchema() tests the resourceDisk schema.
+// TestResourceDiskSchema tests the resourceDisk schema.
 func TestResourceDiskSchema(t *testing.T) {
 	s := resourceDisk()
 
 	requiredKeys := []string{
-		DataSourceDiskLabelKey,
-		DataSourceDiskServerIdKey,
-		DataSourceDiskSizeKey,
+		dataSourceDiskLabelKey,
+		dataSourceDiskServerIDKey,
+		dataSourceDiskSizeKey,
 	}
 
 	for _, v := range requiredKeys {
@@ -34,7 +34,7 @@ func TestResourceDiskSchema(t *testing.T) {
 	}
 
 	attributeKeys := []string{
-		DataSourceDiskPrimaryKey,
+		dataSourceDiskPrimaryKey,
 	}
 
 	for _, v := range attributeKeys {

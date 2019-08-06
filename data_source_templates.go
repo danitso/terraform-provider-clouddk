@@ -11,21 +11,23 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceTemplatesFilterKey = "filter"
-const DataSourceTemplatesFilterNameKey = "name"
-const DataSourceTemplatesIdsKey = "ids"
-const DataSourceTemplatesNamesKey = "names"
+const (
+	dataSourceTemplatesFilterKey     = "filter"
+	dataSourceTemplatesFilterNameKey = "name"
+	dataSourceTemplatesIdsKey        = "ids"
+	dataSourceTemplatesNamesKey      = "names"
+)
 
-// dataSourceTemplates() retrieves a list of OS templates.
+// dataSourceTemplates retrieves a list of OS templates.
 func dataSourceTemplates() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceTemplatesFilterKey: &schema.Schema{
+			dataSourceTemplatesFilterKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						DataSourceTemplatesFilterNameKey: &schema.Schema{
+						dataSourceTemplatesFilterNameKey: &schema.Schema{
 							Type:        schema.TypeString,
 							Optional:    true,
 							Default:     "",
@@ -36,12 +38,12 @@ func dataSourceTemplates() *schema.Resource {
 				},
 				MaxItems: 1,
 			},
-			DataSourceTemplatesIdsKey: &schema.Schema{
+			dataSourceTemplatesIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceTemplatesNamesKey: &schema.Schema{
+			dataSourceTemplatesNamesKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -52,14 +54,14 @@ func dataSourceTemplates() *schema.Resource {
 	}
 }
 
-// dataSourceTemplatesRead() reads information about OS templates.
+// dataSourceTemplatesRead reads information about OS templates.
 func dataSourceTemplatesRead(d *schema.ResourceData, m interface{}) error {
-	filter := d.Get(DataSourceTemplatesFilterKey).([]interface{})
+	filter := d.Get(dataSourceTemplatesFilterKey).([]interface{})
 	filterName := ""
 
 	if len(filter) > 0 {
 		filterData := filter[0].(map[string]interface{})
-		filterName = filterData[DataSourceTemplatesFilterNameKey].(string)
+		filterName = filterData[dataSourceTemplatesFilterNameKey].(string)
 	}
 
 	// Prepare the relative path based on the filters.
@@ -99,8 +101,8 @@ func dataSourceTemplatesRead(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId("templates")
 
-	d.Set(DataSourceTemplatesIdsKey, ids)
-	d.Set(DataSourceTemplatesNamesKey, names)
+	d.Set(dataSourceTemplatesIdsKey, ids)
+	d.Set(dataSourceTemplatesNamesKey, names)
 
 	return nil
 }

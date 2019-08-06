@@ -10,48 +10,50 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceIPAddressesAddressesKey = "addresses"
-const DataSourceIPAddressesGatewaysKey = "gateways"
-const DataSourceIPAddressesIdKey = "id"
-const DataSourceIPAddressesNetmasksKey = "netmasks"
-const DataSourceIPAddressesNetworkInterfaceIdsKey = "network_interface_ids"
-const DataSourceIPAddressesNetworksKey = "networks"
+const (
+	dataSourceIPAddressesAddressesKey           = "addresses"
+	dataSourceIPAddressesGatewaysKey            = "gateways"
+	dataSourceIPAddressesIDKey                  = "id"
+	dataSourceIPAddressesNetmasksKey            = "netmasks"
+	dataSourceIPAddressesNetworkInterfaceIdsKey = "network_interface_ids"
+	dataSourceIPAddressesNetworksKey            = "networks"
+)
 
-// dataSourceIPAddresses() retrieves information about IP addresses.
+// dataSourceIPAddresses retrieves information about IP addresses.
 func dataSourceIPAddresses() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceIPAddressesAddressesKey: &schema.Schema{
+			dataSourceIPAddressesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The IP addresses assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceIPAddressesGatewaysKey: &schema.Schema{
+			dataSourceIPAddressesGatewaysKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The gateways assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceIPAddressesIdKey: &schema.Schema{
+			dataSourceIPAddressesIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
 				ForceNew:    true,
 			},
-			DataSourceIPAddressesNetmasksKey: &schema.Schema{
+			dataSourceIPAddressesNetmasksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The netmasks assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceIPAddressesNetworkInterfaceIdsKey: &schema.Schema{
+			dataSourceIPAddressesNetworkInterfaceIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The network interface identifiers",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceIPAddressesNetworksKey: &schema.Schema{
+			dataSourceIPAddressesNetworksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The networks assigned to the server's network interfaces",
@@ -63,11 +65,11 @@ func dataSourceIPAddresses() *schema.Resource {
 	}
 }
 
-// dataSourceIPAddressesRead() reads information about IP addresses.
+// dataSourceIPAddressesRead reads information about IP addresses.
 func dataSourceIPAddressesRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	id := d.Get(DataSourceIPAddressesIdKey).(string)
+	id := d.Get(dataSourceIPAddressesIDKey).(string)
 	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", id), new(bytes.Buffer))
 
 	if reqErr != nil {
@@ -102,11 +104,11 @@ func dataSourceIPAddressesRead(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(id)
 
-	d.Set(DataSourceIPAddressesAddressesKey, addresses)
-	d.Set(DataSourceIPAddressesGatewaysKey, gateways)
-	d.Set(DataSourceIPAddressesNetmasksKey, netmasks)
-	d.Set(DataSourceIPAddressesNetworkInterfaceIdsKey, networkInterfaceIds)
-	d.Set(DataSourceIPAddressesNetworksKey, networks)
+	d.Set(dataSourceIPAddressesAddressesKey, addresses)
+	d.Set(dataSourceIPAddressesGatewaysKey, gateways)
+	d.Set(dataSourceIPAddressesNetmasksKey, netmasks)
+	d.Set(dataSourceIPAddressesNetworkInterfaceIdsKey, networkInterfaceIds)
+	d.Set(dataSourceIPAddressesNetworksKey, networks)
 
 	return nil
 }

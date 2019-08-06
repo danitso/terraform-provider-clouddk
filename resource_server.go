@@ -13,114 +13,118 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const ResourceServerHostnameKey = "hostname"
-const ResourceServerLabelKey = "label"
-const ResourceServerLocationIdKey = "location_id"
-const ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey = "primary_network_interface_default_firewall_rule"
-const ResourceServerPrimaryNetworkInterfaceLabelKey = "primary_network_interface_label"
-const ResourceServerPackageIdKey = "package_id"
-const ResourceServerRootPasswordKey = "root_password"
-const ResourceServerTemplateIdKey = "template_id"
+const (
+	resourceServerHostnameKey                                   = "hostname"
+	resourceServerLabelKey                                      = "label"
+	resourceServerLocationIDKey                                 = "location_id"
+	resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey = "primary_network_interface_default_firewall_rule"
+	resourceServerPrimaryNetworkInterfaceLabelKey               = "primary_network_interface_label"
+	resourceServerPackageIDKey                                  = "package_id"
+	resourceServerRootPasswordKey                               = "root_password"
+	resourceServerTemplateIDKey                                 = "template_id"
+)
 
-var serverMap = make(map[string]*sync.Mutex)
-var serverMapMutex = &sync.Mutex{}
+var (
+	serverMap      = make(map[string]*sync.Mutex)
+	serverMapMutex = &sync.Mutex{}
+)
 
-// resourceServer() manages a server.
+// resourceServer manages a server.
 func resourceServer() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			ResourceServerHostnameKey: &schema.Schema{
+			resourceServerHostnameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The hostname",
 			},
-			ResourceServerLabelKey: &schema.Schema{
+			resourceServerLabelKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The label",
 			},
-			ResourceServerLocationIdKey: &schema.Schema{
+			resourceServerLocationIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The location identifier",
 				ForceNew:    true,
 			},
-			ResourceServerPackageIdKey: &schema.Schema{
+			resourceServerPackageIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The package identifier",
 				ForceNew:    true,
 			},
-			ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey: &schema.Schema{
+			resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "ACCEPT",
 				Description: "The default firewall rule for the primary network interface",
 			},
-			ResourceServerPrimaryNetworkInterfaceLabelKey: &schema.Schema{
+			resourceServerPrimaryNetworkInterfaceLabelKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "Primary Network Interface",
 				Description: "The label for the primary network interface",
 			},
-			ResourceServerRootPasswordKey: &schema.Schema{
+			resourceServerRootPasswordKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The root password",
 				ForceNew:    true,
 				Sensitive:   true,
 			},
-			ResourceServerTemplateIdKey: &schema.Schema{
+			resourceServerTemplateIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The template identifier",
 				ForceNew:    true,
 			},
-			DataSourceServerBootedKey: &schema.Schema{
+			dataSourceServerBootedKey: &schema.Schema{
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "Whether the server has been booted",
 			},
-			DataSourceServerCPUsKey: &schema.Schema{
+			dataSourceServerCPUsKey: &schema.Schema{
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "The server's CPU count",
 			},
-			DataSourceServerDiskIdsKey: &schema.Schema{
+			dataSourceServerDiskIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk identifiers",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerDiskLabelsKey: &schema.Schema{
+			dataSourceServerDiskLabelsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk labels",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerDiskPrimaryKey: &schema.Schema{
+			dataSourceServerDiskPrimaryKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "Whether a disk is the primary disk",
 				Elem:        &schema.Schema{Type: schema.TypeBool},
 			},
-			DataSourceServerDiskSizesKey: &schema.Schema{
+			dataSourceServerDiskSizesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's disk sizes in gigabytes",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
-			DataSourceServerLocationNameKey: &schema.Schema{
+			dataSourceServerLocationNameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The location name",
 			},
-			DataSourceServerMemoryKey: &schema.Schema{
+			dataSourceServerMemoryKey: &schema.Schema{
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "The server's memory allocation in megabytes",
 			},
-			DataSourceServerNetworkInterfaceAddressesKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The IP addresses assigned to the server's network interfaces",
@@ -129,13 +133,13 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceDefaultFirewallRulesKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceDefaultFirewallRulesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The default firewall rules for the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The CIDR blocks for the firewall rules assigned to the server's network interfaces",
@@ -144,7 +148,7 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The commands for the firewall rules assigned to the server's network interfaces",
@@ -153,7 +157,7 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesIdsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The identifiers for the firewall rules assigned to the server's network interfaces",
@@ -162,7 +166,7 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesPortsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesPortsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
@@ -171,7 +175,7 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The protocols for the firewall rules assigned to the server's network interfaces",
@@ -180,7 +184,7 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceGatewaysKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceGatewaysKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The gateways assigned to the server's network interfaces",
@@ -189,19 +193,19 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceIdsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's network interface identifiers",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerNetworkInterfaceLabelsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceLabelsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's network interface labels",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServerNetworkInterfaceNetmasksKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceNetmasksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The netmasks assigned to the server's network interfaces",
@@ -210,7 +214,7 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfaceNetworksKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceNetworksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The networks assigned to the server's network interfaces",
@@ -219,24 +223,24 @@ func resourceServer() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceServerNetworkInterfacePrimaryKey: &schema.Schema{
+			dataSourceServerNetworkInterfacePrimaryKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "Whether a network interface is the primary interface",
 				Elem:        &schema.Schema{Type: schema.TypeBool},
 			},
-			DataSourceServerNetworkInterfaceRateLimitsKey: &schema.Schema{
+			dataSourceServerNetworkInterfaceRateLimitsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The rate limits for the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
-			DataSourceServerPackageNameKey: &schema.Schema{
+			dataSourceServerPackageNameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The package name",
 			},
-			DataSourceServerTemplateNameKey: &schema.Schema{
+			dataSourceServerTemplateNameKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The template name",
@@ -250,17 +254,17 @@ func resourceServer() *schema.Resource {
 	}
 }
 
-// resourceServerCreate() creates a server.
+// resourceServerCreate creates a server.
 func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
 	body := clouddk.ServerCreateBody{
-		Hostname:            d.Get(ResourceServerHostnameKey).(string),
-		Label:               d.Get(ResourceServerLabelKey).(string),
-		InitialRootPassword: d.Get(ResourceServerRootPasswordKey).(string),
-		Package:             d.Get(ResourceServerPackageIdKey).(string),
-		Template:            d.Get(ResourceServerTemplateIdKey).(string),
-		Location:            d.Get(ResourceServerLocationIdKey).(string),
+		Hostname:            d.Get(resourceServerHostnameKey).(string),
+		Label:               d.Get(resourceServerLabelKey).(string),
+		InitialRootPassword: d.Get(resourceServerRootPasswordKey).(string),
+		Package:             d.Get(resourceServerPackageIDKey).(string),
+		Template:            d.Get(resourceServerTemplateIDKey).(string),
+		Location:            d.Get(resourceServerLocationIDKey).(string),
 	}
 
 	reqBody := new(bytes.Buffer)
@@ -285,7 +289,7 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		return parseErr
 	}
 
-	if d.Get(DataSourceServerBootedKey).(bool) {
+	if d.Get(dataSourceServerBootedKey).(bool) {
 		return nil
 	}
 
@@ -356,8 +360,8 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 		return parseErr
 	}
 
-	d.Set(ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey, server.NetworkInterfaces[0].DefaultFirewallRule)
-	d.Set(ResourceServerPrimaryNetworkInterfaceLabelKey, server.NetworkInterfaces[0].Label)
+	d.Set(resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey, server.NetworkInterfaces[0].DefaultFirewallRule)
+	d.Set(resourceServerPrimaryNetworkInterfaceLabelKey, server.NetworkInterfaces[0].Label)
 
 	return nil
 }
@@ -367,8 +371,8 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
 	body := clouddk.ServerUpdateBody{
-		Hostname: d.Get(ResourceServerHostnameKey).(string),
-		Label:    d.Get(ResourceServerLabelKey).(string),
+		Hostname: d.Get(resourceServerHostnameKey).(string),
+		Label:    d.Get(resourceServerLabelKey).(string),
 	}
 
 	reqBody := new(bytes.Buffer)
@@ -418,8 +422,8 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 	clientSettings := m.(clouddk.ClientSettings)
 
 	networkInterfaceUpdateBody := clouddk.NetworkInterfaceUpdateBody{
-		DefaultFirewallRule: d.Get(ResourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey).(string),
-		Label:               d.Get(ResourceServerPrimaryNetworkInterfaceLabelKey).(string),
+		DefaultFirewallRule: d.Get(resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey).(string),
+		Label:               d.Get(resourceServerPrimaryNetworkInterfaceLabelKey).(string),
 	}
 
 	reqBody := new(bytes.Buffer)
@@ -473,29 +477,29 @@ func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-// resourceServerLock() acquires the lock for a specific server.
-func resourceServerLock(d *schema.ResourceData, m interface{}, serverId string) error {
+// resourceServerLock acquires the lock for a specific server.
+func resourceServerLock(d *schema.ResourceData, m interface{}, serverID string) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
 	retryLimit := 90
 	retryDelay := 10
 
 	// Acquire the lock for the serverMap variable.
-	log.Printf("[DEBUG] Acquiring lock for server map (id: %s)", serverId)
+	log.Printf("[DEBUG] Acquiring lock for server map (id: %s)", serverID)
 	serverMapMutex.Lock()
 
 	// Create a mutex for the specified server, if none already exists.
-	if serverMap[serverId] == nil {
-		log.Printf("[DEBUG] Creating mutex for server (id: %s)", serverId)
-		serverMap[serverId] = &sync.Mutex{}
+	if serverMap[serverID] == nil {
+		log.Printf("[DEBUG] Creating mutex for server (id: %s)", serverID)
+		serverMap[serverID] = &sync.Mutex{}
 	}
 
 	// Now that we know a mutex for the server exists, we can unlock the mutex for the map and acquire the lock for the server instead.
-	log.Printf("[DEBUG] Releasing lock for server map (id: %s)", serverId)
+	log.Printf("[DEBUG] Releasing lock for server map (id: %s)", serverID)
 	serverMapMutex.Unlock()
 
-	log.Printf("[DEBUG] Acquiring lock for server (id: %s)", serverId)
-	serverMap[serverId].Lock()
+	log.Printf("[DEBUG] Acquiring lock for server (id: %s)", serverID)
+	serverMap[serverID].Lock()
 
 	// We can now go ahead and retrieve the transactions for the server. We will keep doing this until all transactions are eithed failed or completed.
 	timeDelay := int64(retryDelay)
@@ -507,7 +511,7 @@ func resourceServerLock(d *schema.ResourceData, m interface{}, serverId string) 
 
 	for timeElapsed.Seconds() < timeMax {
 		if int64(timeElapsed.Seconds())%timeDelay == 0 {
-			res, err := clouddk.DoClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/logs", serverId), new(bytes.Buffer), []int{200}, 1, 1)
+			res, err := clouddk.DoClientRequest(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/logs", serverID), new(bytes.Buffer), []int{200}, 1, 1)
 
 			if err != nil {
 				return err
@@ -540,28 +544,28 @@ func resourceServerLock(d *schema.ResourceData, m interface{}, serverId string) 
 
 	// Throw an error in case there are still transactions pending or running
 	if continueToWait {
-		log.Printf("[DEBUG] Releasing lock for server (id: %s)", serverId)
-		serverMap[serverId].Unlock()
+		log.Printf("[DEBUG] Releasing lock for server (id: %s)", serverID)
+		serverMap[serverID].Unlock()
 
-		return fmt.Errorf("Timeout while waiting for transactions to end (id: %s)", serverId)
+		return fmt.Errorf("Timeout while waiting for transactions to end (id: %s)", serverID)
 	}
 
 	return nil
 }
 
-// resourceServerUnlock() releases the lock for a specific server.
-func resourceServerUnlock(d *schema.ResourceData, m interface{}, serverId string) error {
-	if serverMap[serverId] == nil {
-		return fmt.Errorf("Cannot unlock a server which has never been locked during this session (id: %s)", serverId)
+// resourceServerUnlock releases the lock for a specific server.
+func resourceServerUnlock(d *schema.ResourceData, m interface{}, serverID string) error {
+	if serverMap[serverID] == nil {
+		return fmt.Errorf("Cannot unlock a server which has never been locked during this session (id: %s)", serverID)
 	}
 
-	log.Printf("[DEBUG] Releasing lock for server (id: %s)", serverId)
-	serverMap[serverId].Unlock()
+	log.Printf("[DEBUG] Releasing lock for server (id: %s)", serverID)
+	serverMap[serverID].Unlock()
 
 	return nil
 }
 
-// resourceServerWaitForBootFlag() waits for the boot flag to be toggled.
+// resourceServerWaitForBootFlag waits for the boot flag to be toggled.
 func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server *clouddk.ServerBody) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
@@ -591,5 +595,5 @@ func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server
 		timeElapsed = time.Now().Sub(timeStart)
 	}
 
-	return fmt.Errorf("The server '%s' (id: %s) does not appear to be able to boot", d.Get(ResourceServerHostnameKey).(string), server.Identifier)
+	return fmt.Errorf("The server '%s' (id: %s) does not appear to be able to boot", d.Get(resourceServerHostnameKey).(string), server.Identifier)
 }

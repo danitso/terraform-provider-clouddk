@@ -10,39 +10,41 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceDiskIdKey = "id"
-const DataSourceDiskLabelKey = "label"
-const DataSourceDiskPrimaryKey = "primary"
-const DataSourceDiskServerIdKey = "server_id"
-const DataSourceDiskSizeKey = "size"
+const (
+	dataSourceDiskIDKey       = "id"
+	dataSourceDiskLabelKey    = "label"
+	dataSourceDiskPrimaryKey  = "primary"
+	dataSourceDiskServerIDKey = "server_id"
+	dataSourceDiskSizeKey     = "size"
+)
 
-// dataSourceDisk() retrieves information about a server's disk.
+// dataSourceDisk retrieves information about a server's disk.
 func dataSourceDisk() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceDiskIdKey: &schema.Schema{
+			dataSourceDiskIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The disk identifier",
 				ForceNew:    true,
 			},
-			DataSourceDiskLabelKey: &schema.Schema{
+			dataSourceDiskLabelKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The disk label",
 			},
-			DataSourceDiskPrimaryKey: &schema.Schema{
+			dataSourceDiskPrimaryKey: &schema.Schema{
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "Whether the disk is the primary disk",
 			},
-			DataSourceDiskServerIdKey: &schema.Schema{
+			dataSourceDiskServerIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
 				ForceNew:    true,
 			},
-			DataSourceDiskSizeKey: &schema.Schema{
+			dataSourceDiskSizeKey: &schema.Schema{
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "The disk size in gigabytes",
@@ -53,14 +55,14 @@ func dataSourceDisk() *schema.Resource {
 	}
 }
 
-// dataSourceDiskRead() reads information about a server's disk.
+// dataSourceDiskRead reads information about a server's disk.
 func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	diskId := d.Get(DataSourceDiskIdKey).(string)
-	serverId := d.Get(DataSourceDiskServerIdKey).(string)
+	diskID := d.Get(dataSourceDiskIDKey).(string)
+	serverID := d.Get(dataSourceDiskServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverId, diskId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -81,13 +83,13 @@ func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	return dataSourceDiskReadResponseBody(d, m, &disk)
 }
 
-// dataSourceDiskReadResponseBody() parses information about a server's disk.
+// dataSourceDiskReadResponseBody parses information about a server's disk.
 func dataSourceDiskReadResponseBody(d *schema.ResourceData, m interface{}, disk *clouddk.DiskBody) error {
 	d.SetId(disk.Identifier)
 
-	d.Set(DataSourceDiskLabelKey, disk.Label)
-	d.Set(DataSourceDiskPrimaryKey, disk.Primary)
-	d.Set(DataSourceDiskSizeKey, disk.Size)
+	d.Set(dataSourceDiskLabelKey, disk.Label)
+	d.Set(dataSourceDiskPrimaryKey, disk.Primary)
+	d.Set(dataSourceDiskSizeKey, disk.Size)
 
 	return nil
 }

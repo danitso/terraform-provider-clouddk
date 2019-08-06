@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourceLocationsInstantiation() tests whether the dataSourceLocations instance can be instantiated.
+// TestDataSourceLocationsInstantiation tests whether the dataSourceLocations instance can be instantiated.
 func TestDataSourceLocationsInstantiation(t *testing.T) {
 	s := dataSourceLocations()
 
@@ -13,13 +13,13 @@ func TestDataSourceLocationsInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceLocationsSchema() tests the dataSourceLocations schema.
+// TestDataSourceLocationsSchema tests the dataSourceLocations schema.
 func TestDataSourceLocationsSchema(t *testing.T) {
 	s := dataSourceLocations()
 
 	attributeKeys := []string{
-		DataSourceLocationsIdsKey,
-		DataSourceLocationsNamesKey,
+		dataSourceLocationsIdsKey,
+		dataSourceLocationsNamesKey,
 	}
 
 	for _, v := range attributeKeys {

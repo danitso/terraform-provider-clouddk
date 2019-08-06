@@ -10,43 +10,45 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const ResourceIPAddressAddressKey = "address"
-const ResourceIPAddressGatewayKey = "gateway"
-const ResourceIPAddressNetmaskKey = "netmask"
-const ResourceIPAddressNetworkKey = "network"
-const ResourceIPAddressNetworkInterfaceIdKey = "network_interface_id"
-const ResourceIPAddressServerIdKey = "server_id"
+const (
+	resourceIPAddressAddressKey            = "address"
+	resourceIPAddressGatewayKey            = "gateway"
+	resourceIPAddressNetmaskKey            = "netmask"
+	resourceIPAddressNetworkKey            = "network"
+	resourceIPAddressNetworkInterfaceIDKey = "network_interface_id"
+	resourceIPAddressServerIDKey           = "server_id"
+)
 
-// resourceIPAddress() manages an IP address.
+// resourceIPAddress manages an IP address.
 func resourceIPAddress() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			ResourceIPAddressAddressKey: &schema.Schema{
+			resourceIPAddressAddressKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The IP address",
 			},
-			ResourceIPAddressGatewayKey: &schema.Schema{
+			resourceIPAddressGatewayKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The gateway address",
 			},
-			ResourceIPAddressNetmaskKey: &schema.Schema{
+			resourceIPAddressNetmaskKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The netmask",
 			},
-			ResourceIPAddressNetworkKey: &schema.Schema{
+			resourceIPAddressNetworkKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The network address",
 			},
-			ResourceIPAddressNetworkInterfaceIdKey: &schema.Schema{
+			resourceIPAddressNetworkInterfaceIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The network interface id",
 			},
-			ResourceIPAddressServerIdKey: &schema.Schema{
+			resourceIPAddressServerIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
@@ -60,28 +62,28 @@ func resourceIPAddress() *schema.Resource {
 	}
 }
 
-// resourceIPAddressCreate() creates an IP address.
+// resourceIPAddressCreate creates an IP address.
 func resourceIPAddressCreate(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
+	serverID := d.Get(resourceIPAddressServerIDKey).(string)
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverId)
+	lockErr := resourceServerLock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/ip-addresses", serverId), new(bytes.Buffer), []int{200}, 60, 10)
+	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/ip-addresses", serverID), new(bytes.Buffer), []int{200}, 60, 10)
 
 	if resErr != nil {
-		resourceServerUnlock(d, m, serverId)
+		resourceServerUnlock(d, m, serverID)
 
 		return resErr
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverId)
+	lockErr = resourceServerUnlock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
@@ -92,11 +94,11 @@ func resourceIPAddressCreate(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(ipAddresses[len(ipAddresses)-1].Address)
 
-	d.Set(ResourceIPAddressAddressKey, ipAddresses[len(ipAddresses)-1].Address)
-	d.Set(ResourceIPAddressGatewayKey, ipAddresses[len(ipAddresses)-1].Gateway)
-	d.Set(ResourceIPAddressNetmaskKey, ipAddresses[len(ipAddresses)-1].Netmask)
-	d.Set(ResourceIPAddressNetworkKey, ipAddresses[len(ipAddresses)-1].Network)
-	d.Set(ResourceIPAddressNetworkInterfaceIdKey, ipAddresses[len(ipAddresses)-1].NetworkInterfaceIdentifier)
+	d.Set(resourceIPAddressAddressKey, ipAddresses[len(ipAddresses)-1].Address)
+	d.Set(resourceIPAddressGatewayKey, ipAddresses[len(ipAddresses)-1].Gateway)
+	d.Set(resourceIPAddressNetmaskKey, ipAddresses[len(ipAddresses)-1].Netmask)
+	d.Set(resourceIPAddressNetworkKey, ipAddresses[len(ipAddresses)-1].Network)
+	d.Set(resourceIPAddressNetworkInterfaceIDKey, ipAddresses[len(ipAddresses)-1].NetworkInterfaceIdentifier)
 
 	return nil
 }
@@ -106,9 +108,9 @@ func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
 	address := d.Id()
-	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
+	serverID := d.Get(resourceIPAddressServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", serverId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", serverID), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -134,11 +136,11 @@ func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
 
 	for _, v := range ipAddresses {
 		if v.Address == address {
-			d.Set(ResourceIPAddressAddressKey, v.Address)
-			d.Set(ResourceIPAddressGatewayKey, v.Gateway)
-			d.Set(ResourceIPAddressNetmaskKey, v.Netmask)
-			d.Set(ResourceIPAddressNetworkKey, v.Network)
-			d.Set(ResourceIPAddressNetworkInterfaceIdKey, v.NetworkInterfaceIdentifier)
+			d.Set(resourceIPAddressAddressKey, v.Address)
+			d.Set(resourceIPAddressGatewayKey, v.Gateway)
+			d.Set(resourceIPAddressNetmaskKey, v.Netmask)
+			d.Set(resourceIPAddressNetworkKey, v.Network)
+			d.Set(resourceIPAddressNetworkInterfaceIDKey, v.NetworkInterfaceIdentifier)
 
 			return nil
 		}
@@ -153,25 +155,25 @@ func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
 func resourceIPAddressDelete(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	serverId := d.Get(ResourceIPAddressServerIdKey).(string)
+	serverID := d.Get(resourceIPAddressServerIDKey).(string)
 	address := d.Id()
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverId)
+	lockErr := resourceServerLock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr
 	}
 
-	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/ip-addresses?address=%s", serverId, address), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/ip-addresses?address=%s", serverID, address), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
-		resourceServerUnlock(d, m, serverId)
+		resourceServerUnlock(d, m, serverID)
 
 		return err
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverId)
+	lockErr = resourceServerUnlock(d, m, serverID)
 
 	if lockErr != nil {
 		return lockErr

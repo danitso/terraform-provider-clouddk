@@ -11,28 +11,30 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceServersFilterKey = "filter"
-const DataSourceServersFilterHostnameKey = "hostname"
-const DataSourceServersHostnamesKey = "hostnames"
-const DataSourceServersIdsKey = "ids"
-const DataSourceServersLabelsKey = "labels"
-const DataSourceServersLocationIdsKey = "location_ids"
-const DataSourceServersLocationNamesKey = "location_names"
-const DataSourceServersPackageIdsKey = "package_ids"
-const DataSourceServersPackageNamesKey = "package_names"
-const DataSourceServersTemplateIdsKey = "template_ids"
-const DataSourceServersTemplateNamesKey = "template_names"
+const (
+	dataSourceServersFilterKey         = "filter"
+	dataSourceServersFilterHostnameKey = "hostname"
+	dataSourceServersHostnamesKey      = "hostnames"
+	dataSourceServersIdsKey            = "ids"
+	dataSourceServersLabelsKey         = "labels"
+	dataSourceServersLocationIdsKey    = "location_ids"
+	dataSourceServersLocationNamesKey  = "location_names"
+	dataSourceServersPackageIdsKey     = "package_ids"
+	dataSourceServersPackageNamesKey   = "package_names"
+	dataSourceServersTemplateIdsKey    = "template_ids"
+	dataSourceServersTemplateNamesKey  = "template_names"
+)
 
-// dataSourceServers() retrieves a list of servers.
+// dataSourceServers retrieves a list of servers.
 func dataSourceServers() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceServersFilterKey: &schema.Schema{
+			dataSourceServersFilterKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						DataSourceServersFilterHostnameKey: &schema.Schema{
+						dataSourceServersFilterHostnameKey: &schema.Schema{
 							Type:        schema.TypeString,
 							Optional:    true,
 							Default:     "",
@@ -43,47 +45,47 @@ func dataSourceServers() *schema.Resource {
 				},
 				MaxItems: 1,
 			},
-			DataSourceServersHostnamesKey: &schema.Schema{
+			dataSourceServersHostnamesKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersIdsKey: &schema.Schema{
+			dataSourceServersIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersLabelsKey: &schema.Schema{
+			dataSourceServersLabelsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersLocationIdsKey: &schema.Schema{
+			dataSourceServersLocationIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersLocationNamesKey: &schema.Schema{
+			dataSourceServersLocationNamesKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersPackageIdsKey: &schema.Schema{
+			dataSourceServersPackageIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersPackageNamesKey: &schema.Schema{
+			dataSourceServersPackageNamesKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersTemplateIdsKey: &schema.Schema{
+			dataSourceServersTemplateIdsKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceServersTemplateNamesKey: &schema.Schema{
+			dataSourceServersTemplateNamesKey: &schema.Schema{
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -94,14 +96,14 @@ func dataSourceServers() *schema.Resource {
 	}
 }
 
-// dataSourceServersRead() reads information about servers.
+// dataSourceServersRead reads information about servers.
 func dataSourceServersRead(d *schema.ResourceData, m interface{}) error {
-	filter := d.Get(DataSourceServersFilterKey).([]interface{})
+	filter := d.Get(dataSourceServersFilterKey).([]interface{})
 	filterHostname := ""
 
 	if len(filter) > 0 {
 		filterData := filter[0].(map[string]interface{})
-		filterHostname = filterData[DataSourceServersFilterHostnameKey].(string)
+		filterHostname = filterData[dataSourceServersFilterHostnameKey].(string)
 	}
 
 	// Prepare the relative path based on the filters.
@@ -155,15 +157,15 @@ func dataSourceServersRead(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId("servers")
 
-	d.Set(DataSourceServersHostnamesKey, hostnames)
-	d.Set(DataSourceServersIdsKey, ids)
-	d.Set(DataSourceServersLabelsKey, labels)
-	d.Set(DataSourceServersLocationIdsKey, locationIds)
-	d.Set(DataSourceServersLocationNamesKey, locationNames)
-	d.Set(DataSourceServersPackageIdsKey, packageIds)
-	d.Set(DataSourceServersPackageNamesKey, packageNames)
-	d.Set(DataSourceServersTemplateIdsKey, templateIds)
-	d.Set(DataSourceServersTemplateNamesKey, templateNames)
+	d.Set(dataSourceServersHostnamesKey, hostnames)
+	d.Set(dataSourceServersIdsKey, ids)
+	d.Set(dataSourceServersLabelsKey, labels)
+	d.Set(dataSourceServersLocationIdsKey, locationIds)
+	d.Set(dataSourceServersLocationNamesKey, locationNames)
+	d.Set(dataSourceServersPackageIdsKey, packageIds)
+	d.Set(dataSourceServersPackageNamesKey, packageNames)
+	d.Set(dataSourceServersTemplateIdsKey, templateIds)
+	d.Set(dataSourceServersTemplateNamesKey, templateNames)
 
 	return nil
 }

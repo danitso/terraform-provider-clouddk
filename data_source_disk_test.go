@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourceDiskInstantiation() tests whether the dataSourceDisk instance can be instantiated.
+// TestDataSourceDiskInstantiation tests whether the dataSourceDisk instance can be instantiated.
 func TestDataSourceDiskInstantiation(t *testing.T) {
 	s := dataSourceDisk()
 
@@ -13,13 +13,13 @@ func TestDataSourceDiskInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceDiskSchema() tests the dataSourceDisk schema.
+// TestDataSourceDiskSchema tests the dataSourceDisk schema.
 func TestDataSourceDiskSchema(t *testing.T) {
 	s := dataSourceDisk()
 
 	idKeys := []string{
-		DataSourceDiskIdKey,
-		DataSourceDiskServerIdKey,
+		dataSourceDiskIDKey,
+		dataSourceDiskServerIDKey,
 	}
 
 	for _, v := range idKeys {
@@ -33,9 +33,9 @@ func TestDataSourceDiskSchema(t *testing.T) {
 	}
 
 	attributeKeys := []string{
-		DataSourceDiskLabelKey,
-		DataSourceDiskPrimaryKey,
-		DataSourceDiskSizeKey,
+		dataSourceDiskLabelKey,
+		dataSourceDiskPrimaryKey,
+		dataSourceDiskSizeKey,
 	}
 
 	for _, v := range attributeKeys {

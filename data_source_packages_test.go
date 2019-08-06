@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourcePackagesInstantiation() tests whether the dataSourcePackages instance can be instantiated.
+// TestDataSourcePackagesInstantiation tests whether the dataSourcePackages instance can be instantiated.
 func TestDataSourcePackagesInstantiation(t *testing.T) {
 	s := dataSourcePackages()
 
@@ -13,13 +13,13 @@ func TestDataSourcePackagesInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourcePackagesSchema() tests the dataSourcePackages schema.
+// TestDataSourcePackagesSchema tests the dataSourcePackages schema.
 func TestDataSourcePackagesSchema(t *testing.T) {
 	s := dataSourcePackages()
 
 	attributeKeys := []string{
-		DataSourcePackagesIdsKey,
-		DataSourcePackagesNamesKey,
+		dataSourcePackagesIdsKey,
+		dataSourcePackagesNamesKey,
 	}
 
 	for _, v := range attributeKeys {

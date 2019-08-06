@@ -10,27 +10,29 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceNetworkInterfacesAddressesKey = "addresses"
-const DataSourceNetworkInterfacesDefaultFirewallRulesKey = "default_firewall_rules"
-const DataSourceNetworkInterfacesFirewallRulesAddressesKey = "firewall_rules_addresses"
-const DataSourceNetworkInterfacesFirewallRulesCommandsKey = "firewall_rules_commands"
-const DataSourceNetworkInterfacesFirewallRulesIdsKey = "firewall_rules_ids"
-const DataSourceNetworkInterfacesFirewallRulesPortsKey = "firewall_rules_ports"
-const DataSourceNetworkInterfacesFirewallRulesProtocolsKey = "firewall_rules_protocols"
-const DataSourceNetworkInterfacesGatewaysKey = "gateways"
-const DataSourceNetworkInterfacesIdKey = "id"
-const DataSourceNetworkInterfacesIdsKey = "ids"
-const DataSourceNetworkInterfacesLabelsKey = "labels"
-const DataSourceNetworkInterfacesNetmasksKey = "netmasks"
-const DataSourceNetworkInterfacesNetworksKey = "networks"
-const DataSourceNetworkInterfacesPrimaryKey = "primary"
-const DataSourceNetworkInterfacesRateLimitsKey = "rate_limits"
+const (
+	dataSourceNetworkInterfacesAddressesKey              = "addresses"
+	dataSourceNetworkInterfacesDefaultFirewallRulesKey   = "default_firewall_rules"
+	dataSourceNetworkInterfacesFirewallRulesAddressesKey = "firewall_rules_addresses"
+	dataSourceNetworkInterfacesFirewallRulesCommandsKey  = "firewall_rules_commands"
+	dataSourceNetworkInterfacesFirewallRulesIdsKey       = "firewall_rules_ids"
+	dataSourceNetworkInterfacesFirewallRulesPortsKey     = "firewall_rules_ports"
+	dataSourceNetworkInterfacesFirewallRulesProtocolsKey = "firewall_rules_protocols"
+	dataSourceNetworkInterfacesGatewaysKey               = "gateways"
+	dataSourceNetworkInterfacesIDKey                     = "id"
+	dataSourceNetworkInterfacesIdsKey                    = "ids"
+	dataSourceNetworkInterfacesLabelsKey                 = "labels"
+	dataSourceNetworkInterfacesNetmasksKey               = "netmasks"
+	dataSourceNetworkInterfacesNetworksKey               = "networks"
+	dataSourceNetworkInterfacesPrimaryKey                = "primary"
+	dataSourceNetworkInterfacesRateLimitsKey             = "rate_limits"
+)
 
-// dataSourceNetworkInterfaces() retrieves information about a server.
+// dataSourceNetworkInterfaces retrieves information about a server.
 func dataSourceNetworkInterfaces() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceNetworkInterfacesAddressesKey: &schema.Schema{
+			dataSourceNetworkInterfacesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The IP addresses assigned to the server's network interfaces",
@@ -39,13 +41,13 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesDefaultFirewallRulesKey: &schema.Schema{
+			dataSourceNetworkInterfacesDefaultFirewallRulesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The default firewall rules for the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfacesFirewallRulesAddressesKey: &schema.Schema{
+			dataSourceNetworkInterfacesFirewallRulesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The CIDR blocks for the firewall rules assigned to the server's network interfaces",
@@ -54,7 +56,7 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesFirewallRulesCommandsKey: &schema.Schema{
+			dataSourceNetworkInterfacesFirewallRulesCommandsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The commands for the firewall rules assigned to the server's network interfaces",
@@ -63,7 +65,7 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesFirewallRulesIdsKey: &schema.Schema{
+			dataSourceNetworkInterfacesFirewallRulesIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The identifiers for the firewall rules assigned to the server's network interfaces",
@@ -72,7 +74,7 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesFirewallRulesPortsKey: &schema.Schema{
+			dataSourceNetworkInterfacesFirewallRulesPortsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
@@ -81,7 +83,7 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesFirewallRulesProtocolsKey: &schema.Schema{
+			dataSourceNetworkInterfacesFirewallRulesProtocolsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The protocols for the firewall rules assigned to the server's network interfaces",
@@ -90,7 +92,7 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesGatewaysKey: &schema.Schema{
+			dataSourceNetworkInterfacesGatewaysKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The gateways assigned to the server's network interfaces",
@@ -99,25 +101,25 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesIdKey: &schema.Schema{
+			dataSourceNetworkInterfacesIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
 				ForceNew:    true,
 			},
-			DataSourceNetworkInterfacesIdsKey: &schema.Schema{
+			dataSourceNetworkInterfacesIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's network interface identifiers",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfacesLabelsKey: &schema.Schema{
+			dataSourceNetworkInterfacesLabelsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The server's network interface labels",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfacesNetmasksKey: &schema.Schema{
+			dataSourceNetworkInterfacesNetmasksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The netmasks assigned to the server's network interfaces",
@@ -126,7 +128,7 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesNetworksKey: &schema.Schema{
+			dataSourceNetworkInterfacesNetworksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The networks assigned to the server's network interfaces",
@@ -135,13 +137,13 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
-			DataSourceNetworkInterfacesPrimaryKey: &schema.Schema{
+			dataSourceNetworkInterfacesPrimaryKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "Whether a network interface is the primary interface",
 				Elem:        &schema.Schema{Type: schema.TypeBool},
 			},
-			DataSourceNetworkInterfacesRateLimitsKey: &schema.Schema{
+			dataSourceNetworkInterfacesRateLimitsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The rate limits for the server's network interfaces",
@@ -153,11 +155,11 @@ func dataSourceNetworkInterfaces() *schema.Resource {
 	}
 }
 
-// dataSourceNetworkInterfacesRead() reads information about a server.
+// dataSourceNetworkInterfacesRead reads information about a server.
 func dataSourceNetworkInterfacesRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	id := d.Get(DataSourceNetworkInterfacesIdKey).(string)
+	id := d.Get(dataSourceNetworkInterfacesIDKey).(string)
 	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces", id), new(bytes.Buffer))
 
 	if reqErr != nil {
@@ -238,22 +240,22 @@ func dataSourceNetworkInterfacesRead(d *schema.ResourceData, m interface{}) erro
 
 	d.SetId(id)
 
-	d.Set(DataSourceNetworkInterfacesAddressesKey, networkInterfaceAddresses)
+	d.Set(dataSourceNetworkInterfacesAddressesKey, networkInterfaceAddresses)
 
-	d.Set(DataSourceNetworkInterfacesFirewallRulesAddressesKey, networkInterfaceFirewallRuleAddresses)
-	d.Set(DataSourceNetworkInterfacesFirewallRulesCommandsKey, networkInterfaceFirewallRuleCommands)
-	d.Set(DataSourceNetworkInterfacesFirewallRulesIdsKey, networkInterfaceFirewallRuleIds)
-	d.Set(DataSourceNetworkInterfacesFirewallRulesPortsKey, networkInterfaceFirewallRulePorts)
-	d.Set(DataSourceNetworkInterfacesFirewallRulesProtocolsKey, networkInterfaceFirewallRuleProtocols)
+	d.Set(dataSourceNetworkInterfacesFirewallRulesAddressesKey, networkInterfaceFirewallRuleAddresses)
+	d.Set(dataSourceNetworkInterfacesFirewallRulesCommandsKey, networkInterfaceFirewallRuleCommands)
+	d.Set(dataSourceNetworkInterfacesFirewallRulesIdsKey, networkInterfaceFirewallRuleIds)
+	d.Set(dataSourceNetworkInterfacesFirewallRulesPortsKey, networkInterfaceFirewallRulePorts)
+	d.Set(dataSourceNetworkInterfacesFirewallRulesProtocolsKey, networkInterfaceFirewallRuleProtocols)
 
-	d.Set(DataSourceNetworkInterfacesGatewaysKey, networkInterfaceGateways)
-	d.Set(DataSourceNetworkInterfacesDefaultFirewallRulesKey, networkInterfaceDefaultFirewallRules)
-	d.Set(DataSourceNetworkInterfacesIdsKey, networkInterfaceIds)
-	d.Set(DataSourceNetworkInterfacesLabelsKey, networkInterfaceLabels)
-	d.Set(DataSourceNetworkInterfacesNetmasksKey, networkInterfaceNetmasks)
-	d.Set(DataSourceNetworkInterfacesNetworksKey, networkInterfaceNetworks)
-	d.Set(DataSourceNetworkInterfacesPrimaryKey, networkInterfacePrimary)
-	d.Set(DataSourceNetworkInterfacesRateLimitsKey, networkInterfaceRateLimits)
+	d.Set(dataSourceNetworkInterfacesGatewaysKey, networkInterfaceGateways)
+	d.Set(dataSourceNetworkInterfacesDefaultFirewallRulesKey, networkInterfaceDefaultFirewallRules)
+	d.Set(dataSourceNetworkInterfacesIdsKey, networkInterfaceIds)
+	d.Set(dataSourceNetworkInterfacesLabelsKey, networkInterfaceLabels)
+	d.Set(dataSourceNetworkInterfacesNetmasksKey, networkInterfaceNetmasks)
+	d.Set(dataSourceNetworkInterfacesNetworksKey, networkInterfaceNetworks)
+	d.Set(dataSourceNetworkInterfacesPrimaryKey, networkInterfacePrimary)
+	d.Set(dataSourceNetworkInterfacesRateLimitsKey, networkInterfaceRateLimits)
 
 	return nil
 }

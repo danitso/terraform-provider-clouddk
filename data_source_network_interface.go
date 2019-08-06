@@ -10,107 +10,109 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-const DataSourceNetworkInterfaceAddressesKey = "addresses"
-const DataSourceNetworkInterfaceDefaultFirewallRuleKey = "default_firewall_rule"
-const DataSourceNetworkInterfaceFirewallRulesAddressesKey = "firewall_rules_addresses"
-const DataSourceNetworkInterfaceFirewallRulesCommandsKey = "firewall_rules_commands"
-const DataSourceNetworkInterfaceFirewallRulesIdsKey = "firewall_rules_ids"
-const DataSourceNetworkInterfaceFirewallRulesPortsKey = "firewall_rules_ports"
-const DataSourceNetworkInterfaceFirewallRulesProtocolsKey = "firewall_rules_protocols"
-const DataSourceNetworkInterfaceGatewaysKey = "gateways"
-const DataSourceNetworkInterfaceIdKey = "id"
-const DataSourceNetworkInterfaceLabelKey = "label"
-const DataSourceNetworkInterfaceNetmasksKey = "netmasks"
-const DataSourceNetworkInterfaceNetworksKey = "networks"
-const DataSourceNetworkInterfacePrimaryKey = "primary"
-const DataSourceNetworkInterfaceRateLimitKey = "rate_limit"
-const DataSourceNetworkInterfaceServerIdKey = "server_id"
+const (
+	dataSourceNetworkInterfaceAddressesKey              = "addresses"
+	dataSourceNetworkInterfaceDefaultFirewallRuleKey    = "default_firewall_rule"
+	dataSourceNetworkInterfaceFirewallRulesAddressesKey = "firewall_rules_addresses"
+	dataSourceNetworkInterfaceFirewallRulesCommandsKey  = "firewall_rules_commands"
+	dataSourceNetworkInterfaceFirewallRulesIdsKey       = "firewall_rules_ids"
+	dataSourceNetworkInterfaceFirewallRulesPortsKey     = "firewall_rules_ports"
+	dataSourceNetworkInterfaceFirewallRulesProtocolsKey = "firewall_rules_protocols"
+	dataSourceNetworkInterfaceGatewaysKey               = "gateways"
+	dataSourceNetworkInterfaceIDKey                     = "id"
+	dataSourceNetworkInterfaceLabelKey                  = "label"
+	dataSourceNetworkInterfaceNetmasksKey               = "netmasks"
+	dataSourceNetworkInterfaceNetworksKey               = "networks"
+	dataSourceNetworkInterfacePrimaryKey                = "primary"
+	dataSourceNetworkInterfaceRateLimitKey              = "rate_limit"
+	dataSourceNetworkInterfaceServerIDKey               = "server_id"
+)
 
-// dataSourceNetworkInterface() retrieves information about a server.
+// dataSourceNetworkInterface retrieves information about a server.
 func dataSourceNetworkInterface() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			DataSourceNetworkInterfaceAddressesKey: &schema.Schema{
+			dataSourceNetworkInterfaceAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The IP addresses assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfaceDefaultFirewallRuleKey: &schema.Schema{
+			dataSourceNetworkInterfaceDefaultFirewallRuleKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The default firewall rule for the network interface",
 			},
-			DataSourceNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The CIDR blocks for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The commands for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfaceFirewallRulesIdsKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesIdsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The identifiers for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfaceFirewallRulesPortsKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesPortsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The protocols for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfaceGatewaysKey: &schema.Schema{
+			dataSourceNetworkInterfaceGatewaysKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The gateways assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfaceIdKey: &schema.Schema{
+			dataSourceNetworkInterfaceIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The network interface identifier",
 				ForceNew:    true,
 			},
-			DataSourceNetworkInterfaceLabelKey: &schema.Schema{
+			dataSourceNetworkInterfaceLabelKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The network interface label",
 			},
-			DataSourceNetworkInterfaceNetmasksKey: &schema.Schema{
+			dataSourceNetworkInterfaceNetmasksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The netmasks assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfaceNetworksKey: &schema.Schema{
+			dataSourceNetworkInterfaceNetworksKey: &schema.Schema{
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The networks assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			DataSourceNetworkInterfacePrimaryKey: &schema.Schema{
+			dataSourceNetworkInterfacePrimaryKey: &schema.Schema{
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "Whether the network interface is the primary interface",
 			},
-			DataSourceNetworkInterfaceRateLimitKey: &schema.Schema{
+			dataSourceNetworkInterfaceRateLimitKey: &schema.Schema{
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "The rate limit for the network interface",
 			},
-			DataSourceNetworkInterfaceServerIdKey: &schema.Schema{
+			dataSourceNetworkInterfaceServerIDKey: &schema.Schema{
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
@@ -122,14 +124,14 @@ func dataSourceNetworkInterface() *schema.Resource {
 	}
 }
 
-// dataSourceNetworkInterfaceRead() reads information about a server.
+// dataSourceNetworkInterfaceRead reads information about a server.
 func dataSourceNetworkInterfaceRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	networkInterfaceId := d.Get(DataSourceNetworkInterfaceIdKey).(string)
-	serverId := d.Get(DataSourceNetworkInterfaceServerIdKey).(string)
+	networkInterfaceID := d.Get(dataSourceNetworkInterfaceIDKey).(string)
+	serverID := d.Get(dataSourceNetworkInterfaceServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", serverId, networkInterfaceId), new(bytes.Buffer))
+	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", serverID, networkInterfaceID), new(bytes.Buffer))
 
 	if reqErr != nil {
 		return reqErr
@@ -173,23 +175,23 @@ func dataSourceNetworkInterfaceRead(d *schema.ResourceData, m interface{}) error
 		firewallRulesProtocols[v.Position-1] = v.Protocol
 	}
 
-	d.SetId(networkInterfaceId)
+	d.SetId(networkInterfaceID)
 
-	d.Set(DataSourceNetworkInterfaceAddressesKey, addresses)
+	d.Set(dataSourceNetworkInterfaceAddressesKey, addresses)
 
-	d.Set(DataSourceNetworkInterfaceFirewallRulesAddressesKey, firewallRulesAddresses)
-	d.Set(DataSourceNetworkInterfaceFirewallRulesCommandsKey, firewallRulesCommands)
-	d.Set(DataSourceNetworkInterfaceFirewallRulesIdsKey, firewallRulesIds)
-	d.Set(DataSourceNetworkInterfaceFirewallRulesPortsKey, firewallRulesPorts)
-	d.Set(DataSourceNetworkInterfaceFirewallRulesProtocolsKey, firewallRulesProtocols)
+	d.Set(dataSourceNetworkInterfaceFirewallRulesAddressesKey, firewallRulesAddresses)
+	d.Set(dataSourceNetworkInterfaceFirewallRulesCommandsKey, firewallRulesCommands)
+	d.Set(dataSourceNetworkInterfaceFirewallRulesIdsKey, firewallRulesIds)
+	d.Set(dataSourceNetworkInterfaceFirewallRulesPortsKey, firewallRulesPorts)
+	d.Set(dataSourceNetworkInterfaceFirewallRulesProtocolsKey, firewallRulesProtocols)
 
-	d.Set(DataSourceNetworkInterfaceGatewaysKey, gateways)
-	d.Set(DataSourceNetworkInterfaceDefaultFirewallRuleKey, networkInterface.DefaultFirewallRule)
-	d.Set(DataSourceNetworkInterfaceLabelKey, networkInterface.Label)
-	d.Set(DataSourceNetworkInterfaceNetmasksKey, netmasks)
-	d.Set(DataSourceNetworkInterfaceNetworksKey, networks)
-	d.Set(DataSourceNetworkInterfacePrimaryKey, networkInterface.Primary)
-	d.Set(DataSourceNetworkInterfaceRateLimitKey, networkInterface.RateLimit)
+	d.Set(dataSourceNetworkInterfaceGatewaysKey, gateways)
+	d.Set(dataSourceNetworkInterfaceDefaultFirewallRuleKey, networkInterface.DefaultFirewallRule)
+	d.Set(dataSourceNetworkInterfaceLabelKey, networkInterface.Label)
+	d.Set(dataSourceNetworkInterfaceNetmasksKey, netmasks)
+	d.Set(dataSourceNetworkInterfaceNetworksKey, networks)
+	d.Set(dataSourceNetworkInterfacePrimaryKey, networkInterface.Primary)
+	d.Set(dataSourceNetworkInterfaceRateLimitKey, networkInterface.RateLimit)
 
 	return nil
 }

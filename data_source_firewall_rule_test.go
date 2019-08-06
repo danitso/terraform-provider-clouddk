@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestDataSourceFirewallRuleInstantiation() tests whether the dataSourceFirewallRule instance can be instantiated.
+// TestDataSourceFirewallRuleInstantiation tests whether the dataSourceFirewallRule instance can be instantiated.
 func TestDataSourceFirewallRuleInstantiation(t *testing.T) {
 	s := dataSourceFirewallRule()
 
@@ -13,14 +13,14 @@ func TestDataSourceFirewallRuleInstantiation(t *testing.T) {
 	}
 }
 
-// TestDataSourceFirewallRuleSchema() tests the dataSourceFirewallRule schema.
+// TestDataSourceFirewallRuleSchema tests the dataSourceFirewallRule schema.
 func TestDataSourceFirewallRuleSchema(t *testing.T) {
 	s := dataSourceFirewallRule()
 
 	idKeys := []string{
-		DataSourceFirewallRuleIdKey,
-		DataSourceFirewallRuleNetworkInterfaceIdKey,
-		DataSourceFirewallRuleServerIdKey,
+		dataSourceFirewallRuleIDKey,
+		dataSourceFirewallRuleNetworkInterfaceIDKey,
+		dataSourceFirewallRuleServerIDKey,
 	}
 
 	for _, v := range idKeys {
@@ -34,10 +34,10 @@ func TestDataSourceFirewallRuleSchema(t *testing.T) {
 	}
 
 	attributeKeys := []string{
-		DataSourceFirewallRuleAddressKey,
-		DataSourceFirewallRuleCommandKey,
-		DataSourceFirewallRulePortKey,
-		DataSourceFirewallRuleProtocolKey,
+		dataSourceFirewallRuleAddressKey,
+		dataSourceFirewallRuleCommandKey,
+		dataSourceFirewallRulePortKey,
+		dataSourceFirewallRuleProtocolKey,
 	}
 
 	for _, v := range attributeKeys {

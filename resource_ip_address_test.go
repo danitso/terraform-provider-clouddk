@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestResourceIPAddressInstantiation() tests whether the resourceIPAddress instance can be instantiated.
+// TestResourceIPAddressInstantiation tests whether the resourceIPAddress instance can be instantiated.
 func TestResourceIPAddressInstantiation(t *testing.T) {
 	s := resourceIPAddress()
 
@@ -13,12 +13,12 @@ func TestResourceIPAddressInstantiation(t *testing.T) {
 	}
 }
 
-// TestResourceIPAddressSchema() tests the resourceIPAddress schema.
+// TestResourceIPAddressSchema tests the resourceIPAddress schema.
 func TestResourceIPAddressSchema(t *testing.T) {
 	s := resourceIPAddress()
 
 	requiredKeys := []string{
-		ResourceIPAddressServerIdKey,
+		resourceIPAddressServerIDKey,
 	}
 
 	for _, v := range requiredKeys {
@@ -32,11 +32,11 @@ func TestResourceIPAddressSchema(t *testing.T) {
 	}
 
 	attributeKeys := []string{
-		ResourceIPAddressAddressKey,
-		ResourceIPAddressGatewayKey,
-		ResourceIPAddressNetmaskKey,
-		ResourceIPAddressNetworkKey,
-		ResourceIPAddressNetworkInterfaceIdKey,
+		resourceIPAddressAddressKey,
+		resourceIPAddressGatewayKey,
+		resourceIPAddressNetmaskKey,
+		resourceIPAddressNetworkKey,
+		resourceIPAddressNetworkInterfaceIDKey,
 	}
 
 	for _, v := range attributeKeys {
