@@ -360,8 +360,10 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 		return parseErr
 	}
 
-	d.Set(resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey, server.NetworkInterfaces[0].DefaultFirewallRule)
-	d.Set(resourceServerPrimaryNetworkInterfaceLabelKey, server.NetworkInterfaces[0].Label)
+	if len(server.NetworkInterfaces) > 0 {
+		d.Set(resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey, server.NetworkInterfaces[0].DefaultFirewallRule)
+		d.Set(resourceServerPrimaryNetworkInterfaceLabelKey, server.NetworkInterfaces[0].Label)
+	}
 
 	return nil
 }
