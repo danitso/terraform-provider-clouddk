@@ -79,7 +79,7 @@ func resourceFirewallRuleCreate(d *schema.ResourceData, m interface{}) error {
 		Command:  d.Get(dataSourceFirewallRuleCommandKey).(string),
 		Protocol: d.Get(dataSourceFirewallRuleProtocolKey).(string),
 		Address:  address[0],
-		Bits:     bits,
+		Bits:     clouddk.CustomInt(bits),
 		Port:     d.Get(dataSourceFirewallRulePortKey).(string),
 	}
 
@@ -184,7 +184,7 @@ func resourceFirewallRuleUpdate(d *schema.ResourceData, m interface{}) error {
 		Command:  d.Get(dataSourceFirewallRuleCommandKey).(string),
 		Protocol: d.Get(dataSourceFirewallRuleProtocolKey).(string),
 		Address:  address[0],
-		Bits:     bits,
+		Bits:     clouddk.CustomInt(bits),
 		Port:     d.Get(dataSourceFirewallRulePortKey).(string),
 	}
 

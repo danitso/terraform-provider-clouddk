@@ -325,6 +325,14 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
+	err = dataSourceServerReadResponseBody(d, m, &server)
+
+	if err != nil {
+		resourceServerUnlock(d, m, d.Id())
+
+		return nil
+	}
+
 	// We need to release the lock for the server to allow other operations to continue.
 	err = resourceServerUnlock(d, m, d.Id())
 
@@ -459,14 +467,15 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 
 			return err
 		}
+	}
 
-		err = dataSourceServerReadResponseBody(d, m, &server)
+	// Ensure that we update the resource with the latest values.
+	err = dataSourceServerReadResponseBody(d, m, &server)
 
-		if err != nil {
-			resourceServerUnlock(d, m, d.Id())
+	if err != nil {
+		resourceServerUnlock(d, m, d.Id())
 
-			return err
-		}
+		return err
 	}
 
 	// We need to release the lock for the server to allow other operations to continue.
@@ -510,7 +519,7 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 
 	server.NetworkInterfaces[0] = networkInterfaceBody
 
-	return dataSourceServerReadResponseBody(d, m, server)
+	return nil
 }
 
 // resourceServerDelete deletes an existing server.

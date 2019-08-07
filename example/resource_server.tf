@@ -5,7 +5,7 @@ resource "clouddk_server" "example" {
 
   location_id = "${element(data.clouddk_locations.example.ids, 0)}"
   package_id  = "${element(data.clouddk_packages.example.ids, index(data.clouddk_packages.example.names, "clouddk.s1"))}"
-  template_id = "${element(data.clouddk_templates.example.ids, index(data.clouddk_templates.example.ids, "ubuntu-18.04-x64"))}"
+  template_id = "ubuntu-18.04-x64"
 
   connection {
     type = "ssh"

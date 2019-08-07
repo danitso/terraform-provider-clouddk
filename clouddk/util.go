@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// GetClientRequestObject() returns a new HTTP request object.
+// GetClientRequestObject returns a new HTTP request object.
 func GetClientRequestObject(settings *ClientSettings, method string, path string, body io.Reader) (*http.Request, error) {
 	req, reqErr := http.NewRequest(method, fmt.Sprintf("%s/%s", settings.Endpoint, path), body)
 
@@ -26,7 +26,7 @@ func GetClientRequestObject(settings *ClientSettings, method string, path string
 	return req, nil
 }
 
-// DoClientRequest() performs a HTTP request and does so multiple times, if required.
+// DoClientRequest performs a HTTP request and does so multiple times, if required.
 func DoClientRequest(settings *ClientSettings, method string, path string, body *bytes.Buffer, successCodes []int, retryLimit int, retryDelay int) (*http.Response, error) {
 	timeDelay := int64(retryDelay)
 	timeMax := float64(retryLimit * retryDelay)

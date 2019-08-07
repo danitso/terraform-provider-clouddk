@@ -52,7 +52,7 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 
 	body := clouddk.DiskCreateBody{
 		Label: d.Get(dataSourceDiskLabelKey).(string),
-		Size:  d.Get(dataSourceDiskSizeKey).(int),
+		Size:  clouddk.CustomInt(d.Get(dataSourceDiskSizeKey).(int)),
 	}
 
 	reqBody := new(bytes.Buffer)
@@ -140,7 +140,7 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 
 	body := clouddk.DiskCreateBody{
 		Label: d.Get(dataSourceDiskLabelKey).(string),
-		Size:  d.Get(dataSourceDiskSizeKey).(int),
+		Size:  clouddk.CustomInt(d.Get(dataSourceDiskSizeKey).(int)),
 	}
 
 	reqBody := new(bytes.Buffer)
