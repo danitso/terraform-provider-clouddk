@@ -73,23 +73,27 @@ func dataSourceTemplatesRead(d *schema.ResourceData, m interface{}) error {
 
 	// Retrieve the list of templates by invoking the API action.
 	clientSettings := m.(clouddk.ClientSettings)
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", path, new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", path, new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		return fmt.Errorf("Failed to read the information about the templates - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	list := make(clouddk.TemplateListBody, 0)
-	json.NewDecoder(res.Body).Decode(&list)
+	err = json.NewDecoder(res.Body).Decode(&list)
+
+	if err != nil {
+		return err
+	}
 
 	ids := make([]interface{}, len(list))
 	names := make([]interface{}, len(list))

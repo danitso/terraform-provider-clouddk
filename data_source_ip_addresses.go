@@ -70,23 +70,27 @@ func dataSourceIPAddressesRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
 	id := d.Get(dataSourceIPAddressesIDKey).(string)
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", id), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", id), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		return fmt.Errorf("Failed to read the information about the IP addresses - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	ipAddresses := clouddk.IPAddressListBody{}
-	json.NewDecoder(res.Body).Decode(&ipAddresses)
+	err = json.NewDecoder(res.Body).Decode(&ipAddresses)
+
+	if err != nil {
+		return err
+	}
 
 	addresses := make([]interface{}, len(ipAddresses))
 	gateways := make([]interface{}, len(ipAddresses))

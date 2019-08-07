@@ -160,23 +160,27 @@ func dataSourceNetworkInterfacesRead(d *schema.ResourceData, m interface{}) erro
 	clientSettings := m.(clouddk.ClientSettings)
 
 	id := d.Get(dataSourceNetworkInterfacesIDKey).(string)
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces", id), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces", id), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		return fmt.Errorf("Failed to read the information about the network interfaces - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	networkInterfaces := clouddk.NetworkInterfaceListBody{}
-	json.NewDecoder(res.Body).Decode(&networkInterfaces)
+	err = json.NewDecoder(res.Body).Decode(&networkInterfaces)
+
+	if err != nil {
+		return err
+	}
 
 	networkInterfaceAddresses := make([]interface{}, len(networkInterfaces))
 	networkInterfaceDefaultFirewallRules := make([]interface{}, len(networkInterfaces))

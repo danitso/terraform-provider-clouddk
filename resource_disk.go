@@ -56,35 +56,39 @@ func resourceDiskCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	reqBody := new(bytes.Buffer)
-	encodeErr := json.NewEncoder(reqBody).Encode(body)
+	err := json.NewEncoder(reqBody).Encode(body)
 
-	if encodeErr != nil {
-		return encodeErr
+	if err != nil {
+		return err
 	}
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverID)
+	err = resourceServerLock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/disks", serverID), reqBody, []int{200}, 60, 10)
+	res, err := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/disks", serverID), reqBody, []int{200}, 60, 10)
 
-	if resErr != nil {
+	if err != nil {
 		resourceServerUnlock(d, m, serverID)
 
-		return resErr
+		return err
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverID)
+	err = resourceServerUnlock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	disk := clouddk.DiskBody{}
-	json.NewDecoder(res.Body).Decode(&disk)
+	err = json.NewDecoder(res.Body).Decode(&disk)
+
+	if err != nil {
+		return err
+	}
 
 	return dataSourceDiskReadResponseBody(d, m, &disk)
 }
@@ -96,17 +100,17 @@ func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	diskID := d.Id()
 	serverID := d.Get(dataSourceDiskServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		if res.StatusCode == 404 {
 			d.SetId("")
@@ -118,7 +122,11 @@ func resourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	disk := clouddk.DiskBody{}
-	json.NewDecoder(res.Body).Decode(&disk)
+	err = json.NewDecoder(res.Body).Decode(&disk)
+
+	if err != nil {
+		return err
+	}
 
 	return dataSourceDiskReadResponseBody(d, m, &disk)
 }
@@ -136,17 +144,17 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	reqBody := new(bytes.Buffer)
-	encodeErr := json.NewEncoder(reqBody).Encode(body)
+	err := json.NewEncoder(reqBody).Encode(body)
 
-	if encodeErr != nil {
-		return encodeErr
+	if err != nil {
+		return err
 	}
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverID)
+	err = resourceServerLock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer), []int{200}, 60, 10)
@@ -157,14 +165,18 @@ func resourceDiskUpdate(d *schema.ResourceData, m interface{}) error {
 		return resErr
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverID)
+	err = resourceServerUnlock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	disk := clouddk.DiskBody{}
-	json.NewDecoder(res.Body).Decode(&disk)
+	err = json.NewDecoder(res.Body).Decode(&disk)
+
+	if err != nil {
+		return err
+	}
 
 	return dataSourceDiskReadResponseBody(d, m, &disk)
 }
@@ -177,13 +189,13 @@ func resourceDiskDelete(d *schema.ResourceData, m interface{}) error {
 	serverID := d.Get(dataSourceDiskServerIDKey).(string)
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverID)
+	err := resourceServerLock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
-	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err = clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		resourceServerUnlock(d, m, serverID)
@@ -191,10 +203,10 @@ func resourceDiskDelete(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverID)
+	err = resourceServerUnlock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	d.SetId("")

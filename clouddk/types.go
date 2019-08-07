@@ -164,6 +164,12 @@ type ServerCreateBody struct {
 	Location            string `json:"location"`
 }
 
+// ServerUpgradeBody describes a server upgrade object.
+type ServerUpgradeBody struct {
+	Package     string `json:"package"`
+	UpgradeDisk Bool   `json:"upgradeDisk"`
+}
+
 // ServerListBody describes a server list.
 type ServerListBody []ServerBody
 

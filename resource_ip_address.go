@@ -69,28 +69,32 @@ func resourceIPAddressCreate(d *schema.ResourceData, m interface{}) error {
 	serverID := d.Get(resourceIPAddressServerIDKey).(string)
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverID)
+	err := resourceServerLock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/ip-addresses", serverID), new(bytes.Buffer), []int{200}, 60, 10)
+	res, err := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/ip-addresses", serverID), new(bytes.Buffer), []int{200}, 60, 10)
 
-	if resErr != nil {
+	if err != nil {
 		resourceServerUnlock(d, m, serverID)
 
-		return resErr
+		return err
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverID)
+	err = resourceServerUnlock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	ipAddresses := clouddk.IPAddressListBody{}
-	json.NewDecoder(res.Body).Decode(&ipAddresses)
+	err = json.NewDecoder(res.Body).Decode(&ipAddresses)
+
+	if err != nil {
+		return err
+	}
 
 	d.SetId(ipAddresses[len(ipAddresses)-1].Address)
 
@@ -110,17 +114,17 @@ func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
 	address := d.Id()
 	serverID := d.Get(resourceIPAddressServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", serverID), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/ip-addresses", serverID), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		if res.StatusCode == 404 {
 			d.SetId("")
@@ -132,7 +136,11 @@ func resourceIPAddressRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	ipAddresses := clouddk.IPAddressListBody{}
-	json.NewDecoder(res.Body).Decode(&ipAddresses)
+	err = json.NewDecoder(res.Body).Decode(&ipAddresses)
+
+	if err != nil {
+		return err
+	}
 
 	for _, v := range ipAddresses {
 		if v.Address == address {
@@ -159,13 +167,13 @@ func resourceIPAddressDelete(d *schema.ResourceData, m interface{}) error {
 	address := d.Id()
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, serverID)
+	err := resourceServerLock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
-	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/ip-addresses?address=%s", serverID, address), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err = clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s/ip-addresses?address=%s", serverID, address), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		resourceServerUnlock(d, m, serverID)
@@ -173,10 +181,10 @@ func resourceIPAddressDelete(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	lockErr = resourceServerUnlock(d, m, serverID)
+	err = resourceServerUnlock(d, m, serverID)
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	d.SetId("")

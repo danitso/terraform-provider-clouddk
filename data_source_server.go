@@ -258,23 +258,27 @@ func dataSourceServerRead(d *schema.ResourceData, m interface{}) error {
 		id = d.Get(dataSourceServerIDKey).(string)
 	}
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", id), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", id), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		return fmt.Errorf("Failed to read the information about the server - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	server := clouddk.ServerBody{}
-	json.NewDecoder(res.Body).Decode(&server)
+	err = json.NewDecoder(res.Body).Decode(&server)
+
+	if err != nil {
+		return err
+	}
 
 	return dataSourceServerReadResponseBody(d, m, &server)
 }

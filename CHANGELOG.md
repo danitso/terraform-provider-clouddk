@@ -3,10 +3,11 @@
 ENHANCEMENTS:
 
 * provider: Moved API functions and structures to `clouddk` package
+* resource/server: Added upgrade/downgrade support
 
 BUG FIXES:
 
-* provider: Fixed issue related to HTTP 400 parsing
+* provider: Improved error handling
 * resource/server: Fixed issue which caused the provider to crash when no network interfaces are available
 
 ## 0.2.1

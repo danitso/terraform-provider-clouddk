@@ -79,23 +79,27 @@ func dataSourceFirewallRulesRead(d *schema.ResourceData, m interface{}) error {
 	networkInterfaceID := d.Get(dataSourceFirewallRulesIDKey).(string)
 	serverID := d.Get(dataSourceFirewallRulesServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverID, networkInterfaceID), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s/firewall-rules", serverID, networkInterfaceID), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		return fmt.Errorf("Failed to read the information about the firewall rules - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	firewallRules := clouddk.FirewallRuleListBody{}
-	json.NewDecoder(res.Body).Decode(&firewallRules)
+	err = json.NewDecoder(res.Body).Decode(&firewallRules)
+
+	if err != nil {
+		return err
+	}
 
 	firewallRulesAddresses := make([]interface{}, len(firewallRules))
 	firewallRulesCommands := make([]interface{}, len(firewallRules))

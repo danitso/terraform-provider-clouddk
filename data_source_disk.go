@@ -62,23 +62,27 @@ func dataSourceDiskRead(d *schema.ResourceData, m interface{}) error {
 	diskID := d.Get(dataSourceDiskIDKey).(string)
 	serverID := d.Get(dataSourceDiskServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/disks/%s", serverID, diskID), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		return fmt.Errorf("Failed to read the information about the disk - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	disk := clouddk.DiskBody{}
-	json.NewDecoder(res.Body).Decode(&disk)
+	err = json.NewDecoder(res.Body).Decode(&disk)
+
+	if err != nil {
+		return err
+	}
 
 	return dataSourceDiskReadResponseBody(d, m, &disk)
 }

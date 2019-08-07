@@ -25,8 +25,9 @@ const (
 )
 
 var (
-	serverMap      = make(map[string]*sync.Mutex)
-	serverMapMutex = &sync.Mutex{}
+	serverActionMutex = &sync.Mutex{}
+	serverMap         = make(map[string]*sync.Mutex)
+	serverMapMutex    = &sync.Mutex{}
 )
 
 // resourceServer manages a server.
@@ -53,7 +54,6 @@ func resourceServer() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The package identifier",
-				ForceNew:    true,
 			},
 			resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey: &schema.Schema{
 				Type:        schema.TypeString,
@@ -268,25 +268,34 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	reqBody := new(bytes.Buffer)
-	encodeErr := json.NewEncoder(reqBody).Encode(body)
+	err := json.NewEncoder(reqBody).Encode(body)
 
-	if encodeErr != nil {
-		return encodeErr
+	if err != nil {
+		return err
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", "cloudservers", reqBody, []int{200}, 60, 10)
+	// Due to an API issue which causes global server actions to fail, if we perform them too fast, we need to do one action at a time.
+	serverActionMutex.Lock()
 
-	if resErr != nil {
-		return resErr
+	res, err := clouddk.DoClientRequest(&clientSettings, "POST", "cloudservers", reqBody, []int{200}, 60, 10)
+
+	serverActionMutex.Unlock()
+
+	if err != nil {
+		return err
 	}
 
 	server := clouddk.ServerBody{}
-	json.NewDecoder(res.Body).Decode(&server)
+	err = json.NewDecoder(res.Body).Decode(&server)
 
-	parseErr := dataSourceServerReadResponseBody(d, m, &server)
+	if err != nil {
+		return err
+	}
 
-	if parseErr != nil {
-		return parseErr
+	err = dataSourceServerReadResponseBody(d, m, &server)
+
+	if err != nil {
+		return err
 	}
 
 	if d.Get(dataSourceServerBootedKey).(bool) {
@@ -294,33 +303,33 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// Wait for the server to boot before proceeding as we may otherwise cause timeouts in provisioners.
-	bootErr := resourceServerWaitForBootFlag(d, m, &server)
+	err = resourceServerWaitForBootFlag(d, m, &server)
 
-	if bootErr != nil {
-		return bootErr
+	if err != nil {
+		return err
 	}
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, d.Id())
+	err = resourceServerLock(d, m, d.Id())
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	// We should now be able to change the properties for the primary network interface.
-	updateNetworkError := resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
+	err = resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
 
-	if updateNetworkError != nil {
+	if err != nil {
 		resourceServerUnlock(d, m, d.Id())
 
 		return nil
 	}
 
 	// We need to release the lock for the server to allow other operations to continue.
-	lockErr = resourceServerUnlock(d, m, d.Id())
+	err = resourceServerUnlock(d, m, d.Id())
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -330,17 +339,17 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		if res.StatusCode == 404 {
 			d.SetId("")
@@ -352,12 +361,16 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	server := clouddk.ServerBody{}
-	json.NewDecoder(res.Body).Decode(&server)
+	err = json.NewDecoder(res.Body).Decode(&server)
 
-	parseErr := dataSourceServerReadResponseBody(d, m, &server)
+	if err != nil {
+		return err
+	}
 
-	if parseErr != nil {
-		return parseErr
+	err = dataSourceServerReadResponseBody(d, m, &server)
+
+	if err != nil {
+		return err
 	}
 
 	if len(server.NetworkInterfaces) > 0 {
@@ -378,42 +391,89 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	reqBody := new(bytes.Buffer)
-	encodeErr := json.NewEncoder(reqBody).Encode(body)
+	err := json.NewEncoder(reqBody).Encode(body)
 
-	if encodeErr != nil {
-		return encodeErr
+	if err != nil {
+		return err
 	}
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, d.Id())
+	err = resourceServerLock(d, m, d.Id())
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	// We should now be able to proceed without any issues.
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s", d.Id()), reqBody, []int{200}, 60, 10)
+	res, err := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s", d.Id()), reqBody, []int{200}, 60, 10)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	}
 
 	server := clouddk.ServerBody{}
-	json.NewDecoder(res.Body).Decode(&server)
+	err = json.NewDecoder(res.Body).Decode(&server)
 
-	updateNetworkError := resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
+	if err != nil {
+		return err
+	}
 
-	if updateNetworkError != nil {
+	// We also need to upgrade the settings for the primary network interface.
+	err = resourceServerUpdatePrimaryNetworkInterface(d, m, &server)
+
+	if err != nil {
 		resourceServerUnlock(d, m, d.Id())
 
-		return nil
+		return err
+	}
+
+	// In case the package has changed, we need to upgrade or downgrade the server.
+	if d.HasChange(resourceServerPackageIDKey) {
+		upgradeBody := clouddk.ServerUpgradeBody{
+			Package:     d.Get(resourceServerPackageIDKey).(string),
+			UpgradeDisk: false,
+		}
+
+		reqBody = new(bytes.Buffer)
+		err = json.NewEncoder(reqBody).Encode(upgradeBody)
+
+		if err != nil {
+			resourceServerUnlock(d, m, d.Id())
+
+			return err
+		}
+
+		res, resErr := clouddk.DoClientRequest(&clientSettings, "POST", fmt.Sprintf("cloudservers/%s/upgrade", d.Id()), reqBody, []int{200}, 60, 10)
+
+		if resErr != nil {
+			resourceServerUnlock(d, m, d.Id())
+
+			return resErr
+		}
+
+		server = clouddk.ServerBody{}
+		err = json.NewDecoder(res.Body).Decode(&server)
+
+		if err != nil {
+			resourceServerUnlock(d, m, d.Id())
+
+			return err
+		}
+
+		err = dataSourceServerReadResponseBody(d, m, &server)
+
+		if err != nil {
+			resourceServerUnlock(d, m, d.Id())
+
+			return err
+		}
 	}
 
 	// We need to release the lock for the server to allow other operations to continue.
-	lockErr = resourceServerUnlock(d, m, d.Id())
+	err = resourceServerUnlock(d, m, d.Id())
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -429,20 +489,24 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 	}
 
 	reqBody := new(bytes.Buffer)
-	encodeErr := json.NewEncoder(reqBody).Encode(networkInterfaceUpdateBody)
+	err := json.NewEncoder(reqBody).Encode(networkInterfaceUpdateBody)
 
-	if encodeErr != nil {
-		return encodeErr
+	if err != nil {
+		return err
 	}
 
-	res, resErr := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, server.NetworkInterfaces[0].Identifier), reqBody, []int{200}, 60, 10)
+	res, err := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, server.NetworkInterfaces[0].Identifier), reqBody, []int{200}, 60, 10)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	}
 
 	networkInterfaceBody := clouddk.NetworkInterfaceBody{}
-	json.NewDecoder(res.Body).Decode(&networkInterfaceBody)
+	err = json.NewDecoder(res.Body).Decode(&networkInterfaceBody)
+
+	if err != nil {
+		return err
+	}
 
 	server.NetworkInterfaces[0] = networkInterfaceBody
 
@@ -454,24 +518,24 @@ func resourceServerDelete(d *schema.ResourceData, m interface{}) error {
 	clientSettings := m.(clouddk.ClientSettings)
 
 	// We need to acquire the lock for the server to reduce the risk of race conditions.
-	lockErr := resourceServerLock(d, m, d.Id())
+	err := resourceServerLock(d, m, d.Id())
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	// We should now be able to proceed without any issues.
-	_, err := clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer), []int{200, 404}, 60, 10)
+	_, err = clouddk.DoClientRequest(&clientSettings, "DELETE", fmt.Sprintf("cloudservers/%s", d.Id()), new(bytes.Buffer), []int{200, 404}, 60, 10)
 
 	if err != nil {
 		return err
 	}
 
 	// We need to release the lock for the server to allow other operations to continue.
-	lockErr = resourceServerUnlock(d, m, d.Id())
+	err = resourceServerUnlock(d, m, d.Id())
 
-	if lockErr != nil {
-		return lockErr
+	if err != nil {
+		return err
 	}
 
 	d.SetId("")
@@ -520,7 +584,11 @@ func resourceServerLock(d *schema.ResourceData, m interface{}, serverID string) 
 			}
 
 			logsList := clouddk.LogsListBody{}
-			json.NewDecoder(res.Body).Decode(&logsList)
+			err = json.NewDecoder(res.Body).Decode(&logsList)
+
+			if err != nil {
+				return err
+			}
 
 			continueToWait = false
 
@@ -585,7 +653,11 @@ func resourceServerWaitForBootFlag(d *schema.ResourceData, m interface{}, server
 				return err
 			}
 
-			json.NewDecoder(res.Body).Decode(server)
+			err = json.NewDecoder(res.Body).Decode(server)
+
+			if err != nil {
+				return err
+			}
 
 			if server.Booted {
 				return dataSourceServerReadResponseBody(d, m, server)

@@ -131,23 +131,27 @@ func dataSourceNetworkInterfaceRead(d *schema.ResourceData, m interface{}) error
 	networkInterfaceID := d.Get(dataSourceNetworkInterfaceIDKey).(string)
 	serverID := d.Get(dataSourceNetworkInterfaceServerIDKey).(string)
 
-	req, reqErr := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", serverID, networkInterfaceID), new(bytes.Buffer))
+	req, err := clouddk.GetClientRequestObject(&clientSettings, "GET", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", serverID, networkInterfaceID), new(bytes.Buffer))
 
-	if reqErr != nil {
-		return reqErr
+	if err != nil {
+		return err
 	}
 
 	client := &http.Client{}
-	res, resErr := client.Do(req)
+	res, err := client.Do(req)
 
-	if resErr != nil {
-		return resErr
+	if err != nil {
+		return err
 	} else if res.StatusCode != 200 {
 		return fmt.Errorf("Failed to read the information about the network interface - Reason: The API responded with HTTP %s", res.Status)
 	}
 
 	networkInterface := clouddk.NetworkInterfaceBody{}
-	json.NewDecoder(res.Body).Decode(&networkInterface)
+	err = json.NewDecoder(res.Body).Decode(&networkInterface)
+
+	if err != nil {
+		return err
+	}
 
 	addresses := make([]interface{}, len(networkInterface.IPAddresses))
 	gateways := make([]interface{}, len(networkInterface.IPAddresses))
