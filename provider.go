@@ -71,5 +71,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		Key:      key,
 	}
 
+	clouddk.EnableDebugMessages = true
+
 	return clientSettings, nil
 }

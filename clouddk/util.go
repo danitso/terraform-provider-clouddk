@@ -12,6 +12,18 @@ import (
 	"time"
 )
 
+var (
+	// EnableDebugMessages sets whether or not to write debug messages to the log.
+	EnableDebugMessages = false
+)
+
+// DebugClientRequest writes a message to the log.
+func DebugClientRequest(s string, v ...interface{}) {
+	if EnableDebugMessages {
+		log.Printf("[DEBUG] "+s, v...)
+	}
+}
+
 // GetClientRequestObject returns a new HTTP request object.
 func GetClientRequestObject(settings *ClientSettings, method string, path string, body io.Reader) (*http.Request, error) {
 	req, reqErr := http.NewRequest(method, fmt.Sprintf("%s/%s", settings.Endpoint, path), body)
@@ -22,6 +34,8 @@ func GetClientRequestObject(settings *ClientSettings, method string, path string
 
 	req.Header.Set("User-Agent", fmt.Sprintf("Go/%s", runtime.Version()))
 	req.Header.Set("X-Api-Key", settings.Key)
+
+	DebugClientRequest("Generating API request - Method: %s - Path: %s", method, path)
 
 	return req, nil
 }
@@ -41,7 +55,7 @@ func DoClientRequest(settings *ClientSettings, method string, path string, body 
 
 	for timeElapsed.Seconds() < timeMax {
 		if int64(timeElapsed.Seconds())%timeDelay == 0 {
-			log.Printf("[DEBUG] Querying the API - Method: %s - Path: %s", method, path)
+			DebugClientRequest("Querying the API - Method: %s - Path: %s", method, path)
 
 			requestBody := bytes.NewBufferString(bodyString)
 			request, requestError := GetClientRequestObject(settings, method, path, requestBody)
@@ -52,9 +66,9 @@ func DoClientRequest(settings *ClientSettings, method string, path string, body 
 
 			if requestBody.Len() > 0 {
 				request.Header.Set("Content-Type", "application/json")
-				log.Printf("[DEBUG] Adding body to request - Method: %s - Path: %s - Content-Type: %s - Content-Length: %d - Body: %s", method, path, request.Header.Get("Content-Type"), requestBody.Len(), bodyString)
+				DebugClientRequest("Adding body to request - Method: %s - Path: %s - Content-Type: %s - Content-Length: %d - Body: %s", method, path, request.Header.Get("Content-Type"), requestBody.Len(), bodyString)
 			} else if method == "POST" || method == "PUT" {
-				log.Printf("[DEBUG] WARNING: No request body specified - Method: %s - Path: %s", method, path)
+				DebugClientRequest("WARNING: No request body specified - Method: %s - Path: %s", method, path)
 			}
 
 			client := &http.Client{}
@@ -66,7 +80,7 @@ func DoClientRequest(settings *ClientSettings, method string, path string, body 
 
 			for _, v := range successCodes {
 				if response.StatusCode == v {
-					log.Printf("[DEBUG] The API query was successful - Method: %s - Path: %s", method, path)
+					DebugClientRequest("The API query was successful - Method: %s - Path: %s", method, path)
 
 					return response, nil
 				}
@@ -87,7 +101,7 @@ func DoClientRequest(settings *ClientSettings, method string, path string, body 
 				}
 			}
 
-			log.Printf("[DEBUG] Failed to query the API - Reason: %s - Method: %s - Path: %s", errorMessage, method, path)
+			DebugClientRequest("Failed to query the API - Reason: %s - Method: %s - Path: %s", errorMessage, method, path)
 			time.Sleep(1 * time.Second)
 		}
 
