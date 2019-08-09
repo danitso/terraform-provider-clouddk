@@ -1,3 +1,9 @@
+## 0.3.1 (UNRELEASED)
+
+BUG FIXES:
+
+* resource/server: Fixed edge case issue
+
 ## 0.3.0
 
 ENHANCEMENTS:
