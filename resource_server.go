@@ -489,17 +489,17 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceServerUpdatePrimaryNetworkInterface updates the primary interface on an existing server.
 func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m interface{}, server *clouddk.ServerBody) error {
-	networkInterfaceID := ""
+	networkInterfaceIndex := -1
 
-	for _, v := range server.NetworkInterfaces {
+	for i, v := range server.NetworkInterfaces {
 		if v.Primary {
-			networkInterfaceID = v.Identifier
+			networkInterfaceIndex = i
 
 			break
 		}
 	}
 
-	if networkInterfaceID == "" {
+	if networkInterfaceIndex < 0 {
 		return nil
 	}
 
@@ -517,7 +517,7 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 		return err
 	}
 
-	res, err := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, networkInterfaceID), reqBody, []int{200}, 60, 10)
+	res, err := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, server.NetworkInterfaces[networkInterfaceIndex].Identifier), reqBody, []int{200}, 60, 10)
 
 	if err != nil {
 		return err
@@ -530,7 +530,7 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 		return err
 	}
 
-	server.NetworkInterfaces[0] = networkInterfaceBody
+	server.NetworkInterfaces[networkInterfaceIndex] = networkInterfaceBody
 
 	return nil
 }
