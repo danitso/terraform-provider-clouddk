@@ -25,9 +25,8 @@ const (
 )
 
 var (
-	serverActionMutex = &sync.Mutex{}
-	serverMap         = make(map[string]*sync.Mutex)
-	serverMapMutex    = &sync.Mutex{}
+	serverMap      = make(map[string]*sync.Mutex)
+	serverMapMutex = &sync.Mutex{}
 )
 
 // resourceServer manages a server.
@@ -275,11 +274,7 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// Due to an API issue which causes global server actions to fail, if we perform them too fast, we need to do one action at a time.
-	serverActionMutex.Lock()
-
 	res, err := clouddk.DoClientRequest(&clientSettings, "POST", "cloudservers", reqBody, []int{200}, 60, 10)
-
-	serverActionMutex.Unlock()
 
 	if err != nil {
 		return err
@@ -381,9 +376,13 @@ func resourceServerRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if len(server.NetworkInterfaces) > 0 {
-		d.Set(resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey, server.NetworkInterfaces[0].DefaultFirewallRule)
-		d.Set(resourceServerPrimaryNetworkInterfaceLabelKey, server.NetworkInterfaces[0].Label)
+	for _, v := range server.NetworkInterfaces {
+		if v.Primary {
+			d.Set(resourceServerPrimaryNetworkInterfaceDefaultFirewallRuleKey, v.DefaultFirewallRule)
+			d.Set(resourceServerPrimaryNetworkInterfaceLabelKey, v.Label)
+
+			break
+		}
 	}
 
 	return nil
@@ -490,6 +489,20 @@ func resourceServerUpdate(d *schema.ResourceData, m interface{}) error {
 
 // resourceServerUpdatePrimaryNetworkInterface updates the primary interface on an existing server.
 func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m interface{}, server *clouddk.ServerBody) error {
+	networkInterfaceID := ""
+
+	for _, v := range server.NetworkInterfaces {
+		if v.Primary {
+			networkInterfaceID = v.Identifier
+
+			break
+		}
+	}
+
+	if networkInterfaceID == "" {
+		return nil
+	}
+
 	clientSettings := m.(clouddk.ClientSettings)
 
 	networkInterfaceUpdateBody := clouddk.NetworkInterfaceUpdateBody{
@@ -504,7 +517,7 @@ func resourceServerUpdatePrimaryNetworkInterface(d *schema.ResourceData, m inter
 		return err
 	}
 
-	res, err := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, server.NetworkInterfaces[0].Identifier), reqBody, []int{200}, 60, 10)
+	res, err := clouddk.DoClientRequest(&clientSettings, "PUT", fmt.Sprintf("cloudservers/%s/network-interfaces/%s", server.Identifier, networkInterfaceID), reqBody, []int{200}, 60, 10)
 
 	if err != nil {
 		return err
