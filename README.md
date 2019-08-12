@@ -1,12 +1,12 @@
 # Terraform Provider for Cloud.dk
 A Terraform Provider which manages resources from [Cloud.dk](https://cloud.dk/).
 
-# Requirements
+## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) 0.11+
 - [Go](https://golang.org/doc/install) 1.12 (to build the provider plugin)
 
-# Building the Provider
+## Building the Provider
 Clone repository to: `$GOPATH/src/github.com/danitso/terraform-provider-clouddk`
 
 ```sh
@@ -22,67 +22,67 @@ $ make init
 $ make build
 ```
 
-# Using the Provider
+## Using the Provider
 If you're building the provider, follow the instructions to [install it as a plugin.](https://www.terraform.io/docs/plugins/basics.html#installing-plugins) After placing it into your plugins directory,  run `terraform init` to initialize it.
 
-## Configuration
+### Configuration
 
-### Arguments
+#### Arguments
 
 * `endpoint` - (Optional) The API endpoint
 * `key` - (Required) The API key
 
-## Data Sources
+### Data Sources
 
-### Disk (clouddk_disk)
+#### Disk (clouddk_disk)
 
-#### Arguments
+##### Arguments
 
 * `id` - (Required) This is the disk's identifier.
 * `server_id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `label` - This is the disk label.
 * `primary` - Whether the disk is the primary disk.
 * `size` - This is the disk size in gigabytes.
 
-### Disks (clouddk_disks)
+#### Disks (clouddk_disks)
 
-#### Arguments
+##### Arguments
 
 * `id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `ids` - This is the server's disk identifiers.
 * `labels` - This is the server's disk labels.
 * `primary` - Whether a disk is the primary disk.
 * `sizes` - This is the server's disk sizes in gigabytes.
 
-### Firewall Rule (clouddk_firewall_rule)
+#### Firewall Rule (clouddk_firewall_rule)
 
-#### Arguments
+##### Arguments
 
 * `id` - (Required) This is the firewall rule's identifier.
 * `network_interface_id` - (Required) This is the network interface's identifier.
 * `server_id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `address` - This is the CIDR block for the firewall rule.
 * `command` - This is the command for the firewall rule.
 * `port` - This is the port for the firewall rule.
 * `protocol` - This is the protocol for the firewall rule.
 
-### Firewall Rules (clouddk_firewall_rules)
+#### Firewall Rules (clouddk_firewall_rules)
 
-#### Arguments
+##### Arguments
 
 * `id` - (Required) This is the network interface's identifier.
 * `server_id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `addresses` - This is the CIDR blocks for the firewall rules assigned to the network interface.
 * `commands` - This is the commands for the firewall rules assigned to the network interface.
@@ -90,13 +90,13 @@ If you're building the provider, follow the instructions to [install it as a plu
 * `ports` - This is the ports for the firewall rules assigned to the network interface.
 * `protocols` - This is the protocols for the firewall rules assigned to the network interface.
 
-### IP Addresses (clouddk_ip_addresses)
+#### IP Addresses (clouddk_ip_addresses)
 
-#### Arguments
+##### Arguments
 
 * `id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `addresses` - This is the IP addresses assigned to the server's network interfaces.
 * `gateways` - This is the gateways assigned to the server's network interfaces.
@@ -104,25 +104,25 @@ If you're building the provider, follow the instructions to [install it as a plu
 * `network_interface_ids` - This is the network interface identifiers.
 * `networks` - This is the networks assigned to the server's network interfaces.
 
-### Locations (clouddk_locations)
+#### Locations (clouddk_locations)
 
-#### Arguments
+##### Arguments
 
 This data source has no arguments.
 
-#### Attributes
+##### Attributes
 
 * `ids` - This is the list of location identifiers.
 * `names` - This is the list of location names.
 
-### Network Interface (clouddk_network_interface)
+#### Network Interface (clouddk_network_interface)
 
-#### Arguments
+##### Arguments
 
 * `id` - (Required) This is the network interface's identifier.
 * `server_id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `addresses` - This is the IP addresses assigned to the network interface.
 * `default_firewall_rule` - This is the default firewall rule for the network interface.
@@ -138,13 +138,13 @@ This data source has no arguments.
 * `primary` - Whether a network interface is the primary interface.
 * `rate_limit` - This is the rate limit for the network interface.
 
-### Network Interfaces (clouddk_network_interfaces)
+#### Network Interfaces (clouddk_network_interfaces)
 
-#### Arguments
+##### Arguments
 
 * `id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `addresses` - This is the IP addresses assigned to the server's network interfaces.
 * `default_firewall_rules` - This is the default firewall rules for the server's network interfaces.
@@ -161,24 +161,24 @@ This data source has no arguments.
 * `primary` - Whether a network interface is the primary interface.
 * `rate_limits` - This is the rate limits for the server's network interfaces.
 
-### Packages (clouddk_packages)
+#### Packages (clouddk_packages)
 
-#### Arguments
+##### Arguments
 
 This data source has no arguments.
 
-#### Attributes
+##### Attributes
 
 * `ids` - This is the list of package identifiers.
 * `names` - This is the list of package names.
 
-### Server (clouddk_server)
+#### Server (clouddk_server)
 
-#### Arguments
+##### Arguments
 
 * `id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `booted` - Whether the server has been booted.
 * `cpus` - This is the server's CPU count.
@@ -210,14 +210,14 @@ This data source has no arguments.
 * `template_id` - This is the template identifier.
 * `template_name` - This is the template name.
 
-### Servers (clouddk_servers)
+#### Servers (clouddk_servers)
 
-#### Arguments
+##### Arguments
 
 * `filter` - (Optional) This is the filter block.
     * `hostname` - (Optional) This is the hostname filter which performs a substring match on the hostname property.
 
-#### Attributes
+##### Attributes
 
 * `hostnames` - This is the list of server hostnames.
 * `ids` - This is the list of server identifiers.
@@ -229,36 +229,36 @@ This data source has no arguments.
 * `template_ids` - This is the list of server template identifiers.
 * `template_names` - This is the list of server template names.
 
-### Templates (clouddk_templates)
+#### Templates (clouddk_templates)
 
-#### Arguments
+##### Arguments
 
 * `filter` - (Optional) This is the filter block.
     * `name` - (Optional) This is the name filter which performs a substring match on the name property.
 
-#### Attributes
+##### Attributes
 
 * `ids` - This is the list of template identifiers.
 * `names` - This is the list of template names.
 
-## Resources
+### Resources
 
-### Disk (clouddk_disk)
+#### Disk (clouddk_disk)
 
-#### Arguments
+##### Arguments
 
 * `label` - (Required) This is the disk label.
 * `server_id` - (Required) This is the server's identifier.
 * `size` - (Required) This is the disk size in gigabytes.
 
-#### Attributes
+##### Attributes
 
 * `id` - This is the disk's identifier.
 * `primary` - Whether the disk is the primary disk.
 
-### Firewall Rule (clouddk_firewall_rule)
+#### Firewall Rule (clouddk_firewall_rule)
 
-#### Arguments
+##### Arguments
 
 * `address` - (Required) This is the CIDR block for the firewall rule.
 * `command` - (Required) This is the command for the firewall rule.
@@ -267,17 +267,17 @@ This data source has no arguments.
 * `protocol` - (Required) This is the protocol for the firewall rule.
 * `server_id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `id` - This is the firewall rule's identifier.
 
-### IP Address (clouddk_ip_address)
+#### IP Address (clouddk_ip_address)
 
-#### Arguments
+##### Arguments
 
 * `server_id` - (Required) This is the server's identifier.
 
-#### Attributes
+##### Attributes
 
 * `address` - This is the IP address.
 * `gateway` - This is the gateway address.
@@ -286,9 +286,9 @@ This data source has no arguments.
 * `network` - This is the network address.
 * `network_interface_id` - This is the identifier for the network interface that the IP address is assigned to.
 
-### Server (clouddk_server)
+#### Server (clouddk_server)
 
-#### Arguments
+##### Arguments
 
 * `hostname` - (Required) This is the server's hostname.
 * `label` - (Required) This is the server's label.
@@ -299,7 +299,7 @@ This data source has no arguments.
 * `root_password` - (Required) This is the initial root password.
 * `template_id` - (Required) This is the server's template.
 
-#### Attributes
+##### Attributes
 
 * `booted` - Whether the server has been booted.
 * `cpus` - This is the server's CPU count.
@@ -332,7 +332,7 @@ This data source has no arguments.
 * `template_id` - This is the template identifier.
 * `template_name` - This is the template name.
 
-# Developing the Provider
+## Developing the Provider
 If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (version 1.12+ is *required*).
 You'll also need to correctly setup a [GOPATH](http://golang.org/doc/code.html#GOPATH), as well as adding `$GOPATH/bin` to your `$PATH`.
 
@@ -351,7 +351,7 @@ If you wish to contribute to the provider, the following requirements must be me
 * The Go code must be formatted using Gofmt
 * Dependencies are installed by `make init`
 
-# Testing the Provider
+## Testing the Provider
 In order to test the provider, you can simply run `make test`.
 
 ```sh
