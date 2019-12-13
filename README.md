@@ -6,7 +6,7 @@ A Terraform Provider which manages resources from [Cloud.dk](https://cloud.dk/).
 ## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) 0.11+
-- [Go](https://golang.org/doc/install) 1.12 (to build the provider plugin)
+- [Go](https://golang.org/doc/install) 1.13 (to build the provider plugin)
 
 ## Building the Provider
 Clone repository to: `$GOPATH/src/github.com/danitso/terraform-provider-clouddk`
@@ -335,7 +335,7 @@ This data source has no arguments.
 * `template_name` - This is the template name.
 
 ## Developing the Provider
-If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (version 1.12+ is *required*).
+If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (version 1.13+ is *required*).
 You'll also need to correctly setup a [GOPATH](http://golang.org/doc/code.html#GOPATH), as well as adding `$GOPATH/bin` to your `$PATH`.
 
 To compile the provider, run `make build`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
