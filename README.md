@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.com/danitso/terraform-provider-clouddk.svg?branch=master)](https://travis-ci.com/danitso/terraform-provider-clouddk)
+
 # Terraform Provider for Cloud.dk
 A Terraform Provider which manages resources from [Cloud.dk](https://cloud.dk/).
 
