@@ -1,4 +1,8 @@
-## 0.3.1 (UNRELEASED)
+## 0.3.1
+
+ENHANCEMENTS:
+
+* provider: Upgraded to Go v1.13 and Terraform v0.12.18
 
 BUG FIXES:
 
