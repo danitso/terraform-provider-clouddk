@@ -347,7 +347,7 @@ $ $GOPATH/bin/terraform-provider-clouddk
 ...
 ```
 
-If you wish to contribute to the provider, please see [CONTRIBUTING.md](CONTRIBUTING.md)
+If you wish to contribute to the provider, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Testing the Provider
 In order to test the provider, you can simply run `make test`.
