@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -23,12 +23,12 @@ const (
 func dataSourceLocations() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceLocationsIdsKey: &schema.Schema{
+			dataSourceLocationsIdsKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceLocationsNamesKey: &schema.Schema{
+			dataSourceLocationsNamesKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},

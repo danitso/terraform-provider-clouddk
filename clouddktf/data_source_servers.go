@@ -12,7 +12,7 @@ import (
 	"net/url"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -33,12 +33,12 @@ const (
 func dataSourceServers() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceServersFilterKey: &schema.Schema{
+			dataSourceServersFilterKey: {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						dataSourceServersFilterHostnameKey: &schema.Schema{
+						dataSourceServersFilterHostnameKey: {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Default:     "",
@@ -49,47 +49,47 @@ func dataSourceServers() *schema.Resource {
 				},
 				MaxItems: 1,
 			},
-			dataSourceServersHostnamesKey: &schema.Schema{
+			dataSourceServersHostnamesKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceServersIdsKey: &schema.Schema{
+			dataSourceServersIdsKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceServersLabelsKey: &schema.Schema{
+			dataSourceServersLabelsKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceServersLocationIdsKey: &schema.Schema{
+			dataSourceServersLocationIdsKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceServersLocationNamesKey: &schema.Schema{
+			dataSourceServersLocationNamesKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceServersPackageIdsKey: &schema.Schema{
+			dataSourceServersPackageIdsKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceServersPackageNamesKey: &schema.Schema{
+			dataSourceServersPackageNamesKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceServersTemplateIdsKey: &schema.Schema{
+			dataSourceServersTemplateIdsKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceServersTemplateNamesKey: &schema.Schema{
+			dataSourceServersTemplateNamesKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},

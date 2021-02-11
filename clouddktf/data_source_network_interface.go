@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -36,87 +36,87 @@ const (
 func dataSourceNetworkInterface() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceNetworkInterfaceAddressesKey: &schema.Schema{
+			dataSourceNetworkInterfaceAddressesKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The IP addresses assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfaceDefaultFirewallRuleKey: &schema.Schema{
+			dataSourceNetworkInterfaceDefaultFirewallRuleKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The default firewall rule for the network interface",
 			},
-			dataSourceNetworkInterfaceFirewallRulesAddressesKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesAddressesKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The CIDR blocks for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfaceFirewallRulesCommandsKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesCommandsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The commands for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfaceFirewallRulesIdsKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesIdsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The identifiers for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfaceFirewallRulesPortsKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesPortsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfaceFirewallRulesProtocolsKey: &schema.Schema{
+			dataSourceNetworkInterfaceFirewallRulesProtocolsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The protocols for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfaceGatewaysKey: &schema.Schema{
+			dataSourceNetworkInterfaceGatewaysKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The gateways assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfaceIDKey: &schema.Schema{
+			dataSourceNetworkInterfaceIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The network interface identifier",
 				ForceNew:    true,
 			},
-			dataSourceNetworkInterfaceLabelKey: &schema.Schema{
+			dataSourceNetworkInterfaceLabelKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The network interface label",
 			},
-			dataSourceNetworkInterfaceNetmasksKey: &schema.Schema{
+			dataSourceNetworkInterfaceNetmasksKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The netmasks assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfaceNetworksKey: &schema.Schema{
+			dataSourceNetworkInterfaceNetworksKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The networks assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceNetworkInterfacePrimaryKey: &schema.Schema{
+			dataSourceNetworkInterfacePrimaryKey: {
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "Whether the network interface is the primary interface",
 			},
-			dataSourceNetworkInterfaceRateLimitKey: &schema.Schema{
+			dataSourceNetworkInterfaceRateLimitKey: {
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "The rate limit for the network interface",
 			},
-			dataSourceNetworkInterfaceServerIDKey: &schema.Schema{
+			dataSourceNetworkInterfaceServerIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",

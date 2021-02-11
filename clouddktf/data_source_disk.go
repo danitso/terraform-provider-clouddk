@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -26,29 +26,29 @@ const (
 func dataSourceDisk() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceDiskIDKey: &schema.Schema{
+			dataSourceDiskIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The disk identifier",
 				ForceNew:    true,
 			},
-			dataSourceDiskLabelKey: &schema.Schema{
+			dataSourceDiskLabelKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The disk label",
 			},
-			dataSourceDiskPrimaryKey: &schema.Schema{
+			dataSourceDiskPrimaryKey: {
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "Whether the disk is the primary disk",
 			},
-			dataSourceDiskServerIDKey: &schema.Schema{
+			dataSourceDiskServerIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
 				ForceNew:    true,
 			},
-			dataSourceDiskSizeKey: &schema.Schema{
+			dataSourceDiskSizeKey: {
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "The disk size in gigabytes",

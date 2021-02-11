@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -28,39 +28,39 @@ const (
 func dataSourceFirewallRule() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceFirewallRuleAddressKey: &schema.Schema{
+			dataSourceFirewallRuleAddressKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The CIDR block for the firewall rule",
 			},
-			dataSourceFirewallRuleCommandKey: &schema.Schema{
+			dataSourceFirewallRuleCommandKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The command for the firewall rule",
 			},
-			dataSourceFirewallRuleIDKey: &schema.Schema{
+			dataSourceFirewallRuleIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The firewall rule identifier",
 				ForceNew:    true,
 			},
-			dataSourceFirewallRuleNetworkInterfaceIDKey: &schema.Schema{
+			dataSourceFirewallRuleNetworkInterfaceIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The network interface identifier",
 				ForceNew:    true,
 			},
-			dataSourceFirewallRulePortKey: &schema.Schema{
+			dataSourceFirewallRulePortKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The port for the firewall rule",
 			},
-			dataSourceFirewallRuleProtocolKey: &schema.Schema{
+			dataSourceFirewallRuleProtocolKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The protocol for the firewall rule",
 			},
-			dataSourceFirewallRuleServerIDKey: &schema.Schema{
+			dataSourceFirewallRuleServerIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",

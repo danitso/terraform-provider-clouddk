@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -27,37 +27,37 @@ const (
 func dataSourceIPAddresses() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceIPAddressesAddressesKey: &schema.Schema{
+			dataSourceIPAddressesAddressesKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The IP addresses assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceIPAddressesGatewaysKey: &schema.Schema{
+			dataSourceIPAddressesGatewaysKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The gateways assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceIPAddressesIDKey: &schema.Schema{
+			dataSourceIPAddressesIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
 				ForceNew:    true,
 			},
-			dataSourceIPAddressesNetmasksKey: &schema.Schema{
+			dataSourceIPAddressesNetmasksKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The netmasks assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceIPAddressesNetworkInterfaceIdsKey: &schema.Schema{
+			dataSourceIPAddressesNetworkInterfaceIdsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The network interface identifiers",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceIPAddressesNetworksKey: &schema.Schema{
+			dataSourceIPAddressesNetworksKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The networks assigned to the server's network interfaces",

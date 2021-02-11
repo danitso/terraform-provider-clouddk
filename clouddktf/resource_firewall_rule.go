@@ -13,40 +13,40 @@ import (
 	"strings"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // resourceFirewallRule manages a firewall rule.
 func resourceFirewallRule() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceFirewallRuleAddressKey: &schema.Schema{
+			dataSourceFirewallRuleAddressKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The CIDR block for the firewall rule",
 			},
-			dataSourceFirewallRuleCommandKey: &schema.Schema{
+			dataSourceFirewallRuleCommandKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The command for the firewall rule",
 			},
-			dataSourceFirewallRuleNetworkInterfaceIDKey: &schema.Schema{
+			dataSourceFirewallRuleNetworkInterfaceIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The network interface identifier",
 				ForceNew:    true,
 			},
-			dataSourceFirewallRulePortKey: &schema.Schema{
+			dataSourceFirewallRulePortKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The port for the firewall rule",
 			},
-			dataSourceFirewallRuleProtocolKey: &schema.Schema{
+			dataSourceFirewallRuleProtocolKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The protocol for the firewall rule",
 			},
-			dataSourceFirewallRuleServerIDKey: &schema.Schema{
+			dataSourceFirewallRuleServerIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",

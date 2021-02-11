@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -27,32 +27,32 @@ const (
 func resourceIPAddress() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			resourceIPAddressAddressKey: &schema.Schema{
+			resourceIPAddressAddressKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The IP address",
 			},
-			resourceIPAddressGatewayKey: &schema.Schema{
+			resourceIPAddressGatewayKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The gateway address",
 			},
-			resourceIPAddressNetmaskKey: &schema.Schema{
+			resourceIPAddressNetmaskKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The netmask",
 			},
-			resourceIPAddressNetworkKey: &schema.Schema{
+			resourceIPAddressNetworkKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The network address",
 			},
-			resourceIPAddressNetworkInterfaceIDKey: &schema.Schema{
+			resourceIPAddressNetworkInterfaceIDKey: {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "The network interface id",
 			},
-			resourceIPAddressServerIDKey: &schema.Schema{
+			resourceIPAddressServerIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",

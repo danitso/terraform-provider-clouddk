@@ -8,7 +8,7 @@ import (
 	"errors"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -41,13 +41,13 @@ func Provider() *schema.Provider {
 			"clouddk_server":        resourceServer(),
 		},
 		Schema: map[string]*schema.Schema{
-			providerConfigurationEndpoint: &schema.Schema{
+			providerConfigurationEndpoint: {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "https://api.cloud.dk/v1",
 				Description: "The API endpoint",
 			},
-			providerConfigurationKey: &schema.Schema{
+			providerConfigurationKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The API key",

@@ -12,7 +12,7 @@ import (
 	"net/url"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -26,12 +26,12 @@ const (
 func dataSourceTemplates() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceTemplatesFilterKey: &schema.Schema{
+			dataSourceTemplatesFilterKey: {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						dataSourceTemplatesFilterNameKey: &schema.Schema{
+						dataSourceTemplatesFilterNameKey: {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Default:     "",
@@ -42,12 +42,12 @@ func dataSourceTemplates() *schema.Resource {
 				},
 				MaxItems: 1,
 			},
-			dataSourceTemplatesIdsKey: &schema.Schema{
+			dataSourceTemplatesIdsKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceTemplatesNamesKey: &schema.Schema{
+			dataSourceTemplatesNamesKey: {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},

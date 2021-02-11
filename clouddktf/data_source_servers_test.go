@@ -7,7 +7,7 @@ package clouddktf
 import (
 	"testing"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // TestDataSourceServersInstantiation tests whether the dataSourceServers instance can be instantiated.

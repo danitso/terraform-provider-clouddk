@@ -1,3 +1,14 @@
+## v0.4.0
+
+ENHANCEMENTS:
+
+* provider: Upgrade to Go v1.15
+* provider: Upgrade dependencies
+
+OTHER:
+
+* provider/docs: Add HTML documentation powered by GitHub Pages and Terraform Registry
+
 ## 0.3.1
 
 ENHANCEMENTS:

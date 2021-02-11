@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/danitso/terraform-provider-clouddk/clouddk"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 const (
@@ -28,43 +28,43 @@ const (
 func dataSourceFirewallRules() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			dataSourceFirewallRulesAddressesKey: &schema.Schema{
+			dataSourceFirewallRulesAddressesKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The CIDR blocks for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceFirewallRulesCommandsKey: &schema.Schema{
+			dataSourceFirewallRulesCommandsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The commands for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceFirewallRulesIDKey: &schema.Schema{
+			dataSourceFirewallRulesIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The network interface identifier",
 				ForceNew:    true,
 			},
-			dataSourceFirewallRulesIdsKey: &schema.Schema{
+			dataSourceFirewallRulesIdsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The identifiers for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceFirewallRulesPortsKey: &schema.Schema{
+			dataSourceFirewallRulesPortsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The ports of the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceFirewallRulesProtocolsKey: &schema.Schema{
+			dataSourceFirewallRulesProtocolsKey: {
 				Type:        schema.TypeList,
 				Computed:    true,
 				Description: "The protocols for the firewall rules assigned to the server's network interfaces",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			dataSourceFirewallRulesServerIDKey: &schema.Schema{
+			dataSourceFirewallRulesServerIDKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The server identifier",
