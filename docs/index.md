@@ -6,7 +6,7 @@ nav_order: 1
 
 # Cloud.dk Provider
 
-This provider for [Terraform](https://www.terraform.io/) is used for interacting with the resources supported by [Cloud.dk](https://cloud.dk). The provider needs to be configured with the proper endpoint and key before it can be used.
+This provider for [Terraform](https://www.terraform.io/) is used for interacting with resources supported by [Cloud.dk](https://cloud.dk). The provider needs to be configured with the proper endpoint and key before it can be used.
 
 Use the navigation to the left to read about the available resources.
 
